@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 4e80151bfec5dca419e9208310da82ab
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - superior: {fileID: 2800000, guid: 5f2c0624f3fbf1645a52b82a1e44bc88, type: 3}
+  - lateral: {instanceID: 0}
+  - inferior: {instanceID: 0}
+  - TextureAtlas: {instanceID: 0}
+  - go: {fileID: 100000, guid: 8a1da15bc40e9ac4897e6f088f39ae14, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
