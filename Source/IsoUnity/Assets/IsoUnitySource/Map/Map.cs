@@ -13,8 +13,6 @@ public class Map : MonoBehaviour
 	[SerializeField]
 	private List<Cell> celdas;
 
-	private List<GameObject> entidades;
-
 	[SerializeField]
 	private float cellSize;
 
@@ -33,7 +31,6 @@ public class Map : MonoBehaviour
 
 	public Map(){
 		celdas = new List<Cell>();
-		entidades = new List<GameObject>();
 		vecinas = new Dictionary<Cell,Cell[]>();
 		cellSize = 1;
 	}
@@ -272,17 +269,24 @@ public class Map : MonoBehaviour
 		}
 	}
 
+	public Cell[] getNeightbours(Cell c){
+		if(!vecinas.ContainsKey(c))
+			searchNeighborhood(c);
+		return vecinas[c];
+	}
+
+
 	/***********
 	 * GO! Zone
 	 * **********/
 
 	public void setVisible(bool visible){
-		foreach(Cell cell in celdas)
+		foreach(Cell cell in this.transform.GetComponentsInChildren<Cell>())
 			cell.renderer.enabled = visible;
 	}
 
 	public void broadcastEvent(GameEvent ge){
-		foreach(Cell c in celdas){
+		foreach(Cell c in this.transform.GetComponentsInChildren<Cell>()){
 			foreach(Entity e in c.getEntities()){
 				e.eventHappened(ge);
 			}

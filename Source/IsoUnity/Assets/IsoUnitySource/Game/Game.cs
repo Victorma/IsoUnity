@@ -7,8 +7,11 @@ public class Game : MonoBehaviour {
 	Queue<Command> commands;
 	public GameObject look;
 
+	public static Game main;
+
 	// Use this for initialization
 	void Start () {
+		main  = this;
 		events = new Queue<GameEvent>();
 		commands = new Queue<Command>();
 		CameraManager.initialize();
@@ -16,6 +19,14 @@ public class Game : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if(Input.anyKeyDown){
+			GameEvent ge = new GameEvent();
+			ge.Name = "KeyPressed";
+
+			this.enqueueEvent(ge);
+		}
+
 		this.tick();
 	}
 

@@ -55,25 +55,27 @@ public class Entity : MonoBehaviour {
 	Transform my_transform;
 	// Update is called once per frame
 	void Update () {
-		if(my_transform ==null)
-			my_transform = this.transform;
+		//if(!Application.isPlaying){
+			if(my_transform ==null)
+				my_transform = this.transform;
 
 
-		Transform parent = my_transform.parent;
-		Transform actual = null;
-		if(position != null)
-			actual = position.transform;
+			Transform parent = my_transform.parent;
+			Transform actual = null;
+			if(position != null)
+				actual = position.transform;
 
-		if(parent != actual){
-			Cell probablyParent = parent.GetComponent<Cell>();
-			if(probablyParent!=null)
-				position = probablyParent;
-			else if(actual!=null)
-				my_transform.parent = actual;
+			if(parent != actual){
+				Cell probablyParent = parent.GetComponent<Cell>();
+				if(probablyParent!=null)
+					position = probablyParent;
+				else if(actual!=null)
+					my_transform.parent = actual;
 
-		}
+			}
 
-		if(this.position != null)
-			my_transform.position = position.transform.position + new Vector3(0, position.Height + my_transform.localScale.y/2f, 0);
+			if(this.position != null)
+				my_transform.position = position.transform.position + new Vector3(0, position.Height + my_transform.localScale.y/2f, 0);
+		//}
 	}
 }

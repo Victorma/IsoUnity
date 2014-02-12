@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEditor;
+using System.Collections;
 using System.Collections.Generic;
 
 public abstract class MapManager
@@ -13,11 +15,17 @@ public abstract class MapManager
 	
 	public abstract Map[] getMapList();
 	
-	public abstract Map createNewMap();
+	//public abstract Map createNewMap();
 	
 	public abstract void removeMap(Map map);
 
 	public abstract void setActiveMap(Map map);
+
+	[MenuItem("GameObject/Create Other/IsoUnity Map")]
+	public static void createMap(){
+		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultMapPrefab) as GameObject;
+		Selection.activeObject = go;    
+	}
 }
 
 public class MapManagerInstance : MapManager 
@@ -55,14 +63,7 @@ public class MapManagerInstance : MapManager
 	}
 	
 	
-	public override Map createNewMap()
-	{
-		/*Map newMap = new Map();
-		mapas.Add (newMap);*/
-		
-		return null;
-		
-	}
+
 	
 	public override void removeMap(Map map)
 	{
