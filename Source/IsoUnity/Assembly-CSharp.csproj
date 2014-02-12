@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\IsoUnitySource\Camera\CameraManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Entity.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\EntityScript.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />

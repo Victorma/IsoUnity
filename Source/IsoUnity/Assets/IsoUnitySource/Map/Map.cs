@@ -21,9 +21,6 @@ public class Map : MonoBehaviour
 	[SerializeField]
 	private Dictionary<Cell,Cell[]> vecinas;
 
-	private GameObject cellPrefab;
-	private GameObject decorationPrefab;
-
 	private Transform m_transform;
 
 	private GameObject ghost;
@@ -35,8 +32,6 @@ public class Map : MonoBehaviour
 	 * ******************/
 
 	public Map(){
-		cellPrefab = IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab;
-		decorationPrefab = IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab;
 		celdas = new List<Cell>();
 		entidades = new List<GameObject>();
 		vecinas = new Dictionary<Cell,Cell[]>();
@@ -46,16 +41,6 @@ public class Map : MonoBehaviour
 	/***********************
 	 * Getter Zone
 	 * ********************/
-
-
-	public GameObject CellPrefab {
-		get {
-			return cellPrefab;
-		}
-		set {
-			cellPrefab = value;
-		}
-	}
 	
 
 	public void setCellSize(float cellSize){
@@ -138,7 +123,7 @@ public class Map : MonoBehaviour
 		if(ghost == null || ghostType != 2){
 			removeGhost();
 			ghostType = 2;
-			ghost = GameObject.Instantiate(decorationPrefab) as GameObject;
+			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 			ghost.name = "GhostDer";
 			ghost.transform.parent = transform;
 			ghost.renderer.material.color = new Color(ghost.renderer.material.color.r,ghost.renderer.material.color.g,ghost.renderer.material.color.b,intensity);
@@ -179,7 +164,7 @@ public class Map : MonoBehaviour
 		checkTransform();
 
 		// Creating the gameObject
-		GameObject go = GameObject.Instantiate(cellPrefab) as GameObject;
+		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab) as GameObject;
 
 		// Getting the localPosition
 		position = m_transform.InverseTransformPoint(position);
@@ -302,6 +287,11 @@ public class Map : MonoBehaviour
 				e.eventHappened(ge);
 			}
 		}
+	}
+
+	public void tick(){
+		foreach(Cell c in this.transform.GetComponentsInChildren<Cell>())
+			c.tick();
 	}
 	
 	public void Start(){

@@ -309,12 +309,59 @@ public class Cell : MonoBehaviour {
 	}
 
 	public Entity[] getEntities(){
-		List<Entity> entities = new List<Entity>();
-		foreach(Face f in faces){
-			entities.AddRange(f.Entities);
-		}
-		return entities.ToArray();
+		return this.transform.GetComponentsInChildren<Entity>();
 	}
+
+	public void tick(){
+		foreach(Entity en in getEntities()){
+			en.tick();
+		}
+	}
+
+	/* #########################################################
+	 * 					ENTITIES THINGS
+	 * */
+	
+	[SerializeField]
+	private List<Entity> entities = new List<Entity>();
+	public List<Entity> Entities{get;set;}
+
+	public void addEntity(Entity en){
+		if(!entities.Contains(en)){
+			entities.Add(en);
+		}
+	}
+
+	public void removeEntity(Entity en){
+		if(entities.Contains(en))
+			entities.Remove (en);
+	}
+
+	/* #########################################################
+	 * 					DECORATION THINGS
+	 * */
+	
+	[SerializeField]
+	private List<Decoration> decorations;
+	
+	public void addDecoration(GameObject dec, IsoDecoration iDec, float x, float y, Cell father){
+		if (decorations == null)
+			decorations = new List<Decoration> ();
+		
+		Decoration dr = dec.GetComponent<Decoration> ();
+		dr.X = x; dr.Y = y; dr.Father = father; dr.IsoDec = iDec;
+		this.decorations.Add(dr);
+	}
+	
+	public void removeDecoration(Decoration d){
+		if (decorations == null)
+			decorations = new List<Decoration> ();
+		else {
+			if(decorations.Contains(d))
+				decorations.Remove(d);
+		}
+	}
+
 
 	// Use this for initialization
 	void Start () {

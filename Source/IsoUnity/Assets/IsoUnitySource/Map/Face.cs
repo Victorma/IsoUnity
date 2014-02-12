@@ -187,38 +187,7 @@ public class Face : ScriptableObject {
 	}
 
 
-	/* #########################################################
-	 * 					ENTITIES THINGS
-	 * */
 
-	[SerializeField]
-	private List<Entity> entities;
-	public List<Entity> Entities{get;set;}
-
-	/* #########################################################
-	 * 					DECORATION THINGS
-	 * */
-
-	[SerializeField]
-	private List<Decoration> decorations;
-
-	public void addDecoration(GameObject dec, IsoDecoration iDec, float x, float y, Cell father){
-		if (decorations == null)
-			decorations = new List<Decoration> ();
-
-		Decoration dr = dec.GetComponent<Decoration> ();
-		dr.X = x; dr.Y = y; dr.Father = father; dr.IsoDec = iDec;
-		this.decorations.Add(dr);
-	}
-
-	public void removeDecoration(Decoration d){
-		if (decorations == null)
-			decorations = new List<Decoration> ();
-		else {
-			if(decorations.Contains(d))
-				decorations.Remove(d);
-		}
-	}
 
 	// ################## Scriptable object methods #####################
 

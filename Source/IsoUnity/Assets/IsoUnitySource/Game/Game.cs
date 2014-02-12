@@ -5,11 +5,13 @@ public class Game : MonoBehaviour {
 
 	Queue<GameEvent> events;
 	Queue<Command> commands;
+	public GameObject look;
 
 	// Use this for initialization
 	void Start () {
 		events = new Queue<GameEvent>();
 		commands = new Queue<Command>();
+		CameraManager.initialize();
 	}
 	
 	// Update is called once per frame
@@ -27,6 +29,8 @@ public class Game : MonoBehaviour {
 
 	public void tick(){
 
+		CameraManager.lookTo(look);
+
 		while(events.Count>0)
 		{
 			GameEvent ge = events.Dequeue();
@@ -35,6 +39,10 @@ public class Game : MonoBehaviour {
 				commands.Dequeue().run();
 		}
 
+		foreach(Map map in MapManager.getInstance().getMapList())
+		{
+			map.tick();
+		}
 	}
 
 	private void broadcastEvent(GameEvent ge){

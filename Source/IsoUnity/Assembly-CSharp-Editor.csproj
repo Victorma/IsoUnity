@@ -50,7 +50,6 @@
      <Compile Include="Assets\Editor\Drawing.cs" />
      <Compile Include="Assets\Editor\IsoTextureEditor.cs" />
      <Compile Include="Assets\Editor\MapEditor.cs" />
-     <Compile Include="Assets\Editor\MapWindow.cs" />
      <Compile Include="Assets\Editor\TextureAssistant.cs" />
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>

@@ -136,7 +136,7 @@ public class MapEditor : Editor {
 
 		if(Tools.current != Tool.None)
 			modo = -1;
-		modo = GUI.Toolbar(tool,modo, new GUIContent[4]{new GUIContent("Nada"),new GUIContent("Editar"),new GUIContent("Pintar"), new GUIContent("Decorar")});
+		modo = GUI.Toolbar(tool,modo, new GUIContent[5]{new GUIContent("Nada"),new GUIContent("Editar"),new GUIContent("Pintar"), new GUIContent("Decorar"), new GUIContent("Entidades")});
 		if(modo != -1)
 			Tools.current = Tool.None;
 		if(modo != 1 && modo != 3)
@@ -370,9 +370,15 @@ public class MapEditor : Editor {
 			//isoTexture = (IsoTexture)EditorGUILayout.ObjectField(isoTexture,typeof(IsoTexture),true);
 
 			}break;
+
+			case 4: {
+				colocar = EditorGUILayout.ObjectField(colocar, typeof(Entity),true) as Entity;
+
+			}break;
 		}
 	}
-	
+
+	Entity colocar;
 	GameObject selected;
 	GameObject der;
 	bool creating = false;
@@ -611,7 +617,7 @@ public class MapEditor : Editor {
 			if(selected != null){
 				
 				Cell cs = selected.GetComponent<Cell>();
-				Face f = cs.getFaceByPoint(info.point);
+				Face f =  cs.getFaceByPoint(info.point);
 
 				//der.transform.localPosition.x = info.transform.localPosition.x;
 				//der.transform.localPosition.y = cs.Height;
@@ -664,6 +670,62 @@ public class MapEditor : Editor {
 					Handles.DrawSolidRectangleWithOutline(puntos, color, Color.white);
 				}
 			}
+		}
+
+		if(modo == 4){
+			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+			RaycastHit info = new RaycastHit();
+			
+			Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+			if(Physics.Raycast(ray, out info/*, LayerMask.NameToLayer("Cells Layer")*/)){ //TODO Arreglar esto porque al parecer la distancia no funciona correctamente
+				if(info.collider.transform.IsChildOf(this.map.transform))
+					selected = info.collider.gameObject;
+				else
+					selected = null;
+			}else
+				selected = null;
+
+			bool moveEntity = false;
+			if(Event.current.isMouse){
+				if(Event.current.button == 0)
+				{
+					if(Event.current.type == EventType.MouseDown){
+						moveEntity = true;
+					}
+				}
+			}
+
+			if(selected != null){
+
+				Cell cs = selected.GetComponent<Cell>();
+				Face f = null;
+
+				if(cs!=null)
+					f = cs.getFaceByPoint(info.point);
+				
+				if(f!=null){
+
+					if(moveEntity)
+						colocar.Position = cs;
+
+					Vector3[] vertex = f.SharedVertex;
+					int[] indexes = f.VertexIndex;
+					
+					Vector3[] puntos = new Vector3[4];
+					for(int i = 0; i< indexes.Length; i++){
+						puntos[i] = cs.transform.TransformPoint(vertex[indexes[i]]);
+					}
+					
+					if(indexes.Length == 3)
+						puntos[3] = cs.transform.TransformPoint(vertex[indexes[2]]);
+					
+					Color color = Color.yellow;
+					if(Event.current.shift)	color = Color.blue;
+					
+					Handles.DrawSolidRectangleWithOutline(puntos, color, Color.white);
+				}
+			}
+
 		}
 
 		sceneView.Repaint();

@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(Cell))]
+//[CustomEditor(typeof(Cell))]
 public class CellEditor : Editor {
 
 	// Targets
