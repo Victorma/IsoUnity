@@ -32,6 +32,28 @@ public class Cell : MonoBehaviour {
 	}
 
 	[SerializeField]
+	private float walkingHeight;
+	public float WalkingHeight {
+		get {
+
+			float extra = 0;
+			if(cellTop != CellTopType.flat){
+				extra = (cellTop == CellTopType.midPlane)?0.25f:0.5f;
+			}
+
+			return height + walkingHeight + extra;
+		}
+		set {
+			float extra = 0;
+			if(cellTop != CellTopType.flat){
+				extra = (cellTop == CellTopType.midPlane)?0.25f:0.5f;
+			}
+
+			walkingHeight = value - height - extra;
+		}
+	}
+
+	[SerializeField]
 	private Map map;
 
 	public Map Map{
@@ -69,6 +91,21 @@ public class Cell : MonoBehaviour {
 			CellTopType lastTop = cellTop;
 			cellTop = value;
 			if(cellTop != lastTop)
+				regenerateMesh();
+		}
+	}
+
+	[SerializeField]
+	private int cellTopRotation = 0;
+	
+	public int CellTopRotation {
+		get {
+			return cellTopRotation;
+		}
+		set {
+			int lastRotation = cellTopRotation;
+			cellTopRotation = value%4;
+			if(cellTopRotation != lastRotation)
 				regenerateMesh();
 		}
 	}
@@ -201,16 +238,25 @@ public class Cell : MonoBehaviour {
 		if(cellTop != CellTopType.flat){
 			float aumHeight = (cellTop == CellTopType.midPlane)?0.5f:1f;
 
-			vertices[numVert] = vertices[numVert-3] + vectorHeight*aumHeight;
-			vertices[numVert+1] = vertices[numVert-2] + vectorHeight*aumHeight;
+
+			int topBotLeft = numVert - (4 - (CellTopRotation + 0)%4), 
+				topBotRight = numVert - (4 - (CellTopRotation + 1)%4),
+				topTopRight = numVert - (4 - (CellTopRotation + 2)%4),
+				topTopLeft = numVert - (4 - (CellTopRotation + 3)%4);
+
+			vertices[numVert] = vertices[topBotRight] + vectorHeight*aumHeight;
+			vertices[numVert+1] = vertices[topTopRight] + vectorHeight*aumHeight;
 
 			//NEW TOP FACE
-			vertTopLeft = numVert-4;		verTopRight = numVert;
-			vertBotRight = numVert+1;		vertBotLeft = numVert-1;
+			int[] topFaceIndexes = new int[4]{topTopLeft,numVert+1,numVert,topBotLeft};
+			vertBotLeft = topFaceIndexes[cellTopRotation];				
+			vertTopLeft = topFaceIndexes[(3+cellTopRotation)%4];
+			verTopRight = topFaceIndexes[(2+cellTopRotation)%4];		
+			vertBotRight = topFaceIndexes[(1+cellTopRotation)%4];
 
 			// Lado Derecho
 			Face f = ScriptableObject.CreateInstance<Face>(); f.FinalVertexList = finalVertexList;	f.SharedVertex = vertices;	
-			f.VertexIndex = new int[3] {numVert , numVert-4, numVert-3}; f.regenerateTriangles();
+			f.VertexIndex = new int[3] {numVert , topBotLeft, topBotRight}; f.regenerateTriangles();
 			if(faces != null){
 				if(faces.Length > tmpFaces.Count && tmpFaces.Count != faces.Length-1)
 				{ f.Texture = faces[tmpFaces.Count].Texture; f.TextureMapping = faces[tmpFaces.Count].TextureMapping; }
@@ -221,7 +267,7 @@ public class Cell : MonoBehaviour {
 			
 			//Lado Izquierdo
 			f = ScriptableObject.CreateInstance<Face>(); f.FinalVertexList = finalVertexList;	f.SharedVertex = vertices;	
-			f.VertexIndex = new int[3] {numVert+1, numVert-2, numVert-1}; f.regenerateTriangles();
+			f.VertexIndex = new int[3] {numVert+1, topTopRight, topTopLeft}; f.regenerateTriangles();
 			if(faces != null){
 				if(faces.Length > tmpFaces.Count && tmpFaces.Count != faces.Length-1)
 				{ f.Texture = faces[tmpFaces.Count].Texture; f.TextureMapping = faces[tmpFaces.Count].TextureMapping; }
@@ -232,7 +278,7 @@ public class Cell : MonoBehaviour {
 			
 			//Parte de atras
 			f = ScriptableObject.CreateInstance<Face>(); f.FinalVertexList = finalVertexList;	f.SharedVertex = vertices;	
-			f.VertexIndex = new int[4] {numVert-3, numVert-2, numVert+1, numVert}; f.regenerateTriangles();
+			f.VertexIndex = new int[4] {topBotRight, topTopRight, numVert+1, numVert}; f.regenerateTriangles();
 			if(faces != null && faces.Length > tmpFaces.Count && tmpFaces.Count != faces.Length-1)
 			if(faces != null){
 				if(faces.Length > tmpFaces.Count && tmpFaces.Count != faces.Length-1)

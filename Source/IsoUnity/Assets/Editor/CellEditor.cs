@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 
 [CanEditMultipleObjects]
-//[CustomEditor(typeof(Cell))]
+[CustomEditor(typeof(Cell))]
 public class CellEditor : Editor {
 
 	// Targets
@@ -43,7 +43,9 @@ public class CellEditor : Editor {
 	void OnDestroy(){
 		SceneView.onSceneGUIDelegate -= this.OnSceneGUI2;
 	}
-	
+	[SerializeField]
+	Cell[] vec;
+
 	//int selectedTexture;
 	public override void OnInspectorGUI(){
 
@@ -53,6 +55,7 @@ public class CellEditor : Editor {
 
 		SerializedProperty height = serializedObject.FindProperty("height");
 		SerializedProperty cellTopType = serializedObject.FindProperty("cellTop");
+		SerializedProperty cellTopRotation = serializedObject.FindProperty("cellTopRotation");
 
 		heightValue = height.floatValue;
 		EditorGUI.showMixedValue = height.hasMultipleDifferentValues;
@@ -70,11 +73,21 @@ public class CellEditor : Editor {
 		EditorGUI.showMixedValue = cellTopType.hasMultipleDifferentValues;
 		topType = (CellTopType)EditorGUILayout.EnumPopup("Top", topType);
 
-
 		GUIStyle s = new GUIStyle();
 		s.padding = new RectOffset(5,5,5,5);
+
+		int topRotation = cellTopRotation.intValue;
+
+		GUIContent topRotationText = new GUIContent("Top Rotation: " + ((cellTopRotation.hasMultipleDifferentValues)?"Mixed":""+topRotation*90));
+		if (GUI.Button (GUILayoutUtility.GetRect(topRotationText, s), topRotationText)) topRotation +=1;
+
+
 		GUIContent select = new GUIContent("Select Map");
 		if (GUI.Button (GUILayoutUtility.GetRect(select, s), select)) selectMap();
+
+		vec = cell[0].Map.getNeightbours(cell[0]);
+		foreach(Cell ce in vec)
+			EditorGUILayout.ObjectField(ce,typeof(Cell),true);
 
 		if(EditorGUI.EndChangeCheck())
 		{
@@ -87,6 +100,12 @@ public class CellEditor : Editor {
 				foreach(Cell c in cell)
 					c.CellTop = topType;
 				cellTopType = serializedObject.FindProperty("cellTop");
+			}
+
+			if(topRotation != cellTopRotation.intValue){
+				foreach(Cell c in cell)
+					c.CellTopRotation = topRotation;
+				cellTopRotation = serializedObject.FindProperty("cellTopRotation");
 			}
 		}
 

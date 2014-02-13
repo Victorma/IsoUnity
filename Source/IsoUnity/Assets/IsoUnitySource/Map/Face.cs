@@ -128,9 +128,30 @@ public class Face : ScriptableObject {
 				uvs[cornerTopRight] -= new Vector2(0, textureRect.height * (textureMapping.getOppositeYCorner() / (textureMapping.getTexture().height*1.0f)));
 				uvs[cornerTopLeft] += new Vector2(textureRect.width * (textureMapping.getXCorner() / (textureMapping.getTexture().width*1.0f)),0); 
 			}
-		}else{
-			for(int i = 0; i<vertexIndex.Length; i++)
-				uvs[i] = new Vector2(0,0);
+		}else if(vertexIndex.Length == 3) {
+			Vector2 topRight = new Vector2(textureRect.x + textureRect.width, textureRect.y + textureRect.height);
+			Vector2 botLeft = new Vector2(textureRect.x, textureRect.y);
+			Vector2 botRight = new Vector2(textureRect.x + textureRect.width, textureRect.y);
+			
+			int cornerBotLeft 	= 2,
+				cornerBotRight 	= 1,
+				cornerTopRight	= 0;
+			
+			if(textureMapping != null){
+				cornerBotLeft = (cornerBotLeft + textureMapping.Rotation)%3;
+				cornerBotRight = (cornerBotRight + textureMapping.Rotation)%3;
+				cornerTopRight = (cornerTopRight + textureMapping.Rotation)%3;
+			}
+			
+			uvs[cornerBotLeft] = botLeft;
+			uvs[cornerBotRight] = botRight;
+			uvs[cornerTopRight] = topRight;
+			
+			if(textureMapping != null){
+				uvs[cornerBotLeft] += new Vector2(0,textureRect.height * (1f - (textureMapping.getYCorner() / (textureMapping.getTexture().height*1.0f))));
+				uvs[cornerBotRight] -= new Vector2(textureRect.width * (1f - (textureMapping.getOppositeXCorner() / (textureMapping.getTexture().width*1.0f))), 0);
+				uvs[cornerTopRight] -= new Vector2(0, textureRect.height * (textureMapping.getOppositeYCorner() / (textureMapping.getTexture().height*1.0f)));
+			}
 		}
 	}
 

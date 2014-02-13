@@ -5,6 +5,7 @@ using System.Collections;
 public class Entity : MonoBehaviour {
 
 	private bool canBlockMe;
+	[SerializeField]
 	private Cell position;
 	public Cell Position {
 		get{
@@ -37,6 +38,9 @@ public class Entity : MonoBehaviour {
 
 	public void tick(){
 		this.eventHappened(null);
+
+		//if(this.position != null)
+			//my_transform.position = position.transform.position + new Vector3(0, position.Height + my_transform.localScale.y/2f, 0);
 	}
 
 	public void eventHappened(GameEvent ge){
@@ -74,8 +78,9 @@ public class Entity : MonoBehaviour {
 
 			}
 
-			if(this.position != null)
-				my_transform.position = position.transform.position + new Vector3(0, position.Height + my_transform.localScale.y/2f, 0);
+			if(this.position != null){
+				my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
+			}
 		//}
 	}
 }
