@@ -22,9 +22,20 @@ public class Game : MonoBehaviour {
 
 		if(Input.anyKeyDown){
 			GameEvent ge = new GameEvent();
-			ge.Name = "KeyPressed";
+			ge.Name = "Controller";
+			float vertical = Input.GetAxisRaw("Vertical");
+			float horizontal = Input.GetAxisRaw("Horizontal");
+			if(vertical != 0){
+				if(vertical>0) ge.Args = new object[]{"up"};
+				else ge.Args = new object[]{"down"};
+			}else if(horizontal != 0){
+				if(horizontal>0) ge.Args = new object[]{"right"};
+				else ge.Args = new object[]{"left"};
+			}
+			//ge.Args = new object[]{ 
 
-			this.enqueueEvent(ge);
+			if(ge.Args !=null)
+				this.enqueueEvent(ge);
 		}
 
 		this.tick();

@@ -9,7 +9,7 @@ public class Player : EntityScript {
 		//Debug.Log((guapo)?"Pero que guapo que soy": "Nah soy feucho");
 
 		if(ge != null){
-			if(ge.Name.Equals("KeyPressed")){
+			if(ge.Name.Equals("Controller")){
 				/*Debug.Log("Hola don pepito");
 
 				Game g = GameObject.FindGameObjectWithTag("Game").GetComponent<Game>();
@@ -19,16 +19,17 @@ public class Player : EntityScript {
 				newGe.Args = new object[1]{this};
 				g.enqueueEvent(newGe);*/
 
-				Cell destino =null;
-				do{
+				int to = 0;
+				switch(((string)ge.Args[0]).ToLower()){
+					case "up": to = 1; break;
+					case "down": to = 3; break;
+					case "left": to = 0; break;
+					case "right": to = 2; break;
+				}
 
-					destino = entity.Position.Map.getNeightbours(entity.Position)[(1+giro)%4];
-					if(destino == null)
-						giro +=1;
-				}while(destino == null && giro < 4);
-				giro = giro%4;
-
-				Game.main.enqueueCommand(new CommandMove(entity, destino));
+				Cell destino = entity.Position.Map.getNeightbours(entity.Position)[to];
+				if(destino != null)
+					Game.main.enqueueCommand(new CommandMove(entity, destino));
 
 			}
 		}
@@ -44,13 +45,24 @@ public class Player : EntityScript {
 		}
 
 		public void run(){
+			Entity.MovementType type = Entity.MovementType.Lineal;
+			if(e.Position.WalkingHeight != d.WalkingHeight)
+				type = Entity.MovementType.Parabolic;
 
 
-			e.Position = d;
-			GameEvent ge = new GameEvent();
+			e.moveTo(d,type);
+			/*GameEvent ge = new GameEvent();
 			ge.Name = "Player moved";
 			ge.Args = new object[1]{e};
-			Game.main.enqueueEvent(ge);
+			Game.main.enqueueEvent(ge);*/
 		}
+	}
+
+	public override void tick(){
+		
+	}
+	
+	public override void update(){
+		
 	}
 }

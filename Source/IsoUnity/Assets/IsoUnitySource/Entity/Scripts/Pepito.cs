@@ -18,4 +18,12 @@ public class Pepito : EntityScript {
 
 		}
 	}
+
+	public override void tick(){
+
+	}
+
+	public override void update(){
+
+	}
 }

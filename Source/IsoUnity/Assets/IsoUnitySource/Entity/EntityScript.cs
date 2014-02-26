@@ -7,12 +7,9 @@ public abstract class EntityScript : MonoBehaviour {
 	void Start () {
 		this.entity = GetComponent<Entity>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	//Abstract Methods
 	public abstract void eventHappened(GameEvent ge);
+	public abstract void tick();
+	public abstract void update();
 }
