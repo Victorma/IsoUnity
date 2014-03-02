@@ -259,7 +259,8 @@ public class Cell : MonoBehaviour {
 			f.VertexIndex = new int[3] {numVert , topBotLeft, topBotRight}; f.regenerateTriangles();
 			if(faces != null){
 				if(faces.Length > tmpFaces.Count && tmpFaces.Count != faces.Length-1)
-				{ f.Texture = faces[tmpFaces.Count].Texture; f.TextureMapping = faces[tmpFaces.Count].TextureMapping; }
+				{ f.Texture = faces[tmpFaces.Count].Texture; 
+					f.TextureMapping = faces[tmpFaces.Count].TextureMapping; }
 				else if(tmpFaces.Count-4 >= 0)
 				{ f.Texture = tmpFaces[tmpFaces.Count-4].Texture; f.TextureMapping = tmpFaces[tmpFaces.Count-4].TextureMapping; }
 			}
@@ -292,7 +293,9 @@ public class Cell : MonoBehaviour {
 		//TOP FACE GENERATOR
 		Face topFace = ScriptableObject.CreateInstance<Face>(); topFace.FinalVertexList = finalVertexList;	topFace.SharedVertex = vertices;	
 		topFace.VertexIndex = new int[4] {vertBotLeft, vertTopLeft, verTopRight, vertBotRight};	topFace.regenerateTriangles();
-		if(faces != null && faces.Length >=1){ topFace.Texture = faces[faces.Length-1].Texture; topFace.TextureMapping = faces[faces.Length-1].TextureMapping; }
+		if(faces != null && faces.Length >=1){ 
+			topFace.Texture = faces[faces.Length-1].Texture; 
+			topFace.TextureMapping = faces[faces.Length-1].TextureMapping; }
 		tmpFaces.Add (topFace);		
 
 		faces = tmpFaces.ToArray();//..ToArray(typeof(Face)) as Face[];
@@ -348,7 +351,7 @@ public class Cell : MonoBehaviour {
 
 	public bool isAccesibleBy(Entity entity){
 		foreach(Entity e in getEntities()){
-			//if(entity.canEnter(e))
+			if(entity.letPass(e))
 				return true;
 		}
 		return false;

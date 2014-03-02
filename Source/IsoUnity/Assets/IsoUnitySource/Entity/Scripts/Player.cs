@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Player : EntityScript {
-	public bool guapo;
+	public float maxJumpSize;
 	private int giro = 0;
 	public override void eventHappened (GameEvent ge)
 	{
@@ -28,8 +28,9 @@ public class Player : EntityScript {
 				}
 
 				Cell destino = entity.Position.Map.getNeightbours(entity.Position)[to];
-				if(destino != null)
-					Game.main.enqueueCommand(new CommandMove(entity, destino));
+				if(entity.canMoveTo(destino))
+					if(destino != null && Mathf.Abs(entity.Position.WalkingHeight - destino.WalkingHeight) <=maxJumpSize)
+						Game.main.enqueueCommand(new CommandMove(entity, destino));
 
 			}
 		}

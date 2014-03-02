@@ -4,9 +4,9 @@ using System.Collections.Generic;
 [ExecuteInEditMode]
 public class Entity : MonoBehaviour {
 
-	private bool canBlockMe;
-	private bool blackWhite;
-	private List<EntityScript> list;
+	public bool canBlockMe = true;
+	public bool isBlackList = true;
+	public List<EntityScript> list;
 
 	[SerializeField]
 	private Cell position;
@@ -23,24 +23,20 @@ public class Entity : MonoBehaviour {
 	public bool canMoveTo(Cell c){
 		//canAccedTo(c);
 		if(canBlockMe)
-			entitiesLetMePass(c);
+			return c.isAccesibleBy(this);
 
 		//canGoThroughEntities(c);
-		return false;
+		return true;
 	}
 
-	private bool entitiesLetMePass(Cell c){
-		//foreach(Entity e in c.getEntities())
-
-
-		return false;
-	}
-
-	private bool letPass(Entity e){
-		/*foreach(Entity en in list){
-			en.
-		}*/
-		return false;
+	public bool letPass(Entity e){
+		foreach(EntityScript en in list){
+			foreach(EntityScript hisEn in e.GetComponents<EntityScript>()){
+				if(hisEn == en)
+					return !isBlackList;
+			}
+		}
+		return isBlackList;
 	}
 
 	public bool canGoThrough(Entity e){
@@ -129,7 +125,6 @@ public class Entity : MonoBehaviour {
 
 	public void moveTo(Cell c, MovementType movementType){
 		if(!isMoving){
-			Debug.Log("Ok me muevo!");
 			if(my_transform == null)
 				my_transform = this.transform;
 			destiny = c;
