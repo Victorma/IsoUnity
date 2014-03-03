@@ -114,40 +114,33 @@ public class Map : MonoBehaviour
 		cell.transform.localPosition = new Vector3((coords.x+0.5f) * cellSize, 0, (coords.y+0.5f) * cellSize);
 	}
 
-	public void ghostDecoration(Vector3 position, float intensity, IsoDecoration dec, Boolean centered){
+	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
 		checkTransform();
 		
 		if(ghost == null || ghostType != 2){
 			removeGhost();
 			ghostType = 2;
-			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
-			ghost.name = "GhostDer";
-			ghost.transform.parent = transform;
-			ghost.renderer.material.color = new Color(ghost.renderer.material.color.r,ghost.renderer.material.color.g,ghost.renderer.material.color.b,intensity);
-			ghost.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+			ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
+		}else{
+			if (ghost.GetComponent<Decoration> ().Father != cs) {
+				removeGhost();
+				ghostType = 2;
+				ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
+			}
 		}
-		
-		// Getting the localPosition
-		position = m_transform.InverseTransformPoint(position);
-		
 		Decoration der = ghost.GetComponent<Decoration>();
 		der.IsoDec = dec;
 		
-		//La refresco
-		if (centered) {
-			Vector2 coords = getCoords (position);
-			der.setPosition (new Vector3 ((coords.x + 0.5f) * cellSize, position.y, (coords.y + 0.5f) * cellSize));
-		} else {
-			der.setPosition (position);
-		}
-
-		//La refresco
+		der.colocate(position,angle,parallel,centered);
 
 		der.refresh ();
 	}
 
 	public void removeGhost(){
 		if (ghost != null) {
+			if(ghostType==2){
+				ghost.GetComponent<Decoration>().Father.removeGhost();
+			}
 			GameObject.DestroyImmediate (ghost);
 			ghostType = 0;
 		}

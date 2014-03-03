@@ -23,31 +23,13 @@ public class Decoration : MonoBehaviour{
 		set { father = value; }
 	}
 
-	private float x;
-	
-	public float X {
-		get {return x;}
-		set {x = value;}
+	private Vector3 Position;
+
+	private int Angle {
+		get { return Angle;}
+		set { Angle = value; }
 	}
 
-	private float y;
-	
-	public float Y {
-		get {return y;}
-		set {y = value;}
-	}
-	
-	// The face where the decoration object is represented
-	private Face decorationFace;
-	
-	public Face DecorationFace {
-		get {
-			return decorationFace;
-		}
-		set {
-			decorationFace = value;
-		}
-	}
 
 	/** ********************
 	 * END ATRIBS
@@ -63,17 +45,64 @@ public class Decoration : MonoBehaviour{
 	}
 
 	private void updateTextures(){
-		float scale = this.isoDec.getTexture().width / (IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width*1.0f);
+		float scale = Mathf.Sqrt (2f) / IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width;
 
-		// TODO MULTIPLICAR POR EL ANCHO DE LA CELDA
-		//this.transform.localScale = (new Vector3 (scale,scale, 1);
-		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale /10,isoDec.getTexture ().height * scale/10,1);
+		/*float angulo = Mathf.Rad2Deg * Mathf.Acos(IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale.height / (IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width*1f));
+		angulo = 90 - Mathf.Abs(angulo);*/
+
+		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale,
+		                                        (isoDec.getTexture().height * scale)/*/(Mathf.Cos(45 * Mathf.Deg2Rad))*/,1);
 		this.renderer.material.SetTexture("_MainTex",isoDec.getTexture());
 	}
 
-	public void setPosition(Vector3 v){
+	public void colocate(Vector3 v, int angle, bool parallel, bool centered){
+		
+		this.transform.parent = this.father.transform;
+		Vector3 invfather = this.father.transform.InverseTransformPoint (v);
+
+
+
+		if (centered)
+			switch (angle) {
+				case 0:{
+					this.transform.localPosition = new Vector3(-0.5f,this.transform.localScale.y,-0.5f);	
+					break;}
+				case 1:{
+				this.transform.localPosition = new Vector3(this.transform.localScale.x,this.transform.localScale.y,-0.5f);
+					break;}
+				case 2:{
+				this.transform.localPosition = new Vector3(this.transform.localScale.x,this.transform.localScale.y,-0.5f);
+					break;}
+			}
+		else
+			this.transform.localPosition = invfather;
+
+		setRotation (angle, parallel);
+
+	}
+
+	public void setRotation(int angle, bool parallel){
 		//x = v.y - father.transform.localPosition.y;
-		this.transform.localPosition = new Vector3(v.x, v.y+(this.transform.localScale.y/2), v.z);
+		float x = 0, y = 45, z = 0;
+
+		if (parallel) {
+			switch (angle) {
+			case 0:{z=0;	y=45;	x=90;	break;}
+			case 1:{z=270;	y=0;	break;}
+			case 2:{z=90;	y=90;	break;}
+			}
+		}else{
+			switch (angle) {
+			case 0:{z=0;
+				break;}
+			case 1:{z=270;break;}
+			case 2:{z=90;break;}
+			}
+		}
+
+
+		this.transform.localRotation = new Quaternion ();
+		this.transform.Rotate (x, y, z);
 	}
 }
 

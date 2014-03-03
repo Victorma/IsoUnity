@@ -1,19 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Cell.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Decoration.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="37" Column="5" />
-      <File FileName="Assets\IsoUnitySource\Map\Cell.cs" Line="368" Column="3" />
-      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="37" Column="3" />
-      <File FileName="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\EntityScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\CellEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\TextureAssistant.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Map\Face.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Game\Command.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Map.cs" Line="116" Column="2" />
+      <File FileName="Assets\IsoUnitySource\Map\Cell.cs" Line="419" Column="32" />
+      <File FileName="Assets\Editor\MapEditor.cs" Line="382" Column="56" />
+      <File FileName="Assets\IsoUnitySource\Map\Decoration.cs" Line="71" Column="76" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

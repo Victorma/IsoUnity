@@ -71,7 +71,6 @@ public class Cell : MonoBehaviour {
 		}
 	}
 
-
 	[SerializeField]
 	private float cellWidth = 1;
 	public void setCellWidth(float cellWidth){
@@ -130,6 +129,10 @@ public class Cell : MonoBehaviour {
 	private Mesh auxMesh;
 	[SerializeField]
 	private Face[] faces;
+	[SerializeField]
+	private List<GameObject> decorations;
+	[SerializeField]
+	private GameObject ghost;
 
 	/** ********************
 	 * END ATRIBS
@@ -389,28 +392,55 @@ public class Cell : MonoBehaviour {
 	/* #########################################################
 	 * 					DECORATION THINGS
 	 * */
-	
-	[SerializeField]
-	private List<Decoration> decorations;
-	
-	public void addDecoration(GameObject dec, IsoDecoration iDec, float x, float y, Cell father){
+
+	public GameObject addGhost(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
+		if (this.ghost == null) {
+			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
+			ghost.name = "GhostDer";
+			ghost.renderer.material.color = new Color(ghost.renderer.material.color.r,ghost.renderer.material.color.g,ghost.renderer.material.color.b,intensity);
+			ghost.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+			ghost.GetComponent<Decoration>().Father = this;
+		}
+		Decoration der = ghost.GetComponent<Decoration>();
+		der.IsoDec = dec;
+
+		der.colocate(position,angle,parallel,centered);
+
+		der.refresh ();
+		return this.ghost;
+	}
+
+	public void removeGhost (){
+		if (ghost != null)
+			GameObject.DestroyImmediate (ghost);
+	}
+
+
+	public void addDecoration(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec){
 		if (decorations == null)
-			decorations = new List<Decoration> ();
-		
-		Decoration dr = dec.GetComponent<Decoration> ();
-		dr.X = x; dr.Y = y; dr.Father = father; dr.IsoDec = iDec;
-		this.decorations.Add(dr);
+			decorations = new List<GameObject> ();
+
+		GameObject newdecoration = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
+
+		newdecoration.name = "Decoration (clone)";
+		newdecoration.GetComponent<Decoration>().Father = this;
+		newdecoration.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+		Decoration der = newdecoration.GetComponent<Decoration>();
+		der.IsoDec = dec;
+		der.colocate(position,angle,parallel,centered);
+
+		der.refresh ();
+		this.decorations.Add (newdecoration);
 	}
 	
 	public void removeDecoration(Decoration d){
-		if (decorations == null)
+		/*if (decorations == null)
 			decorations = new List<Decoration> ();
 		else {
 			if(decorations.Contains(d))
 				decorations.Remove(d);
-		}
+		}*/
 	}
-
 
 	// Use this for initialization
 	void Start () {

@@ -112,6 +112,7 @@ public class MapEditor : Editor {
 	
 	Texture2D paintingTexture;
 	Texture2D paintingDecoration;
+	bool parallelDecoration;
 	int isoTextureIndex;
 	int isoDecorationIndex;
 	IsoTexture paintingIsoTexture;
@@ -291,31 +292,11 @@ public class MapEditor : Editor {
 			EditorGUILayout.Space();
 			
 			//GUILayout.BeginArea(new Rect(0,0,0,100), "Texture: ");
-			
+			parallelDecoration = EditorGUILayout.Toggle("Draw Parallel",parallelDecoration);
+			EditorGUILayout.Space();
+
 			EditorGUILayout.PrefixLabel("Decoration Objects",GUIStyle.none, titleStyle);
 
-			EditorGUILayout.BeginHorizontal();
-			
-			paintingDecoration = UnityEditor.EditorGUILayout.ObjectField("Decoration", paintingDecoration, typeof(Texture2D), false, GUILayout.MaxHeight(16)) as Texture2D;
-			
-			if(paintingDecoration != null){
-				IsoDecoration[] textures = DecorationManager.getInstance ().textureList (paintingDecoration);
-				List<string> texts = new List<string> ();
-				
-				//paintingIsoTexture = textures.Length;
-				foreach (IsoDecoration it in textures)
-					texts.Add (it.name);
-				
-				texts.Add("None");
-				//TODO CAMBIOS EN LA LISTA DEBERIAN DESELEECIONAR EL ELEMENTO ACTUAL SI ESTE YA NO ESTA EN LA LISTA
-				isoDecorationIndex = UnityEditor.EditorGUILayout.Popup(isoDecorationIndex,texts.ToArray());
-				if(isoDecorationIndex == textures.Length)
-					paintingIsoDecoration = null;
-				else
-					paintingIsoDecoration = textures[isoDecorationIndex];
-			}
-			EditorGUILayout.EndHorizontal();
-			
 			GUI.backgroundColor = Color.Lerp(Color.black, Color.gray, 0.5f);
 			
 			EditorGUILayout.BeginVertical("Box");
@@ -343,7 +324,6 @@ public class MapEditor : Editor {
 				if (e.isMouse && border.Contains(e.mousePosition)) 
 				{ 
 					if(e.type == EventType.mouseDown){
-						paintingDecoration = it.getTexture();
 						paintingIsoDecoration = it;
 						this.Repaint();
 					}
@@ -357,6 +337,7 @@ public class MapEditor : Editor {
 				if(currentTexture == maxTextures){EditorGUILayout.EndHorizontal(); currentTexture = 0;}
 				
 			}
+
 			if(currentTexture != 0){
 				GUILayoutUtility.GetRect((maxTextures - currentTexture)*anchoTextura,anchoTextura);
 				EditorGUILayout.EndHorizontal();
@@ -558,9 +539,6 @@ public class MapEditor : Editor {
 		}
 
 		if(modo == 3){
-			/*for(int i = 0; i< map.transform.childCount; i++)
-				EditorUtility.SetSelectedWireframeHidden(map.transform.GetChild(i).collider., true);*/
-			
 			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 			RaycastHit info = new RaycastHit();
 			
@@ -575,7 +553,6 @@ public class MapEditor : Editor {
 
 
 			bool decorateLater = false;
-			bool backupDecoration = false;
 			
 			/** 
 			 * Mouse Events of painting mode 
@@ -584,27 +561,11 @@ public class MapEditor : Editor {
 			if(Event.current.isMouse){
 				if(Event.current.button == 0)
 				{
-					if(Event.current.shift){
-						map.ghostDecoration(info.point, 0.5f, paintingIsoDecoration, true);
-						if(Event.current.type == EventType.mouseDown){
-							collectTexture = true;
-						}if(collectTexture && Event.current.type != EventType.MouseUp){
-							backupDecoration = true;
-						}else{
-							collectTexture = false;
-						}
-					}
-					else {
-						map.ghostDecoration(info.point, 0.5f, paintingIsoDecoration, false);
-						if(Event.current.type == EventType.MouseDown){
-							painting = true;
-							//paintLater = true;
-						}else if(Event.current.type == EventType.MouseUp){
-							painting = false;
-						}else{
-							if(painting){
-							//	paintLater = true;
-							}
+					if(selected!=null){
+						Cell cs = selected.GetComponent<Cell>();
+
+						if(Event.current.type == EventType.MouseUp){
+							decorateLater = true;
 						}
 					}
 				}
@@ -617,36 +578,9 @@ public class MapEditor : Editor {
 			if(selected != null){
 				
 				Cell cs = selected.GetComponent<Cell>();
-				Face f =  cs.getFaceByPoint(info.point);
+				Face f = cs.getFaceByPoint(info.point);
 
-				//der.transform.localPosition.x = info.transform.localPosition.x;
-				//der.transform.localPosition.y = cs.Height;
-				//der.transform.localPosition.z = info.transform.localPosition.z;
-				
-				if(f!=null){
-					if(decorateLater){
-						if(paintingDecoration != null){
-							f.Texture = paintingTexture;
-							f.TextureMapping = paintingIsoTexture;
-							cs.refresh();
-						}
-					}
-					
-					if(backupDecoration){
-						this.paintingDecoration = f.Texture;
-						
-						if(paintingDecoration != null){
-							IsoTexture[] isoTextures = TextureManager.getInstance().textureList(paintingTexture);
-							if(f.TextureMapping != null){
-								int texture = isoTextures.Length;
-								for(int i = 0; i< isoTextures.Length; i++)
-								if(f.TextureMapping == isoTextures[i]){texture = i; break;}
-								this.isoTextureIndex = texture;
-							}else
-								this.isoTextureIndex = isoTextures.Length;
-						}
-						this.Repaint();
-					}
+				if(cs!=null){
 					
 					//Debug.Log("He seleccionado!" + selected.name);
 					Vector3 position = selected.transform.position;
@@ -656,18 +590,40 @@ public class MapEditor : Editor {
 					Vector3[] vertex = f.SharedVertex;
 					int[] indexes = f.VertexIndex;
 					
-					Vector3[] puntos = new Vector3[4];
+					Vector3[] puntos = new Vector3[5];
 					for(int i = 0; i< indexes.Length; i++){
 						puntos[i] = cs.transform.TransformPoint(vertex[indexes[i]]);
 					}
+					puntos[4] = puntos[0];
 					
 					if(indexes.Length == 3)
 						puntos[3] = cs.transform.TransformPoint(vertex[indexes[2]]);
-					
-					Color color = Color.yellow;
-					if(Event.current.shift)	color = Color.blue;
-					
-					Handles.DrawSolidRectangleWithOutline(puntos, color, Color.white);
+
+					Handles.DrawPolyLine(puntos);
+
+					Vector2 directions = new Vector2(puntos[1].x-puntos[0].x, puntos[2].y-puntos[1].y);
+
+					int ang = 0;
+
+					if(directions.x == 0f)
+
+						if(directions.y == 0f)
+							ang = 0;
+						else
+							ang = 2;
+					else{
+						ang = 1;
+					}
+
+					if(decorateLater){
+						if(paintingIsoDecoration != null){
+							cs.addDecoration(info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
+							cs.refresh();
+							decorateLater = false;
+						}
+					}else{
+						map.ghostDecoration(cs, info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
+					}
 				}
 			}
 		}
@@ -721,7 +677,7 @@ public class MapEditor : Editor {
 					
 					Color color = Color.yellow;
 					if(Event.current.shift)	color = Color.blue;
-					
+
 					Handles.DrawSolidRectangleWithOutline(puntos, color, Color.white);
 				}
 			}
