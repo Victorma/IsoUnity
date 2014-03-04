@@ -49,10 +49,12 @@ public class Decoration : MonoBehaviour{
 
 		/*float angulo = Mathf.Rad2Deg * Mathf.Acos(IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale.height / (IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width*1f));
 		angulo = 90 - Mathf.Abs(angulo);*/
-
-		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale,
-		                                        (isoDec.getTexture().height * scale)/*/(Mathf.Cos(45 * Mathf.Deg2Rad))*/,1);
+		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols),
+			                                        (isoDec.getTexture().height * scale) / ((float)isoDec.nRows),1);
+		this.renderer.material.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
+		this.renderer.material.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
 		this.renderer.material.SetTexture("_MainTex",isoDec.getTexture());
+
 	}
 
 	public void colocate(Vector3 v, int angle, bool rotate, bool parallel, bool centered){
@@ -117,6 +119,13 @@ public class Decoration : MonoBehaviour{
 		this.transform.localPosition = position;
 		//setRotation (angle, parallel);
 
+	}
+
+	public void changeTile(int tile){
+		int x = tile % (isoDec.nCols-1);
+		int y = tile - x;
+
+		this.renderer.material.mainTextureOffset = new Vector2 (0 + x*(1f/((float)isoDec.nCols)), 1 - y*(1f/((float)isoDec.nRows)));
 	}
 
 	public void setRotation(int angle, bool parallel){
