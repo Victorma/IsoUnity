@@ -113,6 +113,7 @@ public class MapEditor : Editor {
 	Texture2D paintingTexture;
 	Texture2D paintingDecoration;
 	bool parallelDecoration;
+	bool rotateDecoration;
 	int isoTextureIndex;
 	int isoDecorationIndex;
 	IsoTexture paintingIsoTexture;
@@ -293,6 +294,9 @@ public class MapEditor : Editor {
 			
 			//GUILayout.BeginArea(new Rect(0,0,0,100), "Texture: ");
 			parallelDecoration = EditorGUILayout.Toggle("Draw Parallel",parallelDecoration);
+			EditorGUILayout.Space();
+
+			rotateDecoration = EditorGUILayout.Toggle("Rotate to be Perpendicular",rotateDecoration);
 			EditorGUILayout.Space();
 
 			EditorGUILayout.PrefixLabel("Decoration Objects",GUIStyle.none, titleStyle);
@@ -617,12 +621,14 @@ public class MapEditor : Editor {
 
 					if(decorateLater){
 						if(paintingIsoDecoration != null){
-							cs.addDecoration(info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
+							Debug.Log("decor" + info.point);
+							cs.addDecoration(info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
 							cs.refresh();
 							decorateLater = false;
 						}
 					}else{
-						map.ghostDecoration(cs, info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
+						Debug.Log("gosht" + info.point);
+						map.ghostDecoration(cs, info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
 					}
 				}
 			}
