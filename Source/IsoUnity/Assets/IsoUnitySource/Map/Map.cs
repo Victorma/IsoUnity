@@ -114,24 +114,24 @@ public class Map : MonoBehaviour
 		cell.transform.localPosition = new Vector3((coords.x+0.5f) * cellSize, 0, (coords.y+0.5f) * cellSize);
 	}
 
-	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
+	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec, float intensity){
 		checkTransform();
 		
 		if(ghost == null || ghostType != 2){
 			removeGhost();
 			ghostType = 2;
-			ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
+			ghost = cs.addGhost(position, angle, rotate, parallel, centered, dec, intensity);
 		}else{
 			if (ghost.GetComponent<Decoration> ().Father != cs) {
 				removeGhost();
 				ghostType = 2;
-				ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
+				ghost = cs.addGhost(position, angle, rotate, parallel, centered, dec, intensity);
 			}
 		}
 		Decoration der = ghost.GetComponent<Decoration>();
 		der.IsoDec = dec;
 		
-		der.colocate(position,angle,parallel,centered);
+		der.colocate(position,angle,rotate,parallel,centered);
 
 		der.refresh ();
 	}

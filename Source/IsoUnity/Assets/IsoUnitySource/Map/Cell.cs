@@ -79,6 +79,9 @@ public class Cell : MonoBehaviour {
 			regenerateMesh();
 		}
 	}
+	public float getCellWidth(){
+		return cellWidth;
+	}
 	[SerializeField]
 	private CellTopType cellTop = CellTopType.flat;
 
@@ -393,7 +396,7 @@ public class Cell : MonoBehaviour {
 	 * 					DECORATION THINGS
 	 * */
 
-	public GameObject addGhost(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
+	public GameObject addGhost(Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec, float intensity){
 		if (this.ghost == null) {
 			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 			ghost.name = "GhostDer";
@@ -404,7 +407,7 @@ public class Cell : MonoBehaviour {
 		Decoration der = ghost.GetComponent<Decoration>();
 		der.IsoDec = dec;
 
-		der.colocate(position,angle,parallel,centered);
+		der.colocate(position,angle,rotate,parallel,centered);
 
 		der.refresh ();
 		return this.ghost;
@@ -416,18 +419,18 @@ public class Cell : MonoBehaviour {
 	}
 
 
-	public void addDecoration(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec){
+	public void addDecoration(Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec){
 		if (decorations == null)
 			decorations = new List<GameObject> ();
 
 		GameObject newdecoration = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
-
 		newdecoration.name = "Decoration (clone)";
+		newdecoration.renderer.material.shader = Shader.Find("Unlit/Transparent");
 		newdecoration.GetComponent<Decoration>().Father = this;
-		newdecoration.renderer.material.shader = Shader.Find("Transparent/Cutout/Diffuse");
+
 		Decoration der = newdecoration.GetComponent<Decoration>();
 		der.IsoDec = dec;
-		der.colocate(position,angle,parallel,centered);
+		der.colocate(position,angle,rotate,parallel,centered);
 
 		der.refresh ();
 		this.decorations.Add (newdecoration);

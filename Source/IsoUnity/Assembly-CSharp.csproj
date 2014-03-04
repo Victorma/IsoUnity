@@ -49,8 +49,6 @@
      <Compile Include="Assets\IsoUnitySource\Camera\CameraManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Entity.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\EntityScript.cs" />
-     <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" />
-     <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Command.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Game.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\GameEvent.cs" />
@@ -65,6 +63,8 @@
      <Compile Include="Assets\IsoUnitySource\Map\Managers\MapManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Map.cs" />
+     <Compile Include="Assets\IsoUnitySource\Scripts\Pepito.cs" />
+     <Compile Include="Assets\IsoUnitySource\Scripts\Player.cs" />
      <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
      <Compile Include="Assets\NewBehaviourScript.cs" />
   </ItemGroup>
