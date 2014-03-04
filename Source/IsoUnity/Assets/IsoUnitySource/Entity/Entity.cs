@@ -6,6 +6,7 @@ public class Entity : MonoBehaviour {
 
 	public bool canBlockMe = true;
 	public bool isBlackList = true;
+	public float maxJumpSize = 5;
 	public List<EntityScript> list;
 
 	[SerializeField]
@@ -22,11 +23,18 @@ public class Entity : MonoBehaviour {
 
 	public bool canMoveTo(Cell c){
 		//canAccedTo(c);
-		if(canBlockMe)
-			return c.isAccesibleBy(this);
+
+		bool canMove = false;
+
+		if(c != null && Mathf.Abs(Position.WalkingHeight - c.WalkingHeight) <=maxJumpSize){
+			if(canBlockMe)
+				canMove = c.isAccesibleBy(this);
+			else
+				canMove = true;
+		}
 
 		//canGoThroughEntities(c);
-		return true;
+		return canMove;
 	}
 
 	public bool letPass(Entity e){
@@ -118,21 +126,13 @@ public class Entity : MonoBehaviour {
 			return isMoving;
 		}
 	}
-	private Cell destiny;
+	private Cell next;
 	private Movement movement;
 	private float movementProgress;
 	private float movementDuration;
 
-	public void moveTo(Cell c, MovementType movementType){
-		if(!isMoving){
-			if(my_transform == null)
-				my_transform = this.transform;
-			destiny = c;
-			this.movement = Movement.createMovement(movementType, my_transform.position, c.transform.position + new Vector3(0,c.WalkingHeight+my_transform.localScale.y / 2,0));
-			this.movementProgress = 0;
-			this.movementDuration = 0.3f;
-			this.isMoving = true;
-		}
+	public void moveTo(Cell c){
+		RoutePlanifier.planifyRoute(this,c);
 	}
 
 	/**
@@ -147,10 +147,10 @@ public class Entity : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(!Application.isPlaying && Application.isEditor){
-			if(my_transform ==null)
-				my_transform = this.transform;
+		if(my_transform ==null)
+			my_transform = this.transform;
 
+		if(!Application.isPlaying && Application.isEditor){
 
 			Transform parent = my_transform.parent;
 			Transform actual = null;
@@ -170,6 +170,22 @@ public class Entity : MonoBehaviour {
 				my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
 			}
 		}
+
+		if(!isMoving){
+			next = RoutePlanifier.next(this);
+			if(next != null){
+
+				MovementType type = MovementType.Lineal;
+				if(Position.WalkingHeight != next.WalkingHeight)
+					type = MovementType.Parabolic;
+
+				this.movement = Movement.createMovement(type, my_transform.position, next.transform.position + new Vector3(0,next.WalkingHeight+my_transform.localScale.y / 2,0));
+				this.movementProgress = 0;
+				this.movementDuration = 0.3f;
+				isMoving = true;
+			}
+		}
+
 		if(isMoving){
 			Debug.Log(movement);
 			if(my_transform ==null)
@@ -177,8 +193,9 @@ public class Entity : MonoBehaviour {
 			this.movementProgress += Time.deltaTime;
 			my_transform.position = this.movement.getPositionAt(this.movementProgress / this.movementDuration);
 			if(this.movementProgress >= this.movementDuration){
+
 				this.isMoving = false;
-				this.Position = destiny;
+				this.Position = next;
 			}
 		}
 	}
