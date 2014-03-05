@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,14 +13,14 @@ public abstract class TextureManager {
 		return instance;
 	}
 	
-	[MenuItem("Assets/Create/IsoTexture")]
+	/*[MenuItem("Assets/Create/IsoTexture")]
 	public static void createIsoTextureAsset(){
 		IsoTexture asset = new IsoTexture();  //scriptable object
 		ProjectWindowUtil.CreateAsset(asset, "IsoTexture.asset");
 		//AssetDatabase.CreateAsset(asset, "MyAsset.asset");
 		//EditorUtility.FocusProjectWindow();
 		Selection.activeObject = asset;    
-	}
+	}*/
 	
 	public abstract IsoTexture newTexture();
 	public abstract IsoTexture[] textureList();
@@ -69,7 +68,7 @@ public class TextureManagerInstance : TextureManager {
 	}
 	
 	public override IsoTexture newTexture(){
-		createIsoTextureAsset();
+//		createIsoTextureAsset();
 		return null;
 	}
 	public override IsoTexture[] textureList(){
@@ -85,6 +84,6 @@ public class TextureManagerInstance : TextureManager {
 	}
 
 	public override void deleteTexture(IsoTexture texture){
-		AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(texture));
+		//AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(texture));
 	}
 }

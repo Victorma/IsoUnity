@@ -9,21 +9,21 @@ public class Decoration : MonoBehaviour{
 	 *******************************/
 
 	// The cell face that is asigned to
+	[SerializeField]
 	private IsoDecoration isoDec;
 
 	public IsoDecoration IsoDec {
 		get { return isoDec;}
 		set { isoDec = value; }
 	}
-
+	[SerializeField]
 	private Cell father;
 
 	public Cell Father {
 		get { return father;}
 		set { father = value; }
 	}
-
-	private Vector3 Position;
+	
 
 	private int Angle {
 		get { return Angle;}
@@ -121,11 +121,20 @@ public class Decoration : MonoBehaviour{
 
 	}
 
-	public void changeTile(int tile){
-		int x = tile % (isoDec.nCols-1);
-		int y = tile - x;
+	[SerializeField]
+	private int tile =0;
+	public int Tile {
+		get{
+			return tile;
+		}
+		set{
+			tile = value;
+			int x = tile % (isoDec.nCols);
+			int y = tile - x;
+			
+			this.renderer.material.mainTextureOffset = new Vector2 (0 + (x/((float)isoDec.nCols)), 1 - (y/((float)isoDec.nRows)));
+		}
 
-		this.renderer.material.mainTextureOffset = new Vector2 (0 + x*(1f/((float)isoDec.nCols)), 1 - y*(1f/((float)isoDec.nRows)));
 	}
 
 	public void setRotation(int angle, bool parallel){

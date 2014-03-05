@@ -130,6 +130,8 @@ public class Entity : MonoBehaviour {
 	private Movement movement;
 	private float movementProgress;
 	private float movementDuration;
+	private int tile;
+	private bool paso=false;
 
 	public void moveTo(Cell c){
 		RoutePlanifier.planifyRoute(this,c);
@@ -173,6 +175,7 @@ public class Entity : MonoBehaviour {
 
 		if(!isMoving){
 			next = RoutePlanifier.next(this);
+			tile = this.GetComponent<Decoration>().Tile;
 			if(next != null){
 
 				MovementType type = MovementType.Lineal;
@@ -187,15 +190,24 @@ public class Entity : MonoBehaviour {
 		}
 
 		if(isMoving){
-			Debug.Log(movement);
-			if(my_transform ==null)
-				my_transform = this.transform;
 			this.movementProgress += Time.deltaTime;
 			my_transform.position = this.movement.getPositionAt(this.movementProgress / this.movementDuration);
-			if(this.movementProgress >= this.movementDuration){
 
+			Decoration dec = this.GetComponent<Decoration>();
+			if(this.movementProgress / this.movementDuration <0.15){
+				dec.Tile = tile;
+			}else if (this.movementProgress / this.movementDuration < 0.85){
+				dec.Tile = tile+((paso)?1:2);
+			}else if (this.movementProgress / this.movementDuration < 1){
+				dec.Tile = tile;
+			}
+
+
+			if(this.movementProgress >= this.movementDuration){
 				this.isMoving = false;
 				this.Position = next;
+				dec.Tile = tile;
+				paso = !paso;
 			}
 		}
 	}

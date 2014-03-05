@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -76,7 +75,7 @@ public class Map : MonoBehaviour
 		checkTransform();
 		
 		// Saco el raton y proyecto un rayo con el
-		Ray rayo = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		Ray rayo = new Ray();//HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		// Calculo las veces que tengo que multiplicar el vector para cortar el plano
 		float a = ((m_transform.position.y + height) - rayo.origin.y) / rayo.direction.y;
 		// Calculo la posicion absoluta del punto de corte
@@ -194,7 +193,7 @@ public class Map : MonoBehaviour
 					// Quito la celda
 					vecinas.Remove(other);
 					celdas.RemoveAt(i);
-					SceneView.DestroyImmediate(other.gameObject);
+					//SceneView.DestroyImmediate(other.gameObject);
 					break;
 				}
 			}

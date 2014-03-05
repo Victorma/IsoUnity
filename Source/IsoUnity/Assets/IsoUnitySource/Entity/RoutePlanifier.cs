@@ -8,11 +8,18 @@ public class RoutePlanifier
 
 	public static void planifyRoute(Entity entity, Cell destination){
 		if(routes.ContainsKey(entity)){
+			return;
 			Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
+			ruta.Push(routes[entity].Peek());
 			routes[entity] = ruta;
 		}else{
 			Stack<Cell> ruta = calculateRoute(entity.Position, destination, entity);
 			if(ruta!=null){
+				ruta.Push(entity.Position);
+				foreach(Cell c in ruta){
+					Debug.Log(c.transform.position);
+				}
+
 				//ruta.Pop(); //Quito en la que estoy
 				routes.Add(entity,ruta);
 			}
@@ -44,19 +51,15 @@ public class RoutePlanifier
 		}*/
 	}
 
-	private static Stack<Cell> reconstruyeCamino(int celda, Cell[] anterior, Cell[] celdas, Dictionary<Cell,int> cellToPos)
+	private static void reconstruyeCamino(Stack<Cell> route, int celda, Cell[] anterior, Cell[] celdas, Dictionary<Cell,int> cellToPos)
 	{
-		if (celda == -1)
-			return new Stack<Cell>();
-		else
-		{
-			int posAnterior = -1;
-			if (anterior[celda] != null) 
-				posAnterior = cellToPos[anterior[celda]];
-			
-			Stack<Cell> ruta = reconstruyeCamino(posAnterior, anterior,celdas,cellToPos);
-			ruta.Push(celdas[celda]);
-			return ruta;
+		int posAnterior = -1;
+		if (anterior[celda] != null) 
+			posAnterior = cellToPos[anterior[celda]];
+
+		if(posAnterior!=-1){
+			route.Push(celdas[celda]);
+			reconstruyeCamino(route, posAnterior, anterior,celdas,cellToPos);
 		}
 	}
 	
@@ -92,8 +95,11 @@ public class RoutePlanifier
 			abierta.pop();
 			Cell celdaCandidata = cells[candidata];
 			
-			if (celdaCandidata == to)
-				return reconstruyeCamino(candidata, anterior, cells, cellToPos);
+			if (celdaCandidata == to){
+				Stack<Cell> ruta = new Stack<Cell>();
+				reconstruyeCamino(ruta, candidata, anterior, cells, cellToPos);
+				return ruta;
+			}
 			
 			Cell[] accesibles = getCeldasAccesibles(celdaCandidata, entity);
 			cerrada[candidata] = true;
