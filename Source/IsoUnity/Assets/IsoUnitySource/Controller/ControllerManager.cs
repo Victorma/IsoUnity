@@ -39,24 +39,30 @@ public class ControllerManager  {
 			bool send = false;
 			if(Input.GetMouseButtonDown(0) == true){
 				RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(Input.mousePosition));
-				Heap<float> pqHits = new Heap<float>(hits.Length);
-				for(int i = 0; i<hits.Length; i++)
-					pqHits.push(i+1, hits[i].distance);
+				if(hits.Length>0){Heap<float> pqHits = new Heap<float>(hits.Length);
+					for(int i = 0; i<hits.Length; i++)
+						pqHits.push(i+1, hits[i].distance);
 
-				bool encontrado = false;
-				while(!encontrado){
-					RaycastHit hit = hits[pqHits.top().elem-1];
-					pqHits.pop();
-					Cell c = hit.collider.GetComponent<Cell>();
-					if(c!=null){
-						args.cellTouched = c;
-						args.isEntityEvent = false;
-						send = true;
-						encontrado = true;
-					}else{
-						Entity e = hit.collider.GetComponent<Entity>();
-						GUIManager.drawOptions(Input.mousePosition,new object[3]);
-						encontrado=true;
+					bool encontrado = false;
+					while(!encontrado){
+						RaycastHit hit = hits[pqHits.top().elem-1];
+						pqHits.pop();
+						Cell c = hit.collider.GetComponent<Cell>();
+						if(c!=null){
+							args.cellTouched = c;
+							args.isEntityEvent = false;
+							send = true;
+							encontrado = true;
+						}else{
+							Entity e = hit.collider.GetComponent<Entity>();
+							GUIManager.drawOptions(Input.mousePosition,new object[3]);
+							encontrado=true;
+						}
+					}
+					if(!encontrado || args.cellTouched != null){
+						if(GUIManager.IsDrawingOptions){
+							GUIManager.stopDrawingOptions();
+						}
 					}
 				}
 

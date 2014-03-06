@@ -70,7 +70,6 @@
      <Compile Include="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Map.cs" />
      <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
-     <Compile Include="Assets\NewBehaviourScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

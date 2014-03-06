@@ -6,7 +6,9 @@ public class Entity : MonoBehaviour {
 
 	public bool canBlockMe = true;
 	public bool isBlackList = true;
-	public float maxJumpSize = 5;
+	public float maxJumpSize = 1.5f;
+	public IsoDecoration normalSprite;
+	public IsoDecoration jumpingSprite;
 	public List<EntityScript> list;
 
 	[SerializeField]
@@ -132,7 +134,7 @@ public class Entity : MonoBehaviour {
 	private float movementDuration;
 	private int tile;
 	private bool paso=false;
-
+	private Decoration dec;
 	public void moveTo(Cell c){
 		RoutePlanifier.planifyRoute(this,c);
 	}
@@ -151,6 +153,9 @@ public class Entity : MonoBehaviour {
 	void Update () {
 		if(my_transform ==null)
 			my_transform = this.transform;
+		if(dec ==null){
+			dec = this.GetComponent<Decoration>();
+		}
 
 		if(!Application.isPlaying && Application.isEditor){
 
@@ -180,14 +185,19 @@ public class Entity : MonoBehaviour {
 				Vector3 myPosition = Position.transform.localPosition,
 						otherPosition = next.transform.localPosition;
 
-				if(myPosition.z < otherPosition.z){ tile = 0;}
-				else if(myPosition.z > otherPosition.z){ tile = 6;}
-				else if(myPosition.x < otherPosition.x){  tile = 3;}
-				else if(myPosition.x > otherPosition.x){  tile = 9;}
-
 				MovementType type = MovementType.Lineal;
-				if(Position.WalkingHeight != next.WalkingHeight)
+				if(Position.WalkingHeight != next.WalkingHeight){
 					type = MovementType.Parabolic;
+					dec.IsoDec = jumpingSprite;
+				}
+				dec.refresh();
+				int row = 0;
+				if(myPosition.z < otherPosition.z){ row = 0;}
+				else if(myPosition.z > otherPosition.z){ row = 2;}
+				else if(myPosition.x < otherPosition.x){  row = 1;}
+				else if(myPosition.x > otherPosition.x){  row = 3;}
+				Debug.Log (row);
+				dec.Tile = tile = row*dec.IsoDec.nCols;
 
 				this.movement = Movement.createMovement(type, my_transform.position, next.transform.position + new Vector3(0,next.WalkingHeight+my_transform.localScale.y / 2,0));
 				this.movementProgress = 0;
@@ -200,21 +210,27 @@ public class Entity : MonoBehaviour {
 			this.movementProgress += Time.deltaTime;
 			my_transform.position = this.movement.getPositionAt(this.movementProgress / this.movementDuration);
 
-			Decoration dec = this.GetComponent<Decoration>();
-			if(this.movementProgress / this.movementDuration <0.15){
-				dec.Tile = tile;
-			}else if (this.movementProgress / this.movementDuration < 0.85){
-				dec.Tile = tile+((paso)?1:2);
-			}else if (this.movementProgress / this.movementDuration < 1){
-				dec.Tile = tile;
+
+			if(dec.IsoDec.nCols>1){
+				if(this.movementProgress / this.movementDuration <0.15){
+					dec.Tile = tile;
+				}else if (this.movementProgress / this.movementDuration < 0.85){
+					dec.Tile = tile+((paso)?1:2);
+				}else if (this.movementProgress / this.movementDuration < 1){
+					dec.Tile = tile;
+				}
 			}
 
 
 			if(this.movementProgress >= this.movementDuration){
 				this.isMoving = false;
 				this.Position = next;
-				dec.Tile = tile;
+				int lastRow = Mathf.FloorToInt(tile/dec.IsoDec.nCols);
+				dec.IsoDec = normalSprite;
+				dec.refresh();
+				dec.Tile = lastRow*dec.IsoDec.nCols;
 				paso = !paso;
+
 			}
 		}
 	}

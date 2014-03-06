@@ -404,12 +404,12 @@ public class MapEditor : Editor {
 				if(Event.current.button == 0){
 					if(Event.current.type == EventType.MouseDown){
 						creating = true;
-						map.addCell(map.getMousePositionOverMap(gridHeight));
+						map.addCell(map.getMousePositionOverMap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition), gridHeight));
 					}else if(Event.current.type == EventType.MouseUp){
 						creating = false;
 					}else{
 						if(creating)
-							map.addCell(map.getMousePositionOverMap(gridHeight));
+							map.addCell(map.getMousePositionOverMap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition),gridHeight));
 					}
 
 				}
@@ -424,7 +424,7 @@ public class MapEditor : Editor {
 					}
 				}
 			}
-			Vector3 centerGridPoint = map.getMousePositionOverMap(gridHeight);
+			Vector3 centerGridPoint = map.getMousePositionOverMap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition), gridHeight);
 
 			map.ghostCell(centerGridPoint, 0.5f);
 

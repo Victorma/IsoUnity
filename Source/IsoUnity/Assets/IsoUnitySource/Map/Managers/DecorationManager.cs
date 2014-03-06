@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,14 +14,14 @@ public abstract class DecorationManager {
 		return instance;
 	}
 	
-	/*[MenuItem("Assets/Create/IsoDecoration")]
+	[MenuItem("Assets/Create/IsoDecoration")]
 	public static void createIsoTextureAsset(){
 		IsoDecoration asset = new IsoDecoration();  //scriptable object
 		ProjectWindowUtil.CreateAsset(asset, "IsoDecoration.asset");
 		//AssetDatabase.CreateAsset(asset, "MyAsset.asset");
 		//EditorUtility.FocusProjectWindow();
 		Selection.activeObject = asset;    
-	}*/
+	}
 	
 	public abstract IsoDecoration newTexture();
 	public abstract IsoDecoration[] textureList();

@@ -1,12 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\GUIManager\GUIManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Decoration.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="36" Column="31" />
-      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="58" Column="62" />
-      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="36" Column="31" />
+      <File FileName="Assets\IsoUnitySource\Map\Map.cs" Line="72" Column="22" />
+      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="15" Column="28" />
+      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="45" Column="6" />
+      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="195" Column="50" />
       <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="15" Column="35" />
+      <File FileName="Assets\Editor\MapEditor.cs" Line="325" Column="37" />
+      <File FileName="Assets\IsoUnitySource\Map\Managers\DecorationManager.cs" Line="63" Column="47" />
+      <File FileName="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" Line="35" Column="54" />
+      <File FileName="Assets\IsoUnitySource\Map\Managers\MapManager.cs" Line="45" Column="20" />
+      <File FileName="Assets\IsoUnitySource\Map\Decoration.cs" Line="130" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

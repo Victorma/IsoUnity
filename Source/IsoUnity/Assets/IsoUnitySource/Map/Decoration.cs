@@ -89,7 +89,6 @@ public class Decoration : MonoBehaviour{
 				break;
 			}
 		case 1:{
-			Debug.Log(1);
 			if(!rotate){
 				if(centered)
 					position = new Vector3(-this.father.getCellWidth()/2 +((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)), invfather.y-(invfather.y%this.father.getCellWidth())+1,-this.father.getCellWidth()/2 -((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)));
@@ -130,9 +129,9 @@ public class Decoration : MonoBehaviour{
 		set{
 			tile = value;
 			int x = tile % (isoDec.nCols);
-			int y = tile - x;
+			int y = Mathf.FloorToInt(tile/isoDec.nCols);
 			
-			this.renderer.material.mainTextureOffset = new Vector2 (0 + (x/((float)isoDec.nCols)), 1 - (y/((float)isoDec.nRows)));
+			this.renderer.material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
 		}
 
 	}

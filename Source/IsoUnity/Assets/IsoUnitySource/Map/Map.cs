@@ -71,11 +71,11 @@ public class Map : MonoBehaviour
 	 *   Editor Zone  *
 	 * ************** */
 	
-	public Vector3 getMousePositionOverMap(float height){
+	public Vector3 getMousePositionOverMap(Ray ray, float height){
 		checkTransform();
 		
 		// Saco el raton y proyecto un rayo con el
-		Ray rayo = new Ray();//HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		Ray rayo = ray;
 		// Calculo las veces que tengo que multiplicar el vector para cortar el plano
 		float a = ((m_transform.position.y + height) - rayo.origin.y) / rayo.direction.y;
 		// Calculo la posicion absoluta del punto de corte
