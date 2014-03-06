@@ -23,6 +23,10 @@ public class Game : MonoBehaviour {
 		this.tick();
 	}
 
+	void OnGUI(){
+		GUIManager.tick();
+	}
+
 	public void enqueueEvent(GameEvent ge){
 		this.events.Enqueue(ge);
 	}
@@ -31,11 +35,18 @@ public class Game : MonoBehaviour {
 		this.commands.Enqueue(c);
 	}*/
 
+	private float timeToController = 100/1000;
+	private float currentTimeToController = 0;
+
 	public void tick(){
 
 		CameraManager.lookTo(look);
-		ControllerManager.tick();
 
+		currentTimeToController+=Time.deltaTime;
+		if(currentTimeToController > timeToController){
+			ControllerManager.tick();
+			currentTimeToController-=timeToController;
+		}
 		while(events.Count>0)
 		{
 			GameEvent ge = events.Dequeue();

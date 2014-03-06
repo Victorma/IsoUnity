@@ -54,6 +54,7 @@
      <Compile Include="Assets\IsoUnitySource\Entity\RoutePlanifier.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />
+     <Compile Include="Assets\IsoUnitySource\GUIManager\GUIManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Command.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Game.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\GameEvent.cs" />

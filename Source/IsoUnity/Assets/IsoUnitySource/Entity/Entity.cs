@@ -175,8 +175,15 @@ public class Entity : MonoBehaviour {
 
 		if(!isMoving){
 			next = RoutePlanifier.next(this);
-			tile = this.GetComponent<Decoration>().Tile;
 			if(next != null){
+
+				Vector3 myPosition = Position.transform.localPosition,
+						otherPosition = next.transform.localPosition;
+
+				if(myPosition.z < otherPosition.z){ tile = 0;}
+				else if(myPosition.z > otherPosition.z){ tile = 6;}
+				else if(myPosition.x < otherPosition.x){  tile = 3;}
+				else if(myPosition.x > otherPosition.x){  tile = 9;}
 
 				MovementType type = MovementType.Lineal;
 				if(Position.WalkingHeight != next.WalkingHeight)

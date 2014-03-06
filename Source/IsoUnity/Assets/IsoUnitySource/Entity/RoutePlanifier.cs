@@ -9,17 +9,17 @@ public class RoutePlanifier
 	public static void planifyRoute(Entity entity, Cell destination){
 		if(routes.ContainsKey(entity)){
 			return;
-			Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
+			//Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
+			Stack<Cell> ruta = new Stack<Cell>();
+			ruta.Push (destination);
 			ruta.Push(routes[entity].Peek());
 			routes[entity] = ruta;
 		}else{
+			/*Stack<Cell> ruta = new Stack<Cell>();
+			ruta.Push (destination);*/
 			Stack<Cell> ruta = calculateRoute(entity.Position, destination, entity);
 			if(ruta!=null){
 				ruta.Push(entity.Position);
-				foreach(Cell c in ruta){
-					Debug.Log(c.transform.position);
-				}
-
 				//ruta.Pop(); //Quito en la que estoy
 				routes.Add(entity,ruta);
 			}
