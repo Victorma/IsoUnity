@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 
 public class Map : MonoBehaviour
@@ -189,11 +190,12 @@ public class Map : MonoBehaviour
 				Cell other = celdas[i];
 				Vector2 goCoords = getCoords (other.gameObject);
 				//Si hay otra celda en mi posicion
+				Debug.Log(goCoords + " vs " + coords); 
 				if(other != cell && coords.x == goCoords.x && coords.y == goCoords.y){
 					// Quito la celda
 					vecinas.Remove(other);
 					celdas.RemoveAt(i);
-					//SceneView.DestroyImmediate(other.gameObject);
+					SceneView.DestroyImmediate(other.gameObject);
 					break;
 				}
 			}

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GUIManager {
 
@@ -13,12 +13,13 @@ public class GUIManager {
 	private static float minRadius = 100;
 	private static float minDist = 80;
 	private static int number;
+	private static List<IsoGUI> guis = new List<IsoGUI>();
 
 	public static void tick(){
 
-		/*foreach(IsoUnityGUI gui in guis){
+		foreach(IsoGUI gui in guis){
 			gui.draw();
-		}*/
+		}
 
 		if(drawingOptions){
 			Vector2 pos = GUIUtility.ScreenToGUIPoint(position);
@@ -45,6 +46,10 @@ public class GUIManager {
 			//GUI.Button(rect,"");
 			//GUILayout.EndArea();
 		}
+	}
+
+	public static void addGUI(IsoGUI newGUI){
+		guis.Add(newGUI);
 	}
 
 	public static void drawOptions(Vector2 position, object[] options){
