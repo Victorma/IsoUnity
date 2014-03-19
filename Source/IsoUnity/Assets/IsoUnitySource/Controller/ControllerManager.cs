@@ -13,6 +13,7 @@ public class ControllerEventArgs {
 	public Cell cellTouched;
 	public Entity entityTouched;
 	public string entityActionSelected;
+	public Option option;
 }
 
 public class ControllerManager  {
@@ -32,7 +33,8 @@ public class ControllerManager  {
 
 	public static void tick(){
 
-		if(enabled){
+		if(enabled && !GUIManager.CaptureEvent()){
+
 			ControllerEventArgs args = new ControllerEventArgs();
 			if(Input.simulateMouseWithTouches == false)
 				Input.simulateMouseWithTouches = true;
@@ -55,7 +57,12 @@ public class ControllerManager  {
 							encontrado = true;
 						}else{
 							Entity e = hit.collider.GetComponent<Entity>();
-							GUIManager.drawOptions(Input.mousePosition,new object[3]);
+							Options[] options = e.getOptions();
+							if(options.Length > 1)
+								GUIManager.drawOptions(Input.mousePosition, options);
+							else if (options.Length > 0)
+								args.option = options[0];
+
 							encontrado=true;
 						}
 					}

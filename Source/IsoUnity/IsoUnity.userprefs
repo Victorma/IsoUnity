@@ -1,13 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\GUIs\IsoGUI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Controller\ControllerManager.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="6" Column="22" />
-      <File FileName="Assets\IsoUnitySource\GUIs\IsoGUI.cs" Line="16" Column="3" />
+      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="4" Column="32" />
+      <File FileName="Assets\IsoUnitySource\GUIs\IsoGUI.cs" Line="1" Column="1" />
       <File FileName="Assets\IsoUnitySource\GUIs\Managers\DialogManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="41" Column="29" />
-      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="41" Column="48" />
+      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="33" Column="2" />
+      <File FileName="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" Line="15" Column="28" />
+      <File FileName="Assets\IsoUnitySource\GUIs\Option.cs" Line="36" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -3,53 +3,57 @@ using System.Collections.Generic;
 
 public class GUIManager {
 
+	public static int DefaultPriority = 1;
+
 	private static bool drawingOptions = false;
+	private static bool isInTick = false;
 	public static bool IsDrawingOptions{
 		get{
 			return drawingOptions;
 		}
 	}
-	private static Vector2 position = new Vector2();
-	private static float minRadius = 100;
-	private static float minDist = 80;
-	private static int number;
+	private static Dictionary<IsoGUI, int> priorities = new Dictionary<IsoGUI, int>();
 	private static List<IsoGUI> guis = new List<IsoGUI>();
+	private static List<IsoGUI> toRemove = new List<IsoGUI>();
 
 	public static void tick(){
-
-		foreach(IsoGUI gui in guis){
-			gui.draw();
-		}
-
-		if(drawingOptions){
-			Vector2 pos = GUIUtility.ScreenToGUIPoint(position);
-
-			float angle = (2*Mathf.PI)/number;
-			float currentDist = (Mathf.Tan (angle/2f)* minRadius)*2;
-			float currentRadius = minRadius;
-			if(currentDist < minDist){
-				currentRadius = minDist / (Mathf.Tan (angle/2f)*2);
-			}
-
-			Rect rect = new Rect(pos.x-currentRadius, pos.y-currentRadius, currentRadius*2, currentRadius*2);
-			GUI.skin = Resources.Load<GUISkin>("Skin");
-			GUI.Box(rect,"");
-
-			for(int i = 0; i<number; i++){
-				Rect buttonRect= new Rect(pos.x + (currentRadius-minDist/2f)*Mathf.Sin(angle*i) -minDist/2f,pos.y - (currentRadius-minDist/2f)*Mathf.Cos(angle*i)-minDist/2f,minDist,minDist);
-				if(Event.current.isMouse&& Event.current.type == EventType.MouseUp){
-					if(buttonRect.Contains(GUIUtility.ScreenToGUIPoint(Event.current.mousePosition)))//TODO Return option selected
-						stopDrawingOptions();
-				}
-				GUI.Button(buttonRect, i+"");
-			}
-			//GUI.Button(rect,"");
-			//GUILayout.EndArea();
-		}
+		isInTick = true;
+		foreach(IsoGUI gui in guis)	gui.draw();
+		isInTick = false;
+		foreach(IsoGUI gui in toRemove) removeGUI(gui);
 	}
 
 	public static void addGUI(IsoGUI newGUI){
+		addGUI(newGUI, DefaultPriority);
+	}
+
+	public static void addGUI(IsoGUI newGUI, int priority){
 		guis.Add(newGUI);
+		priorities.Add(newGUI,priority);
+		guis.Sort(new PrioOrder(priorities));
+	}
+
+	private class PrioOrder : IComparer<IsoGUI> {
+
+		private Dictionary<IsoGUI, int> prios;
+		public PrioOrder(Dictionary<IsoGUI, int> prios){
+			this.prios = prios;
+		}
+
+		public int Compare(IsoGUI i1, IsoGUI i2)
+		{
+			return prios[i1] < prios[i2];
+		}
+
+	}
+
+	public static void removeGUI(IsoGUI gui){
+		if(!isInGUI){
+			guis.Remove(gui);
+			priorities.Remove(gui);
+		}else{
+			toRemove.add(gui);
+		}
 	}
 
 	public static void drawOptions(Vector2 position, object[] options){

@@ -18,7 +18,7 @@ public class DialogGUI : IsoGUI {
 
 	public override void draw(){
 
-		GUI.Box(new Rect(0,0, Screen.width, 300));
+		//GUI.Box(new Rect(0,0, Screen.width, 300));
 
 		GUI.Box(new Rect(50,50,250,250), picture);
 
