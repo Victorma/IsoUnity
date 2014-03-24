@@ -6,6 +6,7 @@ public class Game : MonoBehaviour {
 	Queue<GameEvent> events;
 	//Queue<Command> commands;
 	public GameObject look;
+	public Map map;
 
 	public static Game main;
 
@@ -15,6 +16,7 @@ public class Game : MonoBehaviour {
 		events = new Queue<GameEvent>();
 		//commands = new Queue<Command>();
 		CameraManager.initialize();
+		MapManager.getInstance().setActiveMap(map);
 		ControllerManager.Enabled = true;
 	}
 	

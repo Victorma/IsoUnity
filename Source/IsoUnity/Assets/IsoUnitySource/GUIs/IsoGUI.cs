@@ -15,12 +15,12 @@ public abstract class IsoGUI
 
 	}
 
-	public bool captureEvent(ControllerEventArgs args){
+	public virtual bool captureEvent(ControllerEventArgs args){
 		return true;
 	}
 
 	public abstract void draw ();
-
+	public abstract void fillControllerEvent(ControllerEventArgs args);
 }
 
 

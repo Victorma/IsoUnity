@@ -291,6 +291,48 @@ public class Map : MonoBehaviour
 		foreach(Cell c in this.transform.GetComponentsInChildren<Cell>())
 			c.tick();
 	}
+
+	/***************
+	 * CONTROLLER ZONE
+	 * **************/
+
+	private void fillEntity(Entity e, ControllerEventArgs args){
+		args.entity = e;
+		args.cell = args.entity.Position;
+		args.options = args.entity.getOptions();	
+	}
+
+	public void fillControllerEvent(ControllerEventArgs args){
+		bool encontrado = false;
+		if(args.isLeftDown){
+			RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(args.mousePos));
+			if(hits.Length>0){
+				Heap<float> pqHits = new Heap<float>(hits.Length);
+				for(int i = 0; i<hits.Length; i++){
+					if(hits[i].collider.transform.IsChildOf(this.transform))
+						pqHits.push(i+1, hits[i].distance);
+				}
+				while(!encontrado && !pqHits.isEmpty()){
+					RaycastHit hit = hits[pqHits.top().elem-1];
+					pqHits.pop();
+					Cell c = hit.collider.GetComponent<Cell>();
+					if(c!=null){
+						args.cell = c;
+						Entity[] entities = c.getEntities();
+						if(entities.Length==1)
+							fillEntity(entities[0], args);
+						encontrado = true;
+					}else{
+						Entity e = hit.collider.GetComponent<Entity>();
+						if(e!=null)
+							fillEntity(e,args);
+						encontrado=true;
+					}
+				}
+			}
+		}
+		args.send = args.UP || args.DOWN || args.LEFT || args.RIGHT || encontrado;
+	}
 	
 	public void Start(){
 

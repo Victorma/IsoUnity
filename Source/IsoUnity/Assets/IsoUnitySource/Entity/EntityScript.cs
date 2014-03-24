@@ -11,5 +11,6 @@ public abstract class EntityScript : MonoBehaviour {
 	//Abstract Methods
 	public abstract void eventHappened(GameEvent ge);
 	public abstract void tick();
-	public abstract void update();
+	public abstract void Update();
+	public abstract Option[] getOptions();
 }

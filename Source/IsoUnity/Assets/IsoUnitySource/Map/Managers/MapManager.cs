@@ -19,6 +19,8 @@ public abstract class MapManager
 	
 	public abstract void removeMap(Map map);
 
+	public abstract void fillControllerEvent(ControllerEventArgs args);
+
 	public abstract void setActiveMap(Map map);
 
 	[MenuItem("GameObject/Create Other/IsoUnity Map")]
@@ -62,7 +64,11 @@ public class MapManagerInstance : MapManager
 		return GameObject.FindObjectsOfType<Map>();
 	}
 	
-	
+	public override void fillControllerEvent(ControllerEventArgs args){
+		foreach(Map map in activeMaps){
+			map.fillControllerEvent(args);
+		}
+	}
 
 	
 	public override void removeMap(Map map)

@@ -1,4 +1,6 @@
-﻿public class Option {
+﻿using UnityEngine;
+
+public class Option {
 
 	public Option(string name, GameEvent action){ init(name, null, action, true); }
 	public Option(Texture2D image, GameEvent action){ init(null, image, action, true); }
@@ -13,7 +15,7 @@
 	}
 
 	private Texture2D image;
-	public string Image{
+	public Texture2D Image{
 		get{return image;}
 	}
 
@@ -23,7 +25,7 @@
 	}
 
 	private bool hasToMove;
-	public string HasToMove{
+	public bool HasToMove{
 		get{return hasToMove;}
 	}
 

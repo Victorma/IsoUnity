@@ -4,23 +4,20 @@ using System.Collections.Generic;
 public class GUIManager {
 
 	public static int DefaultPriority = 1;
-
-	private static bool drawingOptions = false;
 	private static bool isInTick = false;
-	public static bool IsDrawingOptions{
-		get{
-			return drawingOptions;
-		}
-	}
+
 	private static Dictionary<IsoGUI, int> priorities = new Dictionary<IsoGUI, int>();
 	private static List<IsoGUI> guis = new List<IsoGUI>();
+
 	private static List<IsoGUI> toRemove = new List<IsoGUI>();
+	private static List<IsoGUI> toAdd = new List<IsoGUI>();
 
 	public static void tick(){
 		isInTick = true;
 		foreach(IsoGUI gui in guis)	gui.draw();
 		isInTick = false;
 		foreach(IsoGUI gui in toRemove) removeGUI(gui);
+		foreach(IsoGUI gui in toAdd) addGUI(gui);
 	}
 
 	public static void addGUI(IsoGUI newGUI){
@@ -28,9 +25,14 @@ public class GUIManager {
 	}
 
 	public static void addGUI(IsoGUI newGUI, int priority){
-		guis.Add(newGUI);
-		priorities.Add(newGUI,priority);
-		guis.Sort(new PrioOrder(priorities));
+		if(!isInTick){
+			guis.Add(newGUI);
+			priorities.Add(newGUI,priority);
+			guis.Sort(new PrioOrder(priorities));
+		}else{
+			toAdd.Add(newGUI);
+		}
+
 	}
 
 	private class PrioOrder : IComparer<IsoGUI> {
@@ -42,28 +44,32 @@ public class GUIManager {
 
 		public int Compare(IsoGUI i1, IsoGUI i2)
 		{
-			return prios[i1] < prios[i2];
+			return prios[i1] - prios[i2];
 		}
 
 	}
 
 	public static void removeGUI(IsoGUI gui){
-		if(!isInGUI){
+		if(!isInTick){
 			guis.Remove(gui);
 			priorities.Remove(gui);
 		}else{
-			toRemove.add(gui);
+			toRemove.Add(gui);
 		}
 	}
 
-	public static void drawOptions(Vector2 position, object[] options){
+	public static IsoGUI getGUICapturing(ControllerEventArgs args){
+		isInTick = true;
+		foreach(IsoGUI gui in guis){
+			if(gui.captureEvent(args))
+				return gui;
+		}
+		isInTick = false;
+		// Normally this things should not happen, but for prevent...
+		foreach(IsoGUI gui in toRemove) removeGUI(gui);
+		foreach(IsoGUI gui in toAdd) addGUI(gui);
 
-		GUIManager.drawingOptions = true;
-		GUIManager.position = position;
-		number = options.Length;
+		return null;
 	}
-
-	public static void stopDrawingOptions(){
-		GUIManager.drawingOptions = false;
-	}
+	
 }
