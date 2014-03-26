@@ -11,7 +11,9 @@ public class Player : EntityScript {
 	public void onControllerEvent(ControllerEventArgs args){
 		if( args.options != null){
 			if(args.options.Length==1){
-				Debug.Log(args.options[0].Action.Name);
+				args.options[0].Action.setParameter("Executer", this.entity);
+				if(!args.options[0].HasToMove)
+					Game.main.enqueueEvent(args.options[0].Action);
 			}else if(args.options.Length > 1){
 				OptionsGUI gui = new OptionsGUI(Camera.main.WorldToScreenPoint(entity.transform.position), entity.getOptions());
 				GUIManager.addGUI(gui, 100);

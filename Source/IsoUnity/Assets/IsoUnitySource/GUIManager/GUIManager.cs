@@ -13,11 +13,15 @@ public class GUIManager {
 	private static List<IsoGUI> toAdd = new List<IsoGUI>();
 
 	public static void tick(){
+		GUISkin skin = GUI.skin;
 		isInTick = true;
 		foreach(IsoGUI gui in guis)	gui.draw();
 		isInTick = false;
 		foreach(IsoGUI gui in toRemove) removeGUI(gui);
+		toRemove.Clear ();
 		foreach(IsoGUI gui in toAdd) addGUI(gui);
+		toAdd.Clear ();
+		GUI.skin = skin;
 	}
 
 	public static void addGUI(IsoGUI newGUI){
@@ -67,8 +71,9 @@ public class GUIManager {
 		isInTick = false;
 		// Normally this things should not happen, but for prevent...
 		foreach(IsoGUI gui in toRemove) removeGUI(gui);
+		toRemove.Clear ();
 		foreach(IsoGUI gui in toAdd) addGUI(gui);
-
+		toAdd.Clear ();
 		return null;
 	}
 	
