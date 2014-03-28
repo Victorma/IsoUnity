@@ -9,6 +9,8 @@ public class Entity : MonoBehaviour {
 	public float maxJumpSize = 1.5f;
 	public IsoDecoration normalSprite;
 	public IsoDecoration jumpingSprite;
+	public Texture2D face;
+	public string name;
 	public List<EntityScript> list;
 
 	[SerializeField]

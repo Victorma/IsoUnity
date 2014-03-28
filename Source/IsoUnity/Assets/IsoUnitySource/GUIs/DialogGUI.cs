@@ -2,14 +2,17 @@
 using UnityEngine;
 
 public class DialogGUI : IsoGUI {
+	private Dialog.Fragment frg;
 	private Texture2D picture;
 	private string name;
 	private string msg;
+	private Talker tlk;
 
-	public DialogGUI(Texture2D picture, string name, string msg){
-		this.picture = picture;
-		this.name = name;
-		this.msg = msg;
+	public DialogGUI(Talker tlk, Dialog.Fragment frg){
+		this.frg = frg;
+		this.picture = frg.face;
+		this.name = frg.name;
+		this.tlk = tlk;
 	}
 
 	public void showMessage(){
@@ -18,16 +21,32 @@ public class DialogGUI : IsoGUI {
 
 	public override void draw(){
 
-		//GUI.Box(new Rect(0,0, Screen.width, 300));
+		GUIStyle stl = new GUIStyle ();
+		//stl.normal.background = picture;
+		GUI.Box(new Rect(0,0, Screen.width, 200),"");
 
-		GUI.Box(new Rect(50,50,250,250), picture);
+		stl = new GUIStyle ();
+		stl.normal.background = picture;
+		GUI.Box(new Rect(100,50,100,100), "", stl);
 
-		GUI.Box(new Rect (100, 50, Screen.width - 50, 250), msg);
+		stl = new GUIStyle ();
+		stl.fontStyle = FontStyle.Bold;
+		stl.fontSize = 20;
+		stl.normal.textColor = Color.white;
+		GUI.Label(new Rect (250, 50, Screen.width - 50, 25), frg.name);
+		GUI.Label(new Rect (250, 75, Screen.width - 50, 175), frg.msg);
+
 	}
 
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
-		throw new System.NotImplementedException ();
+		if (args.isLeftDown) {
+			GameEvent ge = new GameEvent ();
+			ge.Name = "ended fragment"; ge.setParameter ("Talker", tlk);
+			Game.main.enqueueEvent (ge);
+			GUIManager.removeGUI (this);
+		}
+		//throw new System.NotImplementedException ();
 	}
 };
 
