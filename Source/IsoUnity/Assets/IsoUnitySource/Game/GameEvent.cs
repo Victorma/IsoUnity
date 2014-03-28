@@ -19,5 +19,21 @@ public class GameEvent {
 		else
 			args.Add(param, content);
 	}
+
+	public void removeParameter(string param){
+		if(args.ContainsKey(param))
+			args.Remove(param);
+	}
+
+	public string[] Params{
+		get{
+			string[] myParams = new string[args.Keys.Count];
+			int i = 0;
+			foreach(string key in args.Keys){
+				myParams[i] = key; i++;
+			}
+			return myParams;
+		}
+	}
 }
 

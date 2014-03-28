@@ -13,7 +13,7 @@ public class GUIManager {
 	private static List<IsoGUI> toAdd = new List<IsoGUI>();
 
 	public static void tick(){
-		GUISkin skin = GUI.skin;
+		//GUISkin skin = GUI.skin;
 		isInTick = true;
 		foreach(IsoGUI gui in guis)	gui.draw();
 		isInTick = false;
@@ -21,7 +21,7 @@ public class GUIManager {
 		toRemove.Clear ();
 		foreach(IsoGUI gui in toAdd) addGUI(gui);
 		toAdd.Clear ();
-		GUI.skin = skin;
+		//GUI.skin = skin;
 	}
 
 	public static void addGUI(IsoGUI newGUI){
