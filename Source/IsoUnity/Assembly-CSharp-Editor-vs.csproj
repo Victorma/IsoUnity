@@ -47,9 +47,17 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\CellEditor.cs" />
+     <Compile Include="Assets\Editor\DialogEditor.cs" />
+     <Compile Include="Assets\Editor\DialogWindow.cs" />
      <Compile Include="Assets\Editor\Drawing.cs" />
+     <Compile Include="Assets\Editor\EventEditors\DefaultEventEditor.cs" />
+     <Compile Include="Assets\Editor\EventEditors\EventEditor.cs" />
+     <Compile Include="Assets\Editor\EventEditors\EventEditorFactory.cs" />
+     <Compile Include="Assets\Editor\EventEditors\GameEventPropertyDrawer.cs" />
+     <Compile Include="Assets\Editor\EventEditors\MoveEventEditor.cs" />
      <Compile Include="Assets\Editor\IsoTextureEditor.cs" />
      <Compile Include="Assets\Editor\MapEditor.cs" />
+     <Compile Include="Assets\Editor\TalkerEditor.cs" />
      <Compile Include="Assets\Editor\TextureAssistant.cs" />
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>

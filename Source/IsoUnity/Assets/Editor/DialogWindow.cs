@@ -2,135 +2,194 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-//TODO esto a su sitio
-public class DialogNode {
+public class SecuenceWindow: EditorWindow{
 	
-	private List<DialogNode> childs = new List<DialogNode>();
-	private object content = null;
-	private string name = "";
-	
-	
-	public DialogNode(){
-		
-	}
-	
-	public DialogNode[] Childs {
-		get{ return childs.ToArray() as DialogNode[]; }
-	}
-	
-	public string Name{
-		get{ return name;} 
-		set{ name = value;}
-	}
-	
-	public object Content{
-		get{ return content;}
-		set{ content = value;}
-	}
-	
-	public void clearChilds(){
-		childs.Clear();
-	}
-	
-	public DialogNode addNewChild(){
-		DialogNode node = new DialogNode();
-		this.childs.Add(node);
-		return node;
-	}
-	
-	public void removeChild(int i){
-		this.childs.RemoveAt(i);
-	}
-	
-	public void removeChild(DialogNode child){
-		this.childs.Remove(child);
-	}
-	
-	
-}
+	private Secuence secuence;
 
-public class DialogWindow: EditorWindow{
-	
-	
-	[MenuItem("Window/DialogWindow")]
-	static void init()
-	{
-		DialogWindow editor = EditorWindow.GetWindow<DialogWindow>();
-		editor.nodoInicial = new DialogNode();
+	public Secuence Secuence {
+		get { return secuence; }
+		set { this.secuence = value; }
 	}
-	
-	private DialogNode nodoInicial;
-	private Dictionary<int, DialogNode> nodos = new Dictionary<int, DialogNode>();
-	private Dictionary<DialogNode, Rect> rects = new Dictionary<DialogNode, Rect>();
-	
-	int selected = 0;
+	private Dictionary<int, SecuenceNode> nodos = new Dictionary<int, SecuenceNode>();
+	private Dictionary<SecuenceNode, Rect> rects = new Dictionary<SecuenceNode, Rect>();
+	private Dictionary<SecuenceNode, Vector2> scrolls = new Dictionary<SecuenceNode, Vector2>();
+
 	string newParameter = "";
 	void nodeWindow(int id)
 	{
-		DialogNode myNode = nodos[id];
-		
-		if(myNode.Content is GameEvent){
+		SecuenceNode myNode = nodos[id];
+
+		int selected = 0;
+		if (myNode.Content is GameEvent) {
 			selected = 1;
-			GameEvent cont = myNode.Content as GameEvent;
-			cont.Name = EditorGUILayout.TextField("Name", cont.Name);
+
+			GameEvent ge = (GameEvent)myNode.Content;
+			string[] editors = EventEditorFactory.Intance.CurrentEventEditors;
+			int editorSelected = 0;
+			if(ge.Name == null)
+				ge.Name = "";
+			for (int i = 1; i< editors.Length; i++)
+				if (editors [i].ToLower () == ge.Name.ToLower ())
+					editorSelected = i;
 			
-			foreach(string param in cont.Params){
-				EditorGUILayout.BeginHorizontal();
-				cont.setParameter(param, EditorGUILayout.ObjectField(param, (Object)cont.getParameter(param), typeof(Object), true));
-				if(GUILayout.Button("X"))
-					cont.removeParameter(param);
-				EditorGUILayout.EndHorizontal();
+			editorSelected = EditorGUILayout.Popup (editorSelected, EventEditorFactory.Intance.CurrentEventEditors);
+			EventEditor editor = EventEditorFactory.Intance.createEventEditorFor (editors[editorSelected]);
+			editor.useEvent (ge);		
+			
+			editor.draw ();
+			
+			myNode.Content = editor.Result;
+
+			if (Event.current.type != EventType.layout)
+				if (myNode.Childs.Length != 1) {
+					myNode.clearChilds ();
+					myNode.addNewChild ();
+					this.Repaint ();
+				}
+		} else if (myNode.Content is Dialog) {
+			selected = 2;
+			Event e = Event.current;
+			
+			Dialog dialog = myNode.Content as Dialog;
+			
+			GUIStyle style = new GUIStyle();
+			style.padding = new RectOffset(5,5,5,5);
+
+			dialog.id = UnityEditor.EditorGUILayout.TextField("Name", dialog.id);
+			Dialog.Fragment[] fragments = dialog.getFragments();
+			Dialog.DialogOption[] options = dialog.getOptions();
+			
+			EditorGUILayout.HelpBox("You have to add at least one", MessageType.None);
+			bool infoShown = false;
+			if(fragments != null){
+				bool isScrolling = false;
+				if(fragments.Length > 3){
+					scrolls[myNode] = EditorGUILayout.BeginScrollView(scrolls[myNode], GUILayout.ExpandWidth(true), GUILayout.Height(250));
+					isScrolling = true;
+				}
+				foreach(Dialog.Fragment frg in fragments){
+					EditorGUILayout.BeginHorizontal();
+					frg.IsEntityFragment = EditorGUILayout.Toggle("Is entity: ", frg.IsEntityFragment);
+					bool showInfo = false;
+					if(frg.IsEntityFragment){
+						frg.Entity = (Entity)EditorGUILayout.ObjectField(frg.Entity, typeof(Entity), true);
+						showInfo = true;
+					}
+					EditorGUILayout.EndHorizontal();
+					if(showInfo){
+						if(!infoShown)
+							EditorGUILayout.HelpBox("Empty face or name will show entity's default face or name.", MessageType.Info);
+						infoShown = true;
+					}
+					EditorGUILayout.BeginHorizontal();
+					frg.Face = EditorGUILayout.ObjectField(frg.Face, typeof(Texture2D), true, GUILayout.Width(50),GUILayout.Height(50)) as Texture2D;
+					EditorGUILayout.BeginVertical();
+					frg.Name = EditorGUILayout.TextField(frg.Name);
+					frg.Msg = EditorGUILayout.TextArea(frg.Msg,GUILayout.Height(40));
+					EditorGUILayout.EndVertical();
+					EditorGUILayout.BeginVertical();
+					
+					/*EditorGUILayout.BeginHorizontal();
+					EditorGUILayout.LabelField("Reset: ", GUILayout.Width(40));
+					frg.reset = EditorGUILayout.Toggle(frg.reset);
+					EditorGUILayout.EndHorizontal();*/
+					
+					
+					GUIContent btt = new GUIContent("Remove");
+					Rect btr = GUILayoutUtility.GetRect(btt, style);		
+					if(GUI.Button(btr,btt)){
+						dialog.removeFragment(frg);
+					};
+					EditorGUILayout.EndVertical();
+					EditorGUILayout.EndHorizontal();
+
+				}
+				if(isScrolling)
+					EditorGUILayout.EndScrollView();
 			}
+			
 			EditorGUILayout.BeginHorizontal();
-			newParameter = EditorGUILayout.TextField("New Parameter", newParameter);
-			if(GUILayout.Button("Add"))
-				cont.setParameter(newParameter, null);
 			EditorGUILayout.EndHorizontal();
 			
-			if(Event.current.type != EventType.layout)
-			if(myNode.Childs.Length != 1){
-				myNode.clearChilds();
-				myNode.addNewChild();
-				this.Repaint();
+			GUIContent bttext = new GUIContent("Add Fragment");
+			Rect btrect = GUILayoutUtility.GetRect(bttext, style);		
+			if(GUI.Button(btrect,bttext)){
+				dialog.addFragment();
+			};
+			
+			EditorGUILayout.HelpBox("Options are the lines between you have to choose at the end of the dialog. Leave empty to do nothing, put one to execute this as the dialog ends, or put more than one to let the player choose between them.", MessageType.None);
+			if(options != null){
+				int i = 0;
+				foreach(Dialog.DialogOption opt in options){
+					EditorGUILayout.BeginHorizontal();
+					EditorGUILayout.LabelField("Tag: ", GUILayout.Width(27));
+					opt.tag = EditorGUILayout.TextField(opt.tag);
+					EditorGUILayout.LabelField("Text: ", GUILayout.Width(35));
+					opt.text = EditorGUILayout.TextField(opt.text);
+					GUIContent btt = new GUIContent("Remove");
+					Rect btr = GUILayoutUtility.GetRect(btt, style);		
+					if(GUI.Button(btr,btt)){
+						dialog.removeOption(opt);
+						if(myNode.Childs.Length > 1)
+							myNode.removeChild(i);
+					};
+					myNode.Childs[i].Name = "Option "+(i+1);
+					EditorGUILayout.EndHorizontal();
+					i++;
+				}
 			}
+			
+			bttext = new GUIContent("Add Option");
+			btrect = GUILayoutUtility.GetRect(bttext, style);		
+			if(GUI.Button(btrect,bttext)){
+				dialog.addOption();
+				if(myNode.Childs.Length < dialog.getOptions().Length)
+					myNode.addNewChild();
+			};
+
+			if (Event.current.type != EventType.layout)
+				if (myNode.Childs.Length < 1) {
+					myNode.addNewChild ();
+					this.Repaint ();
+				}
+
 		}
-		
+
 		if(myNode.Content == null){
 			selected = 0;
 			if(Event.current.type != EventType.layout)
-			if(myNode.Childs.Length != 0){
+			if(myNode.Childs.Length != 0 && Application.isEditor){
 				myNode.clearChilds();
 				this.Repaint();
 			}
 		}
 		
-		GUIContent[] options = new GUIContent[]{
+		GUIContent[] optionsPopup = new GUIContent[]{
 			new GUIContent("Empty node"),
 			new GUIContent("Game event"),
 			new GUIContent("Dialog")
 		};
 		
 		int lastSelected = selected;
-		selected = EditorGUILayout.Popup(selected, options);
+		selected = EditorGUILayout.Popup(selected, optionsPopup);
 		if(lastSelected != selected){
 			myNode.Content = null;
 		}
 		if(myNode.Content == null)
 		switch(selected){
-			case 1: myNode.Content = new GameEvent();	break;
-			case 2:	/*myNode.Content = new Dialog();*/		break;
+			case 1: myNode.Content = ScriptableObject.CreateInstance<GameEvent>();	break;
+			case 2:	myNode.Content = new Dialog(); break;
 			default: break;
+		}		
+		
+		
+		if (Event.current.type != EventType.layout) {
+			Rect lastRect = GUILayoutUtility.GetLastRect ();
+			Rect myRect = rects [myNode];
+			myRect.height = lastRect.y + lastRect.height;
+			rects [myNode] = myRect;
+			this.Repaint();
 		}
-		/*else if(myNode.Content is Dialog){
-
-		*/
-		
-		
-		
-		/*Rect lastRect = GUILayoutUtility.GetLastRect();
-		Rect myRect = rects[myNode];
-		myRect.height = lastRect.y + lastRect.height;
-		rects[myNode] = myRect;*/
 		GUI.DragWindow();
 	}
 	void curveFromTo(Rect wr, Rect wr2, Color color, Color shadow)
@@ -148,16 +207,17 @@ public class DialogWindow: EditorWindow{
 	}
 	
 	private int windowId;
-	void createWindows(DialogNode node){
-		rects[node] = GUILayout.Window(windowId, rects[node], nodeWindow, node.Name);
+	void createWindows(SecuenceNode node){
+		rects[node] = GUILayout.Window(windowId, rects[node], nodeWindow, node.Name, GUILayout.MinWidth(300));
 		nodos.Add (windowId, node);
 		windowId++;
 		
 		float altura = 100;
 		for(int i = 0; i< node.Childs.Length; i++){
-			if(!rects.ContainsKey(node.Childs[i])){
-				rects.Add(node.Childs[i], new Rect(rects[node].x + rects[node].width + 15, rects[node].y + i*altura, 150, 0));
-			}
+			if(!rects.ContainsKey(node.Childs[i]))
+				rects.Add(node.Childs[i], new Rect(rects[node].x + /*rects[node].width*/ + 315, rects[node].y + i*altura, 150, 0));
+			if(!scrolls.ContainsKey(node.Childs[i]))
+				scrolls.Add (node.Childs[i], new Vector2(0,0));
 			curveFromTo(rects[node], rects[node.Childs[i]], new Color(0.3f,0.7f,0.4f), s);
 			createWindows(node.Childs[i]);
 		}
@@ -167,10 +227,11 @@ public class DialogWindow: EditorWindow{
 	void OnGUI()
 	{
 		windowId = 0;
-		
-		if(!rects.ContainsKey(nodoInicial)){
-			rects.Add(nodoInicial, new Rect(10, 10, 150, 0));
-		}
+		SecuenceNode nodoInicial = secuence.Root;
+		if(!rects.ContainsKey(nodoInicial))
+			rects.Add(nodoInicial, new Rect(10, 10, 300, 0));
+		if(!scrolls.ContainsKey(nodoInicial))
+			scrolls.Add (nodoInicial, new Vector2(0,0));
 		BeginWindows();
 		nodos.Clear();
 		createWindows(nodoInicial);

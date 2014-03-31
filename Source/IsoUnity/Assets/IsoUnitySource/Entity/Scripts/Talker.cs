@@ -7,15 +7,28 @@ public class Talker : EntityScript {
 	public Texture2D background;
 	public string msg;
 	public string displaymsg;
+	
 
-	public Dialog dialog;
+	void OnEnable (){
+		if (secuence == null) {
+			Debug.Log ("Secuence created");
+			secuence = ScriptableObject.CreateInstance<Secuence> ();
+			secuence.init ();
+			DontDestroyOnLoad(secuence);
+		}	
+	}
 
-	private bool openDialog = false;
+	[SerializeField]
+	private Secuence secuence;
+	public Secuence Secuence{
+		get{ return secuence; }
+		set{ secuence = value; }
+	}
+
+	private bool started = false;
+	private bool start = false;
 	private bool next = false;
 	private List<Item> itemsToUse = new List<Item>();
-
-	private float delay = 0;
-	private int fragment = 0;
 
 	
 	public override void eventHappened (GameEvent ge)
@@ -24,8 +37,9 @@ public class Talker : EntityScript {
 		{
 			switch (ge.Name.ToLower()) 
 			{
-			case "open dialog": 
-				openDialog = true;
+			case "talk": 
+				if(!started)
+					start = true;
 				break;
 			case "ended fragment": 
 				next = true;
@@ -37,27 +51,43 @@ public class Talker : EntityScript {
 	public override Option[] getOptions ()
 	{
 			GameEvent ge = new GameEvent ();
-			ge.Name = "open dialog";
+			ge.Name = "talk";
 			ge.setParameter ("Talker", this);
 			Option option = new Option ("Talk", ge, false); 
 			return new Option[]{option};
 	}
+
+	private SecuenceNode currentNode;
+	private Queue<Dialog.Fragment> fragments;
 	public override void tick ()
 	{
-		if (openDialog) {
-			Debug.Log ("Abriendo Dialoguer");
-			GUIManager.addGUI (new DialogGUI (this, dialog.getFragments()[fragment]));
-			this.reset();
-			openDialog = false;
+		if (start){
+			start = false; started = true;
+			currentNode = secuence.Root;
+			next = true;
+			Debug.Log ("Iniciando secuencia");
 		}	
-		if (next) {
-			if(fragment<dialog.getFragments().Length-1){
-				fragment++;
-				GUIManager.addGUI (new DialogGUI (this, dialog.getFragments()[fragment]));
-			}else{
-				this.reset ();
-			}
+		if (started && next) {
 			next = false;
+			if(currentNode == null || currentNode.Content == null){
+				started = false;
+			}else if(currentNode.Content is GameEvent){
+				Game.main.enqueueEvent((GameEvent)currentNode.Content);
+				currentNode = currentNode.Childs[0];
+				next = true;
+			}else if(currentNode.Content is Dialog){
+				Dialog dialog = currentNode.Content as Dialog;
+				if(fragments == null){
+					fragments = new Queue<Dialog.Fragment>(dialog.getFragments());
+				}
+				if(fragments.Count > 0){
+					GUIManager.addGUI (new DialogGUI (this, fragments.Dequeue()));
+				}else{
+					fragments = null;
+					next = true;
+					currentNode = currentNode.Childs[0];
+				}
+			}
 		}
 	}
 	
@@ -72,20 +102,5 @@ public class Talker : EntityScript {
 			this.delay = 0;
 		}*/
 	}
-	
-	public Entity getEntity(){
-		return this.entity;
-	}
-
-	public string getMsg(){
-		return this.displaymsg;
-	}
-
-	private void reset(){
-		this.displaymsg = "";
-		this.fragment = 0;
-		this.delay = 0;
-	}
-
 }
 

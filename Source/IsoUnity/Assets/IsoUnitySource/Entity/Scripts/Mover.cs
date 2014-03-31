@@ -10,9 +10,9 @@ public class Mover : EntityScript {
 	private bool move = false;
 	public override void eventHappened (GameEvent ge)
 	{
-		switch(ge.Name){
+		switch(ge.Name.ToLower()){
 		case "move": {
-			if(ge.getParameter("entity") == this.entity){
+			if(ge.getParameter("entity") == this.Entity || ge.getParameter("entity") == this.gameObject){
 				this.move  = true;
 				this.moveToCell = (Cell) ge.getParameter("cell");
 			} 
@@ -24,7 +24,7 @@ public class Mover : EntityScript {
 	public override void tick(){
 		
 		if(move){
-			if(entity.canMoveTo(moveToCell) && !IsMoving){
+			if(Entity.canMoveTo(moveToCell) && !IsMoving){
 				moveTo(moveToCell);
 			}
 			this.move = false;
@@ -51,19 +51,19 @@ public class Mover : EntityScript {
 	private bool paso=false;
 	private Decoration dec;
 	public void moveTo(Cell c){
-		RoutePlanifier.planifyRoute(this.entity,c);
+		RoutePlanifier.planifyRoute(this.Entity,c);
 	}
 	public override void Update () {
-		this.dec = entity.decoration;
+		this.dec = Entity.decoration;
 		if(!isMoving){
-			next = RoutePlanifier.next(this.entity);
+			next = RoutePlanifier.next(this.Entity);
 			if(next != null){
 				
-				Vector3 myPosition = this.entity.Position.transform.localPosition,
+				Vector3 myPosition = this.Entity.Position.transform.localPosition,
 				otherPosition = next.transform.localPosition;
 				
 				MovementType type = MovementType.Lineal;
-				if(entity.Position.WalkingHeight != next.WalkingHeight){
+				if(Entity.Position.WalkingHeight != next.WalkingHeight){
 					type = MovementType.Parabolic;
 					dec.IsoDec = jumpingSprite;
 				}
@@ -100,7 +100,7 @@ public class Mover : EntityScript {
 			
 			if(this.movementProgress >= this.movementDuration){
 				this.isMoving = false;
-				this.entity.Position = next;
+				this.Entity.Position = next;
 				int lastRow = Mathf.FloorToInt(tile/dec.IsoDec.nCols);
 				dec.IsoDec = normalSprite;
 				dec.refresh();

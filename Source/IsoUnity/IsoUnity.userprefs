@@ -1,19 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Entity\Scripts\ItemScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Editor\EventEditors\DefaultEventEditor.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\Map\Managers\MapManager.cs" Line="79" Column="2" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\EntityScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="14" Column="66" />
-      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Inventory.cs" Line="48" Column="23" />
-      <File FileName="Assets\IsoUnitySource\Entity\Item.cs" Line="14" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="21" Column="21" />
-      <File FileName="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\ItemScript.cs" Line="14" Column="17" />
+      <File FileName="Assets\Editor\EventEditors\GameEventPropertyDrawer.cs" Line="12" Column="36" />
+      <File FileName="Assets\Editor\EventEditors\EventEditorFactory.cs" Line="24" Column="2" />
+      <File FileName="Assets\Editor\EventEditors\EventEditor.cs" Line="1" Column="1" />
+      <File FileName="Assets\Editor\EventEditors\MoveEventEditor.cs" Line="10" Column="28" />
+      <File FileName="Assets\Editor\EventEditors\DefaultEventEditor.cs" Line="23" Column="16" />
+      <File FileName="Assets\Editor\DialogWindow.cs" Line="34" Column="4" />
+      <File FileName="Assets\Editor\CellEditor.cs" Line="52" Column="26" />
+      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="53" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Game\GameEvent.cs" Line="20" Column="3" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="57" Column="32" />
+      <File FileName="Assets\IsoUnitySource\Dialog.cs" Line="84" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

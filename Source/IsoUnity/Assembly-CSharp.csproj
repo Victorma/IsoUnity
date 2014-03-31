@@ -48,6 +48,8 @@
   <ItemGroup>
      <Compile Include="Assets\IsoUnitySource\Camera\CameraManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Controller\ControllerManager.cs" />
+     <Compile Include="Assets\IsoUnitySource\Dialog.cs" />
+     <Compile Include="Assets\IsoUnitySource\DialogManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Entity.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\EntityScript.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Heap.cs" />
@@ -59,11 +61,11 @@
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\NPC.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />
+     <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIManager\GUIManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\DialogGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\IsoGUI.cs" />
-     <Compile Include="Assets\IsoUnitySource\GUIs\Managers\DialogManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\Option.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Command.cs" />
@@ -80,7 +82,10 @@
      <Compile Include="Assets\IsoUnitySource\Map\Managers\MapManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Map.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Secuence.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\SecuenceNode.cs" />
      <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
+     <Compile Include="Assets\TestDeltaTime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

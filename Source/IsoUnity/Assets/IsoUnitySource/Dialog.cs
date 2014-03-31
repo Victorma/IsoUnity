@@ -2,25 +2,80 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
+[System.Serializable]
 public class Dialog : ScriptableObject
 {
+	[System.Serializable]
 	public class Fragment{
 		[SerializeField]
-		public Texture2D face;
+		private Texture2D face;
 		[SerializeField]
-		public string name;
+		private string name;
 		[SerializeField]
-		public string msg;
+		private string msg;
 		[SerializeField]
-		public bool reset;
+		private Entity entity;
+		[SerializeField]
+		private bool isEntityFragment;
+
+		public Texture2D Face {
+			get {
+				if(this.face == null && this.Entity != null){
+					return Entity.face;
+				}
+				return face; 
+			}
+			set { 
+				if(this.Entity == null) 
+					this.face = value;
+				else if(this.Entity != null && this.Entity.face != value)
+					this.face = value;
+				else
+					this.face = null;
+			}
+		}
+
+		public string Name {
+			get {
+				if(this.name == "" && this.Entity != null){
+					return Entity.name;
+				}
+				return name; 
+			}
+			set { 
+				if(this.Entity == null) 
+					this.name = value;
+				else if(this.Entity != null && this.Entity.name != value)
+					this.name = value;
+				else
+					this.name = "";
+			}
+		}
+
+		public Entity Entity {
+			get { return (isEntityFragment)?entity:null; }
+			set { this.entity = value; }
+		}
+
+		public bool IsEntityFragment {
+			get { return isEntityFragment; }
+			set { isEntityFragment = value; }
+		}
+
+		public string Msg{
+			get { return msg; }
+			set { msg = value; }
+		}
+
 
 		public Fragment(){
+			this.isEntityFragment = false;
 			this.name = "";
 			this.msg = "";
-			this.reset = false;
+			this.entity = null;
 		}
 	}
-
+	[System.Serializable]
 	public class DialogOption{
 
 		public string tag;
@@ -38,11 +93,6 @@ public class Dialog : ScriptableObject
 		private Fragment[] fragments;
 		[SerializeField]
 		private DialogOption[] options;
-
-		public Dialog (){
-				//this.fragments = null;
-				//this.options = null;
-		}
 
 		public Fragment[] getFragments(){
 				return this.fragments;
@@ -99,7 +149,7 @@ public class Dialog : ScriptableObject
 			}
 			options = tmp;
 		}
-
+	
 }
 
 

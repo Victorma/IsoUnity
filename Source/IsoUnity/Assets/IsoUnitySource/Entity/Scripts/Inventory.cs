@@ -33,7 +33,7 @@ public class Inventory : EntityScript {
 
 	public override Option[] getOptions ()
 	{
-		if (this.entity.GetComponent<Player> () != null) {
+		if (this.Entity.GetComponent<Player> () != null) {
 			GameEvent ge = new GameEvent ();
 			ge.Name = "Open Inventory";
 			ge.setParameter ("Inventory", this);

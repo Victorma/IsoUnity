@@ -16,6 +16,7 @@ public class Game : MonoBehaviour {
 		events = new Queue<GameEvent>();
 		//commands = new Queue<Command>();
 		CameraManager.initialize();
+		CameraManager.lookTo (look);
 		MapManager.getInstance().setActiveMap(map);
 		ControllerManager.Enabled = true;
 	}
@@ -42,7 +43,7 @@ public class Game : MonoBehaviour {
 
 	public void tick(){
 
-		CameraManager.lookTo(look);
+		CameraManager.Update();
 
 		currentTimeToController+=Time.deltaTime;
 		if(currentTimeToController > timeToController){

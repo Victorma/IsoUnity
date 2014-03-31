@@ -72,18 +72,19 @@ public class DialogEditor : Editor {
 			if(fragments != null){
 				foreach(Dialog.Fragment frg in fragments){
 					EditorGUILayout.BeginHorizontal();
-					frg.face = EditorGUILayout.ObjectField(frg.face, typeof(Texture2D), true, GUILayout.Width(60),GUILayout.Height(60)) as Texture2D;
+					frg.Face = EditorGUILayout.ObjectField(frg.Face, typeof(Texture2D), true, GUILayout.Width(60),GUILayout.Height(60)) as Texture2D;
 					EditorGUILayout.BeginVertical();
-					frg.name = EditorGUILayout.TextField(frg.name);
-					frg.msg = EditorGUILayout.TextArea(frg.msg,GUILayout.Height(40));
+					frg.Name = EditorGUILayout.TextField(frg.Name);
+					frg.Msg = EditorGUILayout.TextArea(frg.Msg,GUILayout.Height(40));
 					EditorGUILayout.EndVertical();
 					EditorGUILayout.BeginVertical();
 
+					/*
 					EditorGUILayout.BeginHorizontal();
 					EditorGUILayout.LabelField("Reset: ", GUILayout.Width(40));
 					frg.reset = EditorGUILayout.Toggle(frg.reset);
 					EditorGUILayout.EndHorizontal();
-
+					*/
 
 					GUIContent btt = new GUIContent("Remove");
 					Rect btr = GUILayoutUtility.GetRect(btt, style);		

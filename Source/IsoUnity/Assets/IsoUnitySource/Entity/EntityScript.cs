@@ -2,10 +2,12 @@
 using System.Collections;
 
 public abstract class EntityScript : MonoBehaviour {
-	protected Entity entity;
+	public Entity Entity {
+		get { return this.GetComponent<Entity> ();}
+	}
 	// Use this for initialization
 	void Start () {
-		this.entity = GetComponent<Entity>();
+		
 	}
 
 	//Abstract Methods

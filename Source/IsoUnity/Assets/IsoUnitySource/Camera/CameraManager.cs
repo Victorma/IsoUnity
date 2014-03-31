@@ -31,10 +31,26 @@ public class CameraManager  {
 
 	}
 
+	private static bool isSmoothMoving = false;
+	private static GameObject looking = null;
+	public static void Update(){
+		if (looking != null) {
+			if (isSmoothMoving) {
+
+			} else {
+				Camera.main.transform.position = looking.transform.position - separation;
+			}
+		}
+
+	}
+	public static void smoothLookTo(GameObject go){
+
+		isSmoothMoving = true;
+		looking = go;
+	}
+
 	public static void lookTo(GameObject go){
-
-		Camera.main.transform.position = go.transform.position - separation;
-
+		looking = go;
 	}
 
 	public static void follow(GameObject go){

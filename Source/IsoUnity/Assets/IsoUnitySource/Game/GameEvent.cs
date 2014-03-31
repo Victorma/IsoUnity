@@ -1,28 +1,52 @@
+using UnityEngine;
 using System.Collections.Generic;
 
-public class GameEvent {
-	
-	private string name;
-	public string Name {get;set;}
+[System.Serializable]
+public class GameEvent : ScriptableObject{
 
-	private Dictionary<string, object> args = new Dictionary<string, object>();
-	public object getParameter(string param){
+	void Awake(){
+		if (args == null || args.Count != keys.Count) {
+			args = new Dictionary<string, Object>();
+			for(int i = 0; i< keys.Count; i++)
+				args.Add (keys[i], values[i]);
+		}
+	}
+
+	[SerializeField]
+	private string name = "";
+	public string Name {
+		get{ return name; }
+		set{ this.name = value; }
+	}
+	[SerializeField]
+	private List<string> keys = new List<string> ();
+	[SerializeField]
+	private List<Object> values = new List<Object>();
+
+	private Dictionary<string, Object> args = new Dictionary<string, Object>();
+	public Object getParameter(string param){
 		if(args.ContainsKey(param))
 			return args[param];
 		else
 			return null;
 	}
 
-	public void setParameter(string param, object content){
+	public void setParameter(string param, Object content){
 		if(args.ContainsKey(param))
 			args[param] = content;
 		else
 			args.Add(param, content);
+
+		this.keys = new List<string> (args.Keys);
+		this.values = new List<Object> (args.Values);
 	}
 
 	public void removeParameter(string param){
 		if(args.ContainsKey(param))
 			args.Remove(param);
+
+		this.keys = new List<string> (args.Keys);
+		this.values = new List<Object> (args.Values);
 	}
 
 	public string[] Params{

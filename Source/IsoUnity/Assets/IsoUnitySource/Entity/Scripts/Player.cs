@@ -11,17 +11,17 @@ public class Player : EntityScript {
 	public void onControllerEvent(ControllerEventArgs args){
 		if( args.options != null){
 			if(args.options.Length==1){
-				args.options[0].Action.setParameter("Executer", this.entity);
+				args.options[0].Action.setParameter("Executer", this.Entity);
 				if(!args.options[0].HasToMove)
 					Game.main.enqueueEvent(args.options[0].Action);
 			}else if(args.options.Length > 1){
-				OptionsGUI gui = new OptionsGUI(Camera.main.WorldToScreenPoint(entity.transform.position), entity.getOptions());
+				OptionsGUI gui = new OptionsGUI(Camera.main.WorldToScreenPoint(Entity.transform.position), Entity.getOptions());
 				GUIManager.addGUI(gui, 100);
 			}
 
 		}else if(args.cell != null){
 			GameEvent ge = new GameEvent();
-			ge.setParameter("entity", this.entity);
+			ge.setParameter("entity", this.Entity);
 			ge.setParameter("cell", args.cell);
 			ge.Name = "move";
 			Game.main.enqueueEvent(ge);			
@@ -33,9 +33,11 @@ public class Player : EntityScript {
 			else if(args.DOWN){ to = 3; }
 
 			if(to > -1){
-				Cell destino = entity.Position.Map.getNeightbours(entity.Position)[to];
+				if(Entity == null)
+					Debug.Log ("Null!");
+				Cell destino = Entity.Position.Map.getNeightbours(Entity.Position)[to];
 				GameEvent ge = new GameEvent();
-				ge.setParameter("entity", this.entity);
+				ge.setParameter("entity", this.Entity);
 				ge.setParameter("cell", destino);
 				ge.Name = "move";
 				Game.main.enqueueEvent(ge);

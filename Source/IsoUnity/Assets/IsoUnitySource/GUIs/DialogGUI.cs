@@ -10,8 +10,9 @@ public class DialogGUI : IsoGUI {
 
 	public DialogGUI(Talker tlk, Dialog.Fragment frg){
 		this.frg = frg;
-		this.picture = frg.face;
-		this.name = frg.name;
+		this.picture = frg.Face;
+		this.name = frg.Name;
+		this.msg = frg.Msg;
 		this.tlk = tlk;
 	}
 
@@ -33,15 +34,15 @@ public class DialogGUI : IsoGUI {
 		stl.fontStyle = FontStyle.Bold;
 		stl.fontSize = 20;
 		stl.normal.textColor = Color.white;
-		GUI.Label(new Rect (250, 50, Screen.width - 50, 25), frg.name);
-		GUI.Label(new Rect (250, 75, Screen.width - 50, 175), frg.msg);
+		GUI.Label(new Rect (250, 50, Screen.width - 50, 25), this.name);
+		GUI.Label(new Rect (250, 75, Screen.width - 50, 175), this.msg);
 
 	}
 
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
 		if (args.isLeftDown) {
-			GameEvent ge = new GameEvent ();
+			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
 			ge.Name = "ended fragment"; ge.setParameter ("Talker", tlk);
 			Game.main.enqueueEvent (ge);
 			GUIManager.removeGUI (this);
