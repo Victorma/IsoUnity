@@ -7,6 +7,7 @@ public class Talker : EntityScript {
 	public Texture2D background;
 	public string msg;
 	public string displaymsg;
+	public int chosenOption = -1;
 	
 
 	void OnEnable (){
@@ -28,6 +29,7 @@ public class Talker : EntityScript {
 	private bool started = false;
 	private bool start = false;
 	private bool next = false;
+	private bool chosen = false;
 	private List<Item> itemsToUse = new List<Item>();
 
 	
@@ -43,6 +45,10 @@ public class Talker : EntityScript {
 				break;
 			case "ended fragment": 
 				next = true;
+				break;
+			
+			case "chosen option": 
+				chosen = true;
 				break;
 			}
 		}
@@ -83,11 +89,29 @@ public class Talker : EntityScript {
 				if(fragments.Count > 0){
 					GUIManager.addGUI (new DialogGUI (this, fragments.Dequeue()));
 				}else{
-					fragments = null;
-					next = true;
+					if(dialog.getOptions().Length>1){
+						GUIManager.addGUI (new DialogGUI (this, dialog.getOptions()));
+					}else{
+						fragments = null;
+						next = true;
+						currentNode = currentNode.Childs[0];
+					}
+				}
+			}else if(currentNode.Content is Fork){
+				fragments = null;
+				next = true;
+				if(((Fork) currentNode.Content).check()){
 					currentNode = currentNode.Childs[0];
+				}else{
+					currentNode = currentNode.Childs[1];
 				}
 			}
+		}
+		if (started && chosen) {
+			chosen = false;
+			fragments = null;
+			next = true;
+			currentNode = currentNode.Childs[this.chosenOption];
 		}
 	}
 	

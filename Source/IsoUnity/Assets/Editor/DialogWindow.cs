@@ -122,8 +122,8 @@ public class SecuenceWindow: EditorWindow{
 				int i = 0;
 				foreach(Dialog.DialogOption opt in options){
 					EditorGUILayout.BeginHorizontal();
-					EditorGUILayout.LabelField("Tag: ", GUILayout.Width(27));
-					opt.tag = EditorGUILayout.TextField(opt.tag);
+					//EditorGUILayout.LabelField("Tag: ", GUILayout.Width(27));
+					//opt.tag = EditorGUILayout.TextField(opt.tag);
 					EditorGUILayout.LabelField("Text: ", GUILayout.Width(35));
 					opt.text = EditorGUILayout.TextField(opt.text);
 					GUIContent btt = new GUIContent("Remove");
@@ -153,6 +153,37 @@ public class SecuenceWindow: EditorWindow{
 					this.Repaint ();
 				}
 
+		} else if (myNode.Content is Fork) {
+			selected = 3;
+			
+			Fork fork = myNode.Content as Fork;
+
+			string[] forktypes = fork.getTypes();
+			
+			fork.setForkType((Fork.ForkTypes) EditorGUILayout.Popup ((int)fork.getForkType(), forktypes));
+
+			EditorGUILayout.BeginHorizontal();
+			switch(fork.getForkType()){
+				case Fork.ForkTypes.Switch:
+				EditorGUILayout.LabelField("SwitchID: ", GUILayout.Width(35));
+				fork.switchID = EditorGUILayout.TextField(fork.switchID);
+				fork.switchstate = EditorGUILayout.Toggle("SwitchState: ", fork.switchstate);
+				break;
+				case Fork.ForkTypes.Item:
+				break;
+				case Fork.ForkTypes.GameTime:
+				break;
+			}
+			EditorGUILayout.EndHorizontal();
+			
+			if (myNode.Childs.Length != 2) {
+				myNode.clearChilds ();
+				myNode.addNewChild ();
+				myNode.addNewChild ();
+				myNode.Childs[0].Name = "Case fork True";
+				myNode.Childs[1].Name = "Case fork False";
+				this.Repaint ();
+			}
 		}
 
 		if(myNode.Content == null){
@@ -167,7 +198,8 @@ public class SecuenceWindow: EditorWindow{
 		GUIContent[] optionsPopup = new GUIContent[]{
 			new GUIContent("Empty node"),
 			new GUIContent("Game event"),
-			new GUIContent("Dialog")
+			new GUIContent("Dialog"),
+			new GUIContent("Fork")
 		};
 		
 		int lastSelected = selected;
@@ -179,6 +211,7 @@ public class SecuenceWindow: EditorWindow{
 		switch(selected){
 			case 1: myNode.Content = ScriptableObject.CreateInstance<GameEvent>();	break;
 			case 2:	myNode.Content = new Dialog(); break;
+			case 3:	myNode.Content = new Fork(); break;
 			default: break;
 		}		
 		

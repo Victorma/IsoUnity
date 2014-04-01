@@ -19,6 +19,7 @@ public class Game : MonoBehaviour {
 		CameraManager.lookTo (look);
 		MapManager.getInstance().setActiveMap(map);
 		ControllerManager.Enabled = true;
+		IsoSwitchesManager.getInstance ().getIsoSwitches ();
 	}
 	
 	// Update is called once per frame
@@ -53,6 +54,10 @@ public class Game : MonoBehaviour {
 		while(events.Count>0)
 		{
 			GameEvent ge = events.Dequeue();
+			if(ge.Name == "ChangeSwitch"){
+				bool state = (bool) ge.getParameter("value");
+				IsoSwitchesManager.getInstance().getIsoSwitches().getSwitch((string)ge.getParameter("switch")).state = state;
+			}
 			broadcastEvent(ge);
 		}
 
