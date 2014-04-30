@@ -9,7 +9,7 @@ public class ChangeSwitchEventEditor : EventEditor {
 		this.ge = ScriptableObject.CreateInstance<GameEvent> ();
 		ge.Name = this.EventName;
 		ge.setParameter ("switch", "");
-		ge.setParameter ("state", true);
+		ge.setParameter ("value", true);
 	}
 	
 	public GameEvent Result { 
@@ -25,12 +25,16 @@ public class ChangeSwitchEventEditor : EventEditor {
 	public void useEvent(GameEvent ge){
 		this.ge = ge;
 		this.ge.Name = this.EventName;
+		if (ge.getParameter ("switch") == null)
+			ge.setParameter ("switch", "");
+		if (ge.getParameter ("value") == null)
+			ge.setParameter ("value", true);
 	}
 	
 	public void draw(){
 
 		ge.setParameter("switch", EditorGUILayout.TextField("SwitchID", (string) ge.getParameter("switch")));
-		ge.setParameter ("value", EditorGUILayout.Toggle("Value", (bool) ge.getParameter("value")));
+		ge.setParameter("value", EditorGUILayout.Toggle("Value", (bool) ge.getParameter("value")));
 	}
 	
 }

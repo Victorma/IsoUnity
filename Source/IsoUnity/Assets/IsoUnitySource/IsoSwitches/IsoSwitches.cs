@@ -5,47 +5,22 @@ using System.Collections.Generic;
 [System.Serializable]
 public class IsoSwitches : ScriptableObject
 {
-	[System.Serializable]
-	public class ISwitch{
-		[SerializeField]
-		public string id;
-		[SerializeField]
-		public bool state;
-
-		public ISwitch(){
-			this.id = "";
-			this.state = false;
-		}
-	}
 	[SerializeField]
-	public ISwitch[] switches;
+	public List<ISwitch> switches = new List<ISwitch>();
 
 
 	public IsoSwitches (){
 	}
 
 	public void addSwitch(){
-		if (this.switches != null) {
-			ISwitch[] tmp = new ISwitch [this.switches.Length + 1];
-			for (int i=0; i<this.switches.Length; i++) {
-				tmp [i] = this.switches [i];
-			}
-			tmp [this.switches.Length] = new ISwitch ();
-			this.switches = tmp;
-		} else {
-			this.switches = new ISwitch[1];
-			this.switches[0] = new ISwitch();
-		}
+		ISwitch iss = new ISwitch();
+		this.switches.Add(iss);
 	}
 
 	public void removeSwitch(ISwitch swt){
-		int k = 0;
-		ISwitch[] tmp = new ISwitch [this.switches.Length - 1];
-		for (int i=0; i<this.switches.Length-1; i++) {
-			if(swt == this.switches[i]) k = 1;
-			tmp[i] = this.switches[i+k];
-		}
-		this.switches = tmp;
+		if(this.switches.Contains(swt))
+		   this.switches.Remove (swt);
+		//ScriptableObject.Destroy (swt);
 	}
 
 	public ISwitch getSwitch(string id){
@@ -60,7 +35,7 @@ public class IsoSwitches : ScriptableObject
 	}
 
 	public ISwitch[] getList(){
-		return this.switches;
+		return this.switches.ToArray() as ISwitch[];
 	}
 
 	public bool consultSwitch(string id){

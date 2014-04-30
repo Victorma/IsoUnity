@@ -6,7 +6,7 @@ public class GameEvent : ScriptableObject{
 
 	void Awake(){
 		if (args == null || args.Count != keys.Count) {
-			args = new Dictionary<string, object>();
+			args = new Dictionary<string, Object>();
 			for(int i = 0; i< keys.Count; i++)
 				args.Add (keys[i], values[i]);
 		}
@@ -21,24 +21,27 @@ public class GameEvent : ScriptableObject{
 	[SerializeField]
 	private List<string> keys = new List<string> ();
 	[SerializeField]
-	private List<object> values = new List<object>();
+	private List<Object> values = new List<Object>();
 
-	private Dictionary<string, object> args = new Dictionary<string, object>();
+	private Dictionary<string, Object> args = new Dictionary<string, Object>();
 	public object getParameter(string param){
 		if (args.ContainsKey (param)) 
-			return args [param];
+			return (args[param] is IsoUnityBasicType)? ((IsoUnityBasicType)args [param]).Value: args[param];
 		else 
 			return null;
 	}
 
 	public void setParameter(string param, object content){
-		if(args.ContainsKey(param))
-			args[param] =  content;
-		else
-			args.Add(param, content);
+		object c = content;
+		if(c is System.ValueType || c is string){
+			c = ScriptableObject.CreateInstance<IsoUnityBasicType>();
+			((IsoUnityBasicType)c).Value = content;
+		}
+		if(args.ContainsKey(param))	args[param] = (Object)c;
+		else						args.Add(param, (Object)c);
 
 		this.keys = new List<string> (args.Keys);
-		this.values = new List<object> (args.Values);
+		this.values = new List<Object> (args.Values);
 	}
 
 	public void removeParameter(string param){
@@ -46,7 +49,7 @@ public class GameEvent : ScriptableObject{
 			args.Remove(param);
 
 		this.keys = new List<string> (args.Keys);
-		this.values = new List<object> (args.Values);
+		this.values = new List<Object> (args.Values);
 	}
 
 	public string[] Params{

@@ -29,7 +29,8 @@ public class IsoSwitchesManagerInstance : IsoSwitchesManager
 		IsoSwitches isoSwitches = Resources.Load<IsoSwitches> ("IsoSwitches");
 		
 		if (isoSwitches == null) {
-			isoSwitches = new IsoSwitches();  //scriptable object
+			Debug.Log("Creando Iso Switches");
+			isoSwitches = ScriptableObject.CreateInstance<IsoSwitches>();  //scriptable object
 			AssetDatabase.CreateAsset(isoSwitches, ruta);
 			Selection.activeObject = isoSwitches;  
 		}

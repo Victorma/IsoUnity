@@ -29,8 +29,8 @@ public class MoveEventEditor : EventEditor {
 	
 	public void draw(){
 
-		ge.setParameter("entity", EditorGUILayout.ObjectField("Entity", ge.getParameter("entity"), typeof(Entity), true));
-		ge.setParameter("cell", EditorGUILayout.ObjectField("Cell", ge.getParameter("cell"), typeof(Cell), true));
+		ge.setParameter("entity", EditorGUILayout.ObjectField("Entity", (Object)ge.getParameter("entity"), typeof(Entity), true));
+		ge.setParameter("cell", EditorGUILayout.ObjectField("Cell", (Object)ge.getParameter("cell"), typeof(Cell), true));
 	}
 
 }

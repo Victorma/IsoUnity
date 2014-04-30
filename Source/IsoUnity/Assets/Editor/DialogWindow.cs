@@ -31,8 +31,11 @@ public class SecuenceWindow: EditorWindow{
 			for (int i = 1; i< editors.Length; i++)
 				if (editors [i].ToLower () == ge.Name.ToLower ())
 					editorSelected = i;
+			int was = editorSelected;
 			
 			editorSelected = EditorGUILayout.Popup (editorSelected, EventEditorFactory.Intance.CurrentEventEditors);
+			if(was != editorSelected && editorSelected == 0)
+				ge.Name = "";
 			EventEditor editor = EventEditorFactory.Intance.createEventEditorFor (editors[editorSelected]);
 			editor.useEvent (ge);		
 			
@@ -130,10 +133,13 @@ public class SecuenceWindow: EditorWindow{
 					Rect btr = GUILayoutUtility.GetRect(btt, style);		
 					if(GUI.Button(btr,btt)){
 						dialog.removeOption(opt);
-						if(myNode.Childs.Length > 1)
+						if(myNode.Childs.Length > 1){
 							myNode.removeChild(i);
-					};
-					myNode.Childs[i].Name = "Option "+(i+1);
+							i--;
+						}
+					}else{
+						myNode.Childs[i].Name = "Option "+(i+1);
+					}
 					EditorGUILayout.EndHorizontal();
 					i++;
 				}

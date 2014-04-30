@@ -20,7 +20,6 @@ public class DefaultEventEditor : EventEditor {
 
 	public void useEvent(GameEvent ge){
 		this.ge = ge;
-		ge.Name = "";
 	}
 	
 	private string newParameter;
@@ -30,7 +29,9 @@ public class DefaultEventEditor : EventEditor {
 		
 		foreach (string param in ge.Params) {
 			EditorGUILayout.BeginHorizontal ();
-			ge.setParameter (param, EditorGUILayout.ObjectField (param, (Object)ge.getParameter (param), typeof(Object), true));
+
+			ge.setParameter(param, ParamEditor.editorFor(param, ge.getParameter(param)));
+			//ge.setParameter (param, EditorGUILayout.ObjectField (param, (Object)ge.getParameter (param), typeof(Object), true));
 			if (GUILayout.Button ("X"))
 				ge.removeParameter (param);
 			EditorGUILayout.EndHorizontal ();
