@@ -13,8 +13,7 @@ public class SecuenceWindow: EditorWindow{
 	private Dictionary<int, SecuenceNode> nodos = new Dictionary<int, SecuenceNode>();
 	private Dictionary<SecuenceNode, Rect> rects = new Dictionary<SecuenceNode, Rect>();
 	private Dictionary<SecuenceNode, Vector2> scrolls = new Dictionary<SecuenceNode, Vector2>();
-
-	string newParameter = "";
+	
 	void nodeWindow(int id)
 	{
 		SecuenceNode myNode = nodos[id];
@@ -51,7 +50,6 @@ public class SecuenceWindow: EditorWindow{
 				}
 		} else if (myNode.Content is Dialog) {
 			selected = 2;
-			Event e = Event.current;
 			
 			Dialog dialog = myNode.Content as Dialog;
 			

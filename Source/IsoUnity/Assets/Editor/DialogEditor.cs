@@ -54,8 +54,6 @@ public class DialogEditor : Editor {
 
 	public override void OnInspectorGUI(){
 		
-		Event e = Event.current;
-		
 		dialog = target as Dialog;
 		
 		GUIStyle style = new GUIStyle();

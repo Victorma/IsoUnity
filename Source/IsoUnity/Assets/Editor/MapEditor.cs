@@ -119,7 +119,7 @@ public class MapEditor : Editor {
 	IsoTexture paintingIsoTexture;
 	IsoDecoration paintingIsoDecoration;
 	int modo = 0;
-	int Selected = 0;
+//	int Selected = 0;
 	Vector2 scroll = new Vector2(0,0);
 
 	public override void OnInspectorGUI(){
@@ -370,7 +370,7 @@ public class MapEditor : Editor {
 	bool painting = false;
 	
 	bool collectTexture = false;
-	bool collectDecoration = false;
+	//bool collectDecoration = false;
 	
 	void OnSceneGUI (){
 		SceneView sceneView = SceneView.currentDrawingSceneView;
@@ -566,8 +566,6 @@ public class MapEditor : Editor {
 				if(Event.current.button == 0)
 				{
 					if(selected!=null){
-						Cell cs = selected.GetComponent<Cell>();
-
 						if(Event.current.type == EventType.MouseUp){
 							decorateLater = true;
 						}
@@ -582,9 +580,9 @@ public class MapEditor : Editor {
 			if(selected != null){
 				
 				Cell cs = selected.GetComponent<Cell>();
-				Face f = cs.getFaceByPoint(info.point);
+				Face f = (cs!=null)?cs.getFaceByPoint(info.point):null;
 
-				if(cs!=null){
+				if(cs!=null && f!=null){
 					
 					//Debug.Log("He seleccionado!" + selected.name);
 					Vector3 position = selected.transform.position;
@@ -621,13 +619,11 @@ public class MapEditor : Editor {
 
 					if(decorateLater){
 						if(paintingIsoDecoration != null){
-							Debug.Log("decor" + info.point);
 							cs.addDecoration(info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
 							cs.refresh();
 							decorateLater = false;
 						}
 					}else{
-						Debug.Log("gosht" + info.point);
 						map.ghostDecoration(cs, info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
 					}
 				}

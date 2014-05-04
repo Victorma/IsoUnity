@@ -10,7 +10,6 @@ public class Entity : MonoBehaviour {
 	public IsoDecoration normalSprite;
 	public IsoDecoration jumpingSprite;
 	public Texture2D face;
-	public string name;
 	public List<EntityScript> list;
 
 	[SerializeField]

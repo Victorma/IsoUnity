@@ -12,9 +12,10 @@ public class IsoSwitches : ScriptableObject
 	public IsoSwitches (){
 	}
 
-	public void addSwitch(){
+	public ISwitch addSwitch(){
 		ISwitch iss = ScriptableObject.CreateInstance<ISwitch>();
 		this.switches.Add(iss);
+		return iss;
 	}
 
 	public void removeSwitch(ISwitch swt){
@@ -30,6 +31,10 @@ public class IsoSwitches : ScriptableObject
 				r = isw;
 				break;
 			}
+		}
+		if(r == null){
+			r = addSwitch();
+			r.id = id;
 		}
 		return r;
 	}

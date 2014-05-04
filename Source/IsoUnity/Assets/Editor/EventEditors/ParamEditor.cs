@@ -72,8 +72,8 @@ public class ParamEditor {
 
 		if(pt.fieldEditorName == "ObjectField"){	
 			returnable = EditorGUILayout.ObjectField((Object)returnable, typeof(Object), true);
-		}else{								
-			mi = typeof(EditorGUILayout).GetMethod(pt.fieldEditorName, new System.Type[]{typeof(string), returnable.GetType(), typeof(GUILayoutOption)});
+		}else{						
+			mi = typeof(EditorGUILayout).GetMethod(pt.fieldEditorName, new System.Type[]{typeof(string), new List<System.Type>(typesAccepted.Keys)[tipo], typeof(GUILayoutOption)});
 			returnable = mi.Invoke(null,new object[]{"",returnable, new GUILayoutOption[0]});
 		}
 

@@ -13,7 +13,6 @@ public class GameEvent : ScriptableObject{
 	}
 
 	[SerializeField]
-	private string name = "";
 	public string Name {
 		get{ return name; }
 		set{ this.name = value; }

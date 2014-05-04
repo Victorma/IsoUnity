@@ -51,9 +51,17 @@ public class Decoration : MonoBehaviour{
 		angulo = 90 - Mathf.Abs(angulo);*/
 		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols),
 			                                        (isoDec.getTexture().height * scale) / ((float)isoDec.nRows),1);
-		this.renderer.material.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
-		this.renderer.material.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
-		this.renderer.material.SetTexture("_MainTex",isoDec.getTexture());
+
+		this.transform.localScale = new Vector3(this.transform.localScale.x,
+		                                        this.transform.localScale.y / Mathf.Sin(45f),
+		                                        1);
+
+		Material myMat = new Material(this.renderer.sharedMaterial);
+		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
+		myMat.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
+		myMat.SetTexture("_MainTex",isoDec.getTexture());
+		this.renderer.sharedMaterial = myMat;
+
 
 	}
 

@@ -55,6 +55,7 @@ public class Game : MonoBehaviour {
 		{
 			GameEvent ge = events.Dequeue();
 			if(ge.Name == "ChangeSwitch"){
+				Debug.Log ("Seteando: " + ge.getParameter("switch") + " con " + ge.getParameter("value"));
 				IsoSwitchesManager.getInstance().getIsoSwitches().getSwitch((string)ge.getParameter("switch")).State = ge.getParameter("value");
 			}
 			broadcastEvent(ge);

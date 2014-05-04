@@ -130,10 +130,9 @@ public class Map : MonoBehaviour
 		}
 		Decoration der = ghost.GetComponent<Decoration>();
 		der.IsoDec = dec;
-		
+		der.refresh ();
 		der.colocate(position,angle,rotate,parallel,centered);
 
-		der.refresh ();
 	}
 
 	public void removeGhost(){
@@ -190,7 +189,6 @@ public class Map : MonoBehaviour
 				Cell other = celdas[i];
 				Vector2 goCoords = getCoords (other.gameObject);
 				//Si hay otra celda en mi posicion
-				Debug.Log(goCoords + " vs " + coords); 
 				if(other != cell && coords.x == goCoords.x && coords.y == goCoords.y){
 					// Quito la celda
 					vecinas.Remove(other);

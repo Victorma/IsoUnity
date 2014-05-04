@@ -338,7 +338,9 @@ public class Cell : MonoBehaviour {
 		for(int i = 0; i< faces.Length; i++)
 			faces[i].regenerateUVs(posTexturas[i]);
 
-		this.renderer.material.SetTexture("_MainTex",TextureAtlas);
+		Material myMat = new Material(this.renderer.sharedMaterial);
+		myMat.SetTexture("_MainTex",TextureAtlas);
+		this.renderer.sharedMaterial = myMat;
 	}
 	
 	public Face getFaceByPoint(Vector3 point){
@@ -400,16 +402,18 @@ public class Cell : MonoBehaviour {
 		if (this.ghost == null) {
 			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 			ghost.name = "GhostDer";
-			ghost.renderer.material.color = new Color(ghost.renderer.material.color.r,ghost.renderer.material.color.g,ghost.renderer.material.color.b,intensity);
-			ghost.renderer.material.shader = Shader.Find("Transparent/Diffuse");
-			ghost.GetComponent<Decoration>().Father = this;
+
+			Material ghostMaterial = new Material(Shader.Find("Transparent/Diffuse"));
+			ghostMaterial.color = new Color(ghostMaterial.color.r,ghostMaterial.color.g,ghostMaterial.color.b,intensity);
+			ghost.renderer.sharedMaterial = ghostMaterial;
 		}
 		Decoration der = ghost.GetComponent<Decoration>();
+		der.Father = this;
 		der.IsoDec = dec;
 
+		der.refresh ();
 		der.colocate(position,angle,rotate,parallel,centered);
 
-		der.refresh ();
 		return this.ghost;
 	}
 
@@ -425,14 +429,15 @@ public class Cell : MonoBehaviour {
 
 		GameObject newdecoration = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 		newdecoration.name = "Decoration (clone)";
-		newdecoration.renderer.material.shader = Shader.Find("Unlit/Transparent");
+		newdecoration.renderer.sharedMaterial = new Material(Shader.Find("Unlit/Transparent"));
 		newdecoration.GetComponent<Decoration>().Father = this;
 
 		Decoration der = newdecoration.GetComponent<Decoration>();
 		der.IsoDec = dec;
-		der.colocate(position,angle,rotate,parallel,centered);
 
 		der.refresh ();
+		der.colocate(position,angle,rotate,parallel,centered);
+
 		this.decorations.Add (newdecoration);
 	}
 	
