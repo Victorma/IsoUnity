@@ -13,7 +13,7 @@ public class IsoSwitches : ScriptableObject
 	}
 
 	public void addSwitch(){
-		ISwitch iss = new ISwitch();
+		ISwitch iss = ScriptableObject.CreateInstance<ISwitch>();
 		this.switches.Add(iss);
 	}
 
@@ -38,7 +38,7 @@ public class IsoSwitches : ScriptableObject
 		return this.switches.ToArray() as ISwitch[];
 	}
 
-	public bool consultSwitch(string id){
-		return getSwitch (id).state;
+	public object consultSwitch(string id){
+		return getSwitch (id).State;
 	}
 }

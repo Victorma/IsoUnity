@@ -33,19 +33,20 @@ public class IsoUnityBasicType : ScriptableObject {
 		}
 		set{
 			object vt = value;
+			if(vt!=null){
+				whatIs = vt.GetType().ToString();
 
-			whatIs = vt.GetType().ToString();
-
-			if 	   (vt.GetType() == typeof(int))		{i = (int)vt;}
-			else if(vt.GetType() == typeof(float))		{f = (float)vt;}
-			else if(vt.GetType() == typeof(string))		{s = (string)vt;}
-			else if(vt.GetType() == typeof(Vector2))	{v2 = (Vector2)vt;}
-			else if(vt.GetType() == typeof(Vector3))	{v3 = (Vector3)vt;}
-			else if(vt.GetType() == typeof(Vector4))	{v4 = (Vector4)vt;}
-			else if(vt.GetType() == typeof(Quaternion)) {q = (Quaternion)vt;}
-			else if(vt.GetType() == typeof(bool))		{b = (bool)vt;}
-			else if(vt.GetType() == typeof(char))		{c = (char)vt;}
-			else whatIs = null;
+				if 	   (vt.GetType() == typeof(int))		{i = (int)vt;}
+				else if(vt.GetType() == typeof(float))		{f = (float)vt;}
+				else if(vt.GetType() == typeof(string))		{s = (string)vt;}
+				else if(vt.GetType() == typeof(Vector2))	{v2 = (Vector2)vt;}
+				else if(vt.GetType() == typeof(Vector3))	{v3 = (Vector3)vt;}
+				else if(vt.GetType() == typeof(Vector4))	{v4 = (Vector4)vt;}
+				else if(vt.GetType() == typeof(Quaternion)) {q = (Quaternion)vt;}
+				else if(vt.GetType() == typeof(bool))		{b = (bool)vt;}
+				else if(vt.GetType() == typeof(char))		{c = (char)vt;}
+				else whatIs = null;
+			}else whatIs = null;
 
 		}
 	}

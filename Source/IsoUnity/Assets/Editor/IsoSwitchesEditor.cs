@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(IsoSwitches))]
+//[CustomEditor(typeof(IsoSwitches))]
 public class IsoSwitchesEditor : Editor{
 
 	private Vector2 scrollposition = new Vector2(0,0);
@@ -33,7 +33,7 @@ public class IsoSwitchesEditor : Editor{
 				EditorGUILayout.BeginHorizontal();
 				EditorGUILayout.LabelField("ID: ", GUILayout.Width(27));
 				isw.id = EditorGUILayout.TextField(isw.id);
-				isw.state = EditorGUILayout.Toggle("Initial State: ", isw.state);
+				isw.State = ParamEditor.editorFor("Initial State: ", isw.State);
 				GUIContent btt = new GUIContent("Remove");
 				Rect btr = GUILayoutUtility.GetRect(btt, style);		
 				if(GUI.Button(btr,btt)){

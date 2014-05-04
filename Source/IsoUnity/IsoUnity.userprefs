@@ -1,16 +1,6 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\IsoSwitches\IsoSwitches.cs">
-    <Files>
-      <File FileName="Assets\IsoUnitySource\IsoSwitches\ISwitch.cs" Line="4" Column="22" />
-      <File FileName="Assets\IsoUnitySource\IsoSwitches\IsoSwitchesManager.cs" Line="18" Column="61" />
-      <File FileName="Assets\IsoUnitySource\IsoSwitches\IsoSwitches.cs" Line="8" Column="18" />
-      <File FileName="Assets\Editor\IsoSwitchesEditor.cs" Line="5" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="33" Column="2" />
-      <File FileName="Assets\IsoUnitySource\IsoSettings\IsoSettings.cs" Line="20" Column="1" />
-      <File FileName="Assets\Editor\IsoTextureEditor.cs" Line="1" Column="1" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -20,7 +20,7 @@ public class Player : EntityScript {
 			}
 
 		}else if(args.cell != null){
-			GameEvent ge = new GameEvent();
+			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
 			ge.setParameter("entity", this.Entity);
 			ge.setParameter("cell", args.cell);
 			ge.Name = "move";
@@ -36,7 +36,7 @@ public class Player : EntityScript {
 				if(Entity == null)
 					Debug.Log ("Null!");
 				Cell destino = Entity.Position.Map.getNeightbours(Entity.Position)[to];
-				GameEvent ge = new GameEvent();
+				GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
 				ge.setParameter("entity", this.Entity);
 				ge.setParameter("cell", destino);
 				ge.Name = "move";
@@ -58,7 +58,7 @@ public class Player : EntityScript {
 
 	public override Option[] getOptions ()
 	{
-		GameEvent ge = new GameEvent();
+		GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
 		ge.Name = "Hola!";
 		Option o = new Option("Hola mundo!",ge);
 

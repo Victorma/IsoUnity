@@ -56,7 +56,7 @@ public class Talker : EntityScript {
 	
 	public override Option[] getOptions ()
 	{
-			GameEvent ge = new GameEvent ();
+			GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
 			ge.Name = "talk";
 			ge.setParameter ("Talker", this);
 			Option option = new Option ("Talk", ge, false); 
@@ -89,7 +89,7 @@ public class Talker : EntityScript {
 				if(fragments.Count > 0){
 					GUIManager.addGUI (new DialogGUI (this, fragments.Dequeue()));
 				}else{
-					if(dialog.getOptions().Length>1){
+					if(dialog.getOptions() != null && dialog.getOptions().Length>1){
 						GUIManager.addGUI (new DialogGUI (this, dialog.getOptions()));
 					}else{
 						fragments = null;
@@ -97,10 +97,10 @@ public class Talker : EntityScript {
 						currentNode = currentNode.Childs[0];
 					}
 				}
-			}else if(currentNode.Content is Fork){
+			}else if(currentNode.Content is Checkable){
 				fragments = null;
 				next = true;
-				if(((Fork) currentNode.Content).check()){
+				if(((Checkable) currentNode.Content).check()){
 					currentNode = currentNode.Childs[0];
 				}else{
 					currentNode = currentNode.Childs[1];

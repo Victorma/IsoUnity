@@ -34,7 +34,7 @@ public class Inventory : EntityScript {
 	public override Option[] getOptions ()
 	{
 		if (this.Entity.GetComponent<Player> () != null) {
-			GameEvent ge = new GameEvent ();
+			GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
 			ge.Name = "Open Inventory";
 			ge.setParameter ("Inventory", this);
 			Option option = new Option ("Inventory", ge, false); 

@@ -159,28 +159,23 @@ public class SecuenceWindow: EditorWindow{
 					this.Repaint ();
 				}
 
-		} else if (myNode.Content is Fork) {
+		} else if (myNode.Content is Checkable) {
 			selected = 3;
 			
-			Fork fork = myNode.Content as Fork;
-
-			string[] forktypes = fork.getTypes();
+			Checkable c = (Checkable) myNode.Content;
+			string[] editors = ForkEditorFactory.Intance.CurrentForkEditors;
+			int editorSelected = EditorGUILayout.Popup (
+				ForkEditorFactory.Intance.ForkEditorIndex(c),
+				ForkEditorFactory.Intance.CurrentForkEditors
+				);
 			
-			fork.setForkType((Fork.ForkTypes) EditorGUILayout.Popup ((int)fork.getForkType(), forktypes));
-
-			EditorGUILayout.BeginHorizontal();
-			switch(fork.getForkType()){
-				case Fork.ForkTypes.Switch:
-				EditorGUILayout.LabelField("SwitchID: ", GUILayout.Width(35));
-				fork.switchID = EditorGUILayout.TextField(fork.switchID);
-				fork.switchstate = EditorGUILayout.Toggle("SwitchState: ", fork.switchstate);
-				break;
-				case Fork.ForkTypes.Item:
-				break;
-				case Fork.ForkTypes.GameTime:
-				break;
-			}
-			EditorGUILayout.EndHorizontal();
+			ForkEditor editor = ForkEditorFactory.Intance.createForkEditorFor (editors[editorSelected]);
+			
+			editor.useFork (c);		
+			
+			editor.draw ();
+			
+			myNode.Content = editor.Result;
 			
 			if (myNode.Childs.Length != 2) {
 				myNode.clearChilds ();
@@ -217,7 +212,7 @@ public class SecuenceWindow: EditorWindow{
 		switch(selected){
 			case 1: myNode.Content = ScriptableObject.CreateInstance<GameEvent>();	break;
 			case 2:	myNode.Content = new Dialog(); break;
-			case 3:	myNode.Content = new Fork(); break;
+			case 3:	myNode.Content = ScriptableObject.CreateInstance<ISwitchFork>(); break;
 			default: break;
 		}		
 		

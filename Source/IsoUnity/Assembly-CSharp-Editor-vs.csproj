@@ -57,6 +57,9 @@
      <Compile Include="Assets\Editor\EventEditors\GameEventPropertyDrawer.cs" />
      <Compile Include="Assets\Editor\EventEditors\MoveEventEditor.cs" />
      <Compile Include="Assets\Editor\EventEditors\ParamEditor.cs" />
+     <Compile Include="Assets\Editor\ForkEditors\ForkEditor.cs" />
+     <Compile Include="Assets\Editor\ForkEditors\ForkEditorFactory.cs" />
+     <Compile Include="Assets\Editor\ForkEditors\ISwitchForkEditor.cs" />
      <Compile Include="Assets\Editor\IsoSwitchesEditor.cs" />
      <Compile Include="Assets\Editor\IsoTextureEditor.cs" />
      <Compile Include="Assets\Editor\MapEditor.cs" />

@@ -1,55 +1,80 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 
 public class ParamEditor {
+	
+	public class ParamType {
+		public string name;
+		public object defaultValue;
+		public string fieldEditorName;
 
-	private static System.Type[] tipos = new System.Type[]{
-		typeof(Object),
-		typeof(int),
-		typeof(bool),
-		typeof(float),
-		typeof(string)
-	};
+		public ParamType(string n, object def, string fn){
+			this.name = n;
+			this.defaultValue = def;
+			this.fieldEditorName = fn;
+		}
+	}
 
 	public static object editorFor(string label, object v){
+		return editorFor (label, v, true);
+	}
+
+	public static object editorFor(string label, object v, bool allowUnityObject){
+		return editorFor (label, v, allowUnityObject, false);
+	}
+
+	public static object editorFor(string label, object v, bool allowUnityObject, bool fixedType){
+
+		Dictionary<System.Type, ParamEditor.ParamType> defaults = new Dictionary<System.Type, ParamEditor.ParamType>();
+
+		if(allowUnityObject)
+			defaults.Add (typeof(Object), new ParamType("UnityObject", null, "ObjectField"));
+
+		defaults.Add (typeof(int), new ParamType("Int", 0, "IntField"));
+		defaults.Add (typeof(bool), new ParamType("Boolean", false, "Toggle"));
+		defaults.Add (typeof(float), new ParamType("Float", 0f, "FloatField"));
+		defaults.Add (typeof(string), new ParamType("String", "", "TextField"));
+		defaults.Add (typeof(Vector2), new ParamType("Vector2", new Vector2(0,0), "Vector2Field"));
+		defaults.Add (typeof(Vector3), new ParamType("Vector3", new Vector3(0,0,0), "Vector3Field"));
+
+		return editorFor (label, v, defaults, fixedType); 
+	}
+
+	public static object editorFor(string label, object v, Dictionary<System.Type, ParamEditor.ParamType> typesAccepted){
+		return editorFor (label, v,typesAccepted, false);
+	}
+
+	public static object editorFor(string label, object v, Dictionary<System.Type, ParamEditor.ParamType> typesAccepted, bool fixedType){
 
 		EditorGUILayout.BeginHorizontal();
 
-		int pretipo = 0;
-		if(v!=null)
-			for(int i = 0; i< tipos.Length; i++)
-				if(v.GetType() == tipos[i]){
-					pretipo = i;
-					break;
-				}
-		string[] nombres = new string[tipos.Length];
-		for(int i = 0; i< tipos.Length; i++)
-			nombres[i] = tipos[i].ToString();
+		int pretipo = (v!=null)? new List<System.Type>(typesAccepted.Keys).IndexOf(v.GetType()):0;
+		if(pretipo == -1) pretipo = 0;
 
-		int tipo = EditorGUILayout.Popup(pretipo, nombres);
+		int tipo = pretipo;
+		if(!fixedType){
+			List<string> nombres = new List<string>();
+			foreach(ParamType p in typesAccepted.Values)
+				nombres.Add(p.name);
+			tipo = EditorGUILayout.Popup(pretipo, nombres.ToArray() as string[]);
+		}
 
 		object returnable = v;
 
-		if(pretipo != tipo){
-			switch(tipo){
-				case 0: returnable = null; break;
-				case 1: returnable = 0; break;
-				case 2: returnable = false; break;
-				case 3: returnable = 0f; break;
-				case 4: returnable = ""; break;
-			}
-		}
+		ParamType pt = new List<ParamType>(typesAccepted.Values)[tipo];
 
-		switch(tipo){
-			case 0:
-			Object miTipo = EditorGUILayout.ObjectField((Object)returnable,typeof(MonoScript),false);
-			returnable = EditorGUILayout.ObjectField(label, (Object)returnable, (miTipo == null)?typeof(Object):miTipo.GetType(), true);
-			break;
-			case 1: returnable = EditorGUILayout.IntField(label,(int)returnable); break;
-			case 2: returnable = EditorGUILayout.Toggle(label,(bool)returnable); break;
-			case 3: returnable = EditorGUILayout.FloatField(label,(float)returnable); break;
-			case 4: returnable = EditorGUILayout.TextField(label,(string)returnable); break;
+		if(pretipo != tipo)
+			returnable = pt.defaultValue;
+
+		MethodInfo mi = null;
+
+		if(pt.fieldEditorName == "ObjectField"){	
+			returnable = EditorGUILayout.ObjectField((Object)returnable, typeof(Object), true);
+		}else{								
+			mi = typeof(EditorGUILayout).GetMethod(pt.fieldEditorName, new System.Type[]{typeof(string), returnable.GetType(), typeof(GUILayoutOption)});
+			returnable = mi.Invoke(null,new object[]{"",returnable, new GUILayoutOption[0]});
 		}
 
 
