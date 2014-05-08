@@ -24,6 +24,12 @@ public class EventNodeEditor : NodeEditor {
 		editor.useEvent (ge);		
 		
 		editor.draw ();
+
+		ge.setParameter("synchronous", EditorGUILayout.Toggle("Synchronous", 
+		    (ge.getParameter("synchronous") == null)?false:(bool) ge.getParameter("synchronous")));
+		if((bool)ge.getParameter("synchronous")){
+			EditorGUILayout.HelpBox("Notice that if there is no EventFinished event, the game will stuck.", MessageType.Warning);
+		}
 		
 		node.Content = editor.Result;
 		

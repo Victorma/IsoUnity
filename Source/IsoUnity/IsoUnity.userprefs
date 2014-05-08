@@ -1,6 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Map.cs">
+    <Files>
+      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\MoveEventEditor.cs" Line="19" Column="24" />
+      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventNodeEditor.cs" Line="25" Column="3" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="26" Column="3" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" Line="53" Column="19" />
+      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="50" Column="5" />
+      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ParamEditor.cs" Line="51" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Map.cs" Line="277" Column="7" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

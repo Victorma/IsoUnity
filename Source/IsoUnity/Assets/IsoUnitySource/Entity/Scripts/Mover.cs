@@ -8,6 +8,9 @@ public class Mover : EntityScript {
 
 	private Cell moveToCell;
 	private bool move = false;
+	private bool movementFinished = false;
+	private GameEvent bcEvent;
+	private GameEvent movementEvent;
 	public override void eventHappened (GameEvent ge)
 	{
 		switch(ge.Name.ToLower()){
@@ -15,16 +18,23 @@ public class Mover : EntityScript {
 			if(ge.getParameter("entity") == this.Entity || ge.getParameter("entity") == this.gameObject){
 				this.move  = true;
 				this.moveToCell = (Cell) ge.getParameter("cell");
+				this.bcEvent = ge;
 			} 
-		}break;
+			}break;
 			
 		}
 	}
 
 	public override void tick(){
-		
+		if(movementFinished){
+			Game.main.eventFinished(movementEvent);
+			movementFinished = false;
+			movementEvent = null;
+		}
+
 		if(move){
 			if(Entity.canMoveTo(moveToCell) && !IsMoving){
+				movementEvent = bcEvent;
 				moveTo(moveToCell);
 			}
 			this.move = false;
@@ -79,7 +89,8 @@ public class Mover : EntityScript {
 				this.movementProgress = 0;
 				this.movementDuration = 0.3f;
 				isMoving = true;
-			}
+			}else if(movementEvent!=null)
+				movementFinished = true;
 		}
 		
 		if(isMoving){

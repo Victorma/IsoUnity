@@ -35,6 +35,16 @@ public class Game : MonoBehaviour {
 		this.events.Enqueue(ge);
 	}
 
+	public void eventFinished(GameEvent ge){
+		object sync = ge.getParameter("synchronous");
+		if(sync!=null && ((bool)sync)){
+			GameEvent f = ScriptableObject.CreateInstance<GameEvent>();
+			f.Name = "Event Finished";
+			f.setParameter("event", ge);
+			this.enqueueEvent(f);
+		}
+	}
+
 	/*public void enqueueCommand(Command c){
 		this.commands.Enqueue(c);
 	}*/

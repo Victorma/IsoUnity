@@ -31,6 +31,8 @@ public class Talker : EntityScript {
 	private bool next = false;
 	private bool chosen = false;
 	private List<Item> itemsToUse = new List<Item>();
+	private GameEvent waitingEvent;
+	private bool waitEventFinished = false;
 
 	
 	public override void eventHappened (GameEvent ge)
@@ -51,7 +53,9 @@ public class Talker : EntityScript {
 				chosen = true;
 				break;
 			}
-		}
+		}else if(waitEventFinished && ge.Name.ToLower() == "event finished" && waitingEvent == ge.getParameter("event"))
+			waitEventFinished = false;
+
 	}
 	
 	public override Option[] getOptions ()
@@ -78,8 +82,22 @@ public class Talker : EntityScript {
 			if(currentNode == null || currentNode.Content == null){
 				started = false;
 			}else if(currentNode.Content is GameEvent){
-				Game.main.enqueueEvent((GameEvent)currentNode.Content);
-				currentNode = currentNode.Childs[0];
+
+				if(waitingEvent == null){
+					GameEvent ge = (GameEvent)currentNode.Content;
+					Game.main.enqueueEvent(ge);
+					
+					object sync = ge.getParameter("synchronous");
+					if(sync!=null && (bool) sync){
+						waitEventFinished = true;
+						waitingEvent = ge;
+					}
+				}
+				if(!waitEventFinished){ 
+					currentNode = currentNode.Childs[0];
+					waitingEvent = null;
+				}
+
 				next = true;
 			}else if(currentNode.Content is Dialog){
 				Dialog dialog = currentNode.Content as Dialog;
