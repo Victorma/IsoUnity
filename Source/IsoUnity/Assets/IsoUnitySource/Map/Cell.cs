@@ -19,6 +19,13 @@ public class Cell : MonoBehaviour {
 	[SerializeField]
 	private float height;
 
+	[SerializeField]
+	private bool walkable = true;
+	public bool Walkable{
+		get{ return walkable;}
+		set{ this.walkable = value;}
+	}
+
 	public float Height {
 		get {
 			return height;
@@ -359,10 +366,10 @@ public class Cell : MonoBehaviour {
 
 	public bool isAccesibleBy(Entity entity){
 		foreach(Entity e in getEntities()){
-			if(entity.letPass(e))
-				return true;
+			if(!e.letPass(entity))
+				return false;
 		}
-		return false;
+		return walkable;
 	}
 
 	public Entity[] getEntities(){
@@ -402,6 +409,7 @@ public class Cell : MonoBehaviour {
 		if (this.ghost == null) {
 			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 			ghost.name = "GhostDer";
+			ghost.hideFlags = HideFlags.HideAndDontSave;
 
 			Material ghostMaterial = new Material(Shader.Find("Transparent/Diffuse"));
 			ghostMaterial.color = new Color(ghostMaterial.color.r,ghostMaterial.color.g,ghostMaterial.color.b,intensity);
@@ -476,5 +484,8 @@ public class Cell : MonoBehaviour {
 	void OnDestroy () {
 		if(this.Map != null)
 			this.Map.removeCell(this);
+	
+		foreach (Face f in faces)
+			ScriptableObject.Destroy (f);
 	}
 };

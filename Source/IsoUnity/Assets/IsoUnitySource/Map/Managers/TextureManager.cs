@@ -13,15 +13,6 @@ public abstract class TextureManager {
 		return instance;
 	}
 	
-	/*[MenuItem("Assets/Create/IsoTexture")]
-	public static void createIsoTextureAsset(){
-		IsoTexture asset = new IsoTexture();  //scriptable object
-		ProjectWindowUtil.CreateAsset(asset, "IsoTexture.asset");
-		//AssetDatabase.CreateAsset(asset, "MyAsset.asset");
-		//EditorUtility.FocusProjectWindow();
-		Selection.activeObject = asset;    
-	}*/
-	
 	public abstract IsoTexture newTexture();
 	public abstract IsoTexture[] textureList();
 	public abstract IsoTexture[] textureList (Texture match);

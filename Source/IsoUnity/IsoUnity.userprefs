@@ -1,14 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Map.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\..\Subastas\Assets\Scripts\PeopleScript.cs">
     <Files>
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\MoveEventEditor.cs" Line="19" Column="24" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventNodeEditor.cs" Line="25" Column="3" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="26" Column="3" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" Line="53" Column="19" />
-      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="50" Column="5" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ParamEditor.cs" Line="51" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Map\Map.cs" Line="277" Column="7" />
+      <File FileName="..\..\..\Subastas\Assets\Editor\AreaEditor.cs" Line="79" Column="52" />
+      <File FileName="..\..\..\Subastas\Assets\Scripts\AreaProvider.cs" Line="7" Column="21" />
+      <File FileName="..\..\..\Subastas\Assets\AreaRandomMover.cs" Line="32" Column="1" />
+      <File FileName="..\..\..\Subastas\Assets\FrenzyBar.cs" Line="57" Column="1" />
+      <File FileName="..\..\..\Subastas\Assets\ItemAuctionManager.cs" Line="18" Column="46" />
+      <File FileName="..\..\..\Subastas\Assets\WalkingGuysCreator.cs" Line="35" Column="5" />
+      <File FileName="..\..\..\Subastas\Assets\Scripts\PujadorScript.cs" Line="23" Column="40" />
+      <File FileName="..\..\..\Subastas\Assets\Scripts\PeopleScript.cs" Line="71" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

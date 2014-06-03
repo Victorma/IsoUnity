@@ -41,12 +41,14 @@ public class Entity : MonoBehaviour {
 	}
 
 	public bool letPass(Entity e){
-		foreach(EntityScript en in list){
+		/*foreach(EntityScript en in list){
 			foreach(EntityScript hisEn in e.GetComponents<EntityScript>()){
 				if(hisEn == en)
 					return !isBlackList;
 			}
-		}
+		}*/
+		Debug.Log (isBlackList);
+		Debug.Log ((isBlackList) ? "Dejo pasar" : "No dejo pasar");
 		return isBlackList;
 	}
 

@@ -54,8 +54,13 @@ public class CellEditor : Editor {
 		serializedObject.Update();
 
 		SerializedProperty height = serializedObject.FindProperty("height");
+		SerializedProperty walkable = serializedObject.FindProperty("walkable");
 		SerializedProperty cellTopType = serializedObject.FindProperty("cellTop");
 		SerializedProperty cellTopRotation = serializedObject.FindProperty("cellTopRotation");
+
+		EditorGUI.showMixedValue = walkable.hasMultipleDifferentValues;
+		EditorGUILayout.PropertyField (walkable);
+
 
 		heightValue = height.floatValue;
 		EditorGUI.showMixedValue = height.hasMultipleDifferentValues;

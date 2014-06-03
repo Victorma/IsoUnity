@@ -17,6 +17,7 @@ public abstract class IsoSettingsManager
 public class IsoSettingsManagerInstance : IsoSettingsManager
 {
 	private String ruta;
+	private IsoSettings instance;
 
 	public IsoSettingsManagerInstance(){
 		ruta = "Assets/Resources/IsoSettings.asset";
@@ -25,14 +26,19 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 
 	public override IsoSettings getIsoSettings(){
 
-		IsoSettings isoSettings = Resources.Load<IsoSettings> ("IsoSettings");
+		instance = Resources.Load<IsoSettings> ("IsoSettings");
 
-		/*if (isoSettings == null) {
-			isoSettings = new IsoSettings();  //scriptable object
-			AssetDatabase.CreateAsset(isoSettings, ruta);
-			Selection.activeObject = isoSettings;  
-		}*/
+		if (instance == null) {
+			if (Application.isEditor) {
+				System.Reflection.MethodInfo mi = Type.GetType ("IsoAssetsManager")
+										.GetMethod ("CreateAssetOf");
+				instance = (IsoSettings)mi.Invoke (null, new object[]{"IsoSettings", ruta});
+			} else {
+				instance = ScriptableObject.CreateInstance<IsoSettings> ();
+			}
 
-		return isoSettings;
+		}
+
+		return instance;
 	}
 }

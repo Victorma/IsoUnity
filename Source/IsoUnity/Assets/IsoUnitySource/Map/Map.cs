@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 
 public class Map : MonoBehaviour
@@ -97,9 +96,12 @@ public class Map : MonoBehaviour
 			ghostType = 1;
 			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab) as GameObject;
 			ghost.name = "Ghost";
+			ghost.hideFlags = HideFlags.HideAndDontSave;
 			ghost.GetComponent<Cell>().Map = this;
-			ghost.renderer.material.color = new Color(ghost.renderer.material.color.r,ghost.renderer.material.color.g,ghost.renderer.material.color.b,intensity);
-			ghost.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+
+			Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+			mat.color = new Color(mat.color.r,mat.color.g,mat.color.b,intensity);
+			ghost.renderer.sharedMaterial = mat;
 		}
 		
 		// Getting the localPosition
@@ -193,7 +195,7 @@ public class Map : MonoBehaviour
 					// Quito la celda
 					vecinas.Remove(other);
 					celdas.RemoveAt(i);
-					SceneView.DestroyImmediate(other.gameObject);
+					GameObject.DestroyImmediate(other.gameObject);
 					break;
 				}
 			}

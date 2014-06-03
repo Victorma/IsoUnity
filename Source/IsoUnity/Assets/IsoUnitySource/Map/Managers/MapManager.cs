@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 
 public abstract class MapManager
 {
@@ -22,12 +21,6 @@ public abstract class MapManager
 	public abstract void fillControllerEvent(ControllerEventArgs args);
 
 	public abstract void setActiveMap(Map map);
-
-	[MenuItem("GameObject/Create Other/IsoUnity Map")]
-	public static void createMap(){
-		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultMapPrefab) as GameObject;
-		Selection.activeObject = go;    
-	}
 }
 
 public class MapManagerInstance : MapManager 
