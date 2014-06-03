@@ -7,7 +7,6 @@ public abstract class DecorationManager {
 	private static DecorationManager instance;
 	public static DecorationManager getInstance(){
 		if(instance == null){
-			Debug.Log("creating singleton");
 			instance = new DecorationManagerInstance();
 		}
 		return instance;

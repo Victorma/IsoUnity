@@ -13,10 +13,6 @@ public abstract class MapManager
 	}
 	
 	public abstract Map[] getMapList();
-	
-	//public abstract Map createNewMap();
-	
-	public abstract void removeMap(Map map);
 
 	public abstract void fillControllerEvent(ControllerEventArgs args);
 
@@ -63,10 +59,4 @@ public class MapManagerInstance : MapManager
 		}
 	}
 
-	
-	public override void removeMap(Map map)
-	{
-		//mapas.Remove(map);
-	}
-	
 }

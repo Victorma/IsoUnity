@@ -7,7 +7,6 @@ public abstract class TextureManager {
 	private static TextureManager instance;
 	public static TextureManager getInstance(){
 		if(instance == null){
-			Debug.Log("creating singleton");
 			instance = new TextureManagerInstance();
 		}
 		return instance;

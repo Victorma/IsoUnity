@@ -20,23 +20,27 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 	private IsoSettings instance;
 
 	public IsoSettingsManagerInstance(){
-		ruta = "Assets/Resources/IsoSettings.asset";
+
 	}
 
 
 	public override IsoSettings getIsoSettings(){
 
-		instance = Resources.Load<IsoSettings> ("IsoSettings");
-
 		if (instance == null) {
-			if (Application.isEditor) {
-				System.Reflection.MethodInfo mi = Type.GetType ("IsoAssetsManager")
-										.GetMethod ("CreateAssetOf");
-				instance = (IsoSettings)mi.Invoke (null, new object[]{"IsoSettings", ruta});
-			} else {
-				instance = ScriptableObject.CreateInstance<IsoSettings> ();
-			}
+			instance = Resources.Load<IsoSettings> ("IsoSettings");
 
+			if (instance == null) {
+				if (Application.isEditor) {
+					#if UNITY_EDITOR
+					System.Reflection.MethodInfo mi = Type.GetType ("IsoSettingsMenu").GetMethod ("createSettings");
+					instance = mi.Invoke(null, null) as IsoSettings;
+					#endif
+				} else {
+					//To prevent crashing
+					Debug.LogWarning("Iso settings not found in /Resources. Runtime instance created. Consider to create the Asset.");
+					instance = ScriptableObject.CreateInstance<IsoSettings> ();
+				}
+			}
 		}
 
 		return instance;

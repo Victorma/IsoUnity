@@ -486,6 +486,6 @@ public class Cell : MonoBehaviour {
 			this.Map.removeCell(this);
 	
 		foreach (Face f in faces)
-			ScriptableObject.Destroy (f);
+			ScriptableObject.DestroyImmediate (f);
 	}
 };
