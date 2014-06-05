@@ -5,6 +5,7 @@ using System.Collections;
 public class EditModule : MapEditorModule {
 	
 	public string Name {get{return "Edit";}}
+	public int Order {get{return 1;}}
 
 	private const float movingInterval = 30;
 	private const int cellSize = 1;

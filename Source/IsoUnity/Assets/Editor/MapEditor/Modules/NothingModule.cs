@@ -9,7 +9,7 @@ public class NothingModule : MapEditorModule {
 			return "Nothing";
 		}
 	}
-	
+	public int Order {get{return 0;}}
 
 	public void useMap(Map map){}
 	

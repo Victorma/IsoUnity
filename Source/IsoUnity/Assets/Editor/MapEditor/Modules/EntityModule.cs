@@ -5,6 +5,7 @@ using System.Collections;
 public class EntityModule : MapEditorModule {
 	
 	public string Name {get{return "Entities";}}
+	public int Order {get{return 4;}}
 
 	private Map map;
 	private Tool selected;

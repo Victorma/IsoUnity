@@ -5,6 +5,7 @@ using System.Collections;
 public class DecorateModule : MapEditorModule {
 	
 	public string Name {get{return "Decorate";}}
+	public int Order {get{return 3;}}
 
 	private Map map;
 	private Tool selected;

@@ -1,5 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System;
+using System.Reflection;
 using System.Collections.Generic;
 
 [CustomEditor(typeof(Map))]
@@ -12,17 +14,35 @@ public class MapEditor : Editor {
 
 	private GUIStyle toolBarStyle;
 
+	private class ModuleComparision : IComparer<MapEditorModule> {
+		public int Compare(MapEditorModule a, MapEditorModule b){
+			return a.Order - b.Order;
+		}
+	}
+
 	void OnEnable()
 	{
 		this.map = (Map)target;
 
-		this.modules = new MapEditorModule[]{
+		/*this.modules = new MapEditorModule[]{
 			new NothingModule(),
 			new EditModule(),
 			new PaintModule(),
 			new DecorateModule(),
 			new EntityModule()
-		};
+		};*/
+		List<MapEditorModule> modules = new List<MapEditorModule>();
+
+		var type = typeof(MapEditorModule);
+		Assembly[] assembly = AppDomain.CurrentDomain.GetAssemblies();
+		foreach(Assembly a in assembly)
+			foreach(Type t in a.GetTypes())
+				if(type.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+					modules.Add(Activator.CreateInstance(t) as MapEditorModule);
+
+		modules.Sort(new ModuleComparision());
+
+		this.modules = modules.ToArray() as MapEditorModule[];
 
 		this.selected = 0;
 

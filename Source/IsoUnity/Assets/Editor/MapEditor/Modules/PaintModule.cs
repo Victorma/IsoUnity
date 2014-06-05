@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class PaintModule : MapEditorModule {
 	
 	public string Name {get{return "Paint";}}
+	public int Order {get{return 2;}}
 
 	private Map map;
 	private Tool selected;

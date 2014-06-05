@@ -6,6 +6,7 @@ public interface MapEditorModule {
 
 	string Name {get;}
 	bool Repaint {get; set;}
+	int Order {get;}
 
 	void useMap(Map map);
 
