@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,13 +11,6 @@ public abstract class DialogManager {
 			instance = new DialogManagerInstance();
 		}
 		return instance;
-	}
-	
-	[MenuItem("Assets/Create/Dialog")]
-	public static void createDialogAsset(){
-		Dialog asset = new Dialog();  //scriptable object
-		ProjectWindowUtil.CreateAsset(asset, "Dialog.asset");
-		Selection.activeObject = asset;    
 	}
 
 	public abstract Dialog[] dialogList();

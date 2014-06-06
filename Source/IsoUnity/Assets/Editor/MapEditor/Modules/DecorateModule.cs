@@ -90,7 +90,7 @@ public class DecorateModule : MapEditorModule {
 			if (e.isMouse && border.Contains(e.mousePosition)) 	{ 
 				if(e.type == EventType.mouseDown){
 					paintingIsoDecoration = it;
-					//this.Repaint(); TODO rep
+					this.Repaint = true;
 				}
 			}
 			
@@ -167,6 +167,7 @@ public class DecorateModule : MapEditorModule {
 					else ang = 1;
 					
 					if(paintingIsoDecoration != null){
+						Debug.Log ("Decoration");
 						if(decorateLater){
 							cs.addDecoration(info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
 							cs.refresh();

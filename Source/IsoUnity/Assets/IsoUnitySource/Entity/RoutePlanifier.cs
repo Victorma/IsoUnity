@@ -6,7 +6,11 @@ public class RoutePlanifier
 
 	private static Dictionary<Entity,Stack<Cell>> routes = new Dictionary<Entity, Stack<Cell>>();
 
-	public static void planifyRoute(Entity entity, Cell destination){
+	public static void planifyRoute(Entity entity, Cell destination) {
+		planifyRoute(entity, destination, 0);
+	}
+
+	public static void planifyRoute(Entity entity, Cell destination, int distance){
 		if(routes.ContainsKey(entity)){
 			return;
 			//Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
@@ -17,7 +21,8 @@ public class RoutePlanifier
 		}else{
 			/*Stack<Cell> ruta = new Stack<Cell>();
 			ruta.Push (destination);*/
-			Stack<Cell> ruta = calculateRoute(entity.Position, destination, entity);
+			Stack<Cell> ruta = calculateRoute(entity.Position, destination, entity, distance);
+
 			if(ruta!=null){
 				ruta.Push(entity.Position);
 				//ruta.Pop(); //Quito en la que estoy
@@ -62,8 +67,25 @@ public class RoutePlanifier
 			reconstruyeCamino(route, posAnterior, anterior,celdas,cellToPos);
 		}
 	}
+
+	private static List<Cell> GetSurroundCellsAtRadius(Cell to, int distance){
+		List<Cell> cells = new List<Cell>();
+		GetSurroundCellsAtRadius(to, distance, cells);
+		return cells;
+	}
+
+	private static void GetSurroundCellsAtRadius(Cell to, int distance, List<Cell> cells){
+		if(distance < 0)
+			return;
+
+		if(!cells.Contains(to)){
+			cells.Add(to);
+			foreach(Cell c in to.Map.getNeightbours(to))
+				GetSurroundCellsAtRadius(c, distance-1, cells);
+		}
+	}
 	
-	private static Stack<Cell> calculateRoute(Cell from, Cell to, Entity entity){
+	private static Stack<Cell> calculateRoute(Cell from, Cell to, Entity entity, int distance){
 			
 		Cell[] cells = from.Map.GetComponentsInChildren<Cell>();
 		Dictionary<Cell,int> cellToPos = new Dictionary<Cell, int>();
@@ -88,6 +110,8 @@ public class RoutePlanifier
 		f[posInicial] = estimaMeta(from, to);
 		anterior[posInicial] = null;
 		abierta.push(posInicial + 1, f[posInicial]);
+
+		List<Cell> ends = GetSurroundCellsAtRadius(to, distance);
 		
 		while (!abierta.isEmpty()){
 			
@@ -95,7 +119,7 @@ public class RoutePlanifier
 			abierta.pop();
 			Cell celdaCandidata = cells[candidata];
 			
-			if (celdaCandidata == to){
+			if (ends.Contains(celdaCandidata)){
 				Stack<Cell> ruta = new Stack<Cell>();
 				reconstruyeCamino(ruta, candidata, anterior, cells, cellToPos);
 				return ruta;

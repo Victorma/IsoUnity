@@ -63,7 +63,7 @@ public class Talker : EntityScript {
 			GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
 			ge.Name = "talk";
 			ge.setParameter ("Talker", this);
-			Option option = new Option ("Talk", ge, false); 
+			Option option = new Option ("Talk", ge, true, 1); 
 			return new Option[]{option};
 	}
 

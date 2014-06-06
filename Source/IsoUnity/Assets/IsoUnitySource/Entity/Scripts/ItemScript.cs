@@ -23,7 +23,7 @@ public class ItemScript : EntityScript {
 		ge.Name = "Pick";
 		ge.setParameter ("Item", this.item);
 
-		return new Option[]{new Option ("Pick", ge)};
+		return new Option[]{new Option ("Pick", ge, 1)};
 
 	}
 

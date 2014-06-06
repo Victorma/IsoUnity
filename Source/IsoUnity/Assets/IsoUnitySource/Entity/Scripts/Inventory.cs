@@ -37,7 +37,7 @@ public class Inventory : EntityScript {
 			GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
 			ge.Name = "Open Inventory";
 			ge.setParameter ("Inventory", this);
-			Option option = new Option ("Inventory", ge, false); 
+			Option option = new Option ("Inventory", ge, false, 0); 
 			return new Option[]{option};
 		} else
 			return null;

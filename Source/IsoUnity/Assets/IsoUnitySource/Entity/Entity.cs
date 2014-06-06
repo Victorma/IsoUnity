@@ -47,8 +47,6 @@ public class Entity : MonoBehaviour {
 					return !isBlackList;
 			}
 		}*/
-		Debug.Log (isBlackList);
-		Debug.Log ((isBlackList) ? "Dejo pasar" : "No dejo pasar");
 		return isBlackList;
 	}
 

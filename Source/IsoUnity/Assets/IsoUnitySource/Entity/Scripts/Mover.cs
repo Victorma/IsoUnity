@@ -9,6 +9,7 @@ public class Mover : EntityScript {
 	private Cell moveToCell;
 	private bool move = false;
 	private bool movementFinished = false;
+	private int distanceToMove = 0;
 	private GameEvent bcEvent;
 	private GameEvent movementEvent;
 	public override void eventHappened (GameEvent ge)
@@ -18,6 +19,9 @@ public class Mover : EntityScript {
 			if(ge.getParameter("entity") == this.Entity || ge.getParameter("entity") == this.gameObject){
 				this.move  = true;
 				this.moveToCell = (Cell) ge.getParameter("cell");
+
+				distanceToMove = (ge.getParameter("distance")!=null)? (int) ge.getParameter("distance"): 0;
+
 				this.bcEvent = ge;
 			} 
 			}break;
@@ -33,7 +37,7 @@ public class Mover : EntityScript {
 		}
 
 		if(move){
-			if(Entity.canMoveTo(moveToCell) && !IsMoving){
+			if(!IsMoving){
 				movementEvent = bcEvent;
 				moveTo(moveToCell);
 			}
@@ -61,7 +65,7 @@ public class Mover : EntityScript {
 	private bool paso=false;
 	private Decoration dec;
 	public void moveTo(Cell c){
-		RoutePlanifier.planifyRoute(this.Entity,c);
+		RoutePlanifier.planifyRoute(this.Entity,c,distanceToMove);
 	}
 	public override void Update () {
 		this.dec = Entity.decoration;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+
 public abstract class IsoSwitchesManager
 {
 	private static IsoSwitchesManagerInstance instance;
