@@ -62,6 +62,8 @@
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Pepito.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" />
+     <Compile Include="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs" />
+     <Compile Include="Assets\IsoUnitySource\EventManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIManager\GUIManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\DialogGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" />
@@ -86,6 +88,7 @@
      <Compile Include="Assets\IsoUnitySource\Map\Managers\MapManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Managers\TextureManager.cs" />
      <Compile Include="Assets\IsoUnitySource\Map\Map.cs" />
+     <Compile Include="Assets\IsoUnitySource\Scripts\AutoAnimator.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Forks\Checkable.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Forks\ISwitchFork.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Secuence.cs" />

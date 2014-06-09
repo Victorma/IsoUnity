@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
@@ -7,6 +7,7 @@ public class Game : MonoBehaviour {
 	//Queue<Command> commands;
 	public GameObject look;
 	public Map map;
+	public List<EventManager> managers;
 
 	public static Game main;
 
@@ -20,6 +21,9 @@ public class Game : MonoBehaviour {
 		MapManager.getInstance().setActiveMap(map);
 		ControllerManager.Enabled = true;
 		IsoSwitchesManager.getInstance ().getIsoSwitches ();
+
+		managers = new List<EventManager> ();
+		managers.Add (new AnimationManager ());
 	}
 	
 	// Update is called once per frame
@@ -78,6 +82,10 @@ public class Game : MonoBehaviour {
 	}
 
 	private void broadcastEvent(GameEvent ge){
+
+		foreach(EventManager manager in managers)
+			manager.receiveEvent(ge);
+
 		foreach(Map map in MapManager.getInstance().getMapList())
 		{
 			map.broadcastEvent(ge);

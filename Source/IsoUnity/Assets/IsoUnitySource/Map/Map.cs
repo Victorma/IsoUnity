@@ -116,31 +116,30 @@ public class Map : MonoBehaviour
 		cell.transform.localPosition = new Vector3((coords.x+0.5f) * cellSize, 0, (coords.y+0.5f) * cellSize);
 	}
 
-	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec, float intensity){
+	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
 		checkTransform();
 		
 		if(ghost == null || ghostType != 2){
 			removeGhost();
 			ghostType = 2;
-			ghost = cs.addGhost(position, angle, rotate, parallel, centered, dec, intensity);
+			ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
 		}else{
 			if (ghost.GetComponent<Decoration> ().Father != cs) {
 				removeGhost();
 				ghostType = 2;
-				ghost = cs.addGhost(position, angle, rotate, parallel, centered, dec, intensity);
+				ghost = cs.addGhost(position, angle, parallel, centered, dec, intensity);
 			}
 		}
 		Decoration der = ghost.GetComponent<Decoration>();
 		der.IsoDec = dec;
-		der.refresh ();
-		der.colocate(position,angle,rotate,parallel,centered);
+		der.setParameters(position,angle,parallel,centered);
 
 	}
 
 	public void removeGhost(){
 		if (ghost != null) {
 			if(ghostType==2){
-				ghost.GetComponent<Decoration>().Father.removeGhost();
+				(ghost.GetComponent<Decoration>().Father as Cell).removeGhost();
 			}
 			GameObject.DestroyImmediate (ghost);
 			ghostType = 0;

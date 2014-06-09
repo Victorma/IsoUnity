@@ -81,7 +81,7 @@ public class Mover : EntityScript {
 					type = MovementType.Parabolic;
 					dec.IsoDec = jumpingSprite;
 				}
-				dec.refresh();
+				dec.updateTextures();
 				int row = 0;
 				if(myPosition.z < otherPosition.z){ row = 0;}
 				else if(myPosition.z > otherPosition.z){ row = 2;}
@@ -118,7 +118,7 @@ public class Mover : EntityScript {
 				this.Entity.Position = next;
 				int lastRow = Mathf.FloorToInt(tile/dec.IsoDec.nCols);
 				dec.IsoDec = normalSprite;
-				dec.refresh();
+				dec.updateTextures();
 				dec.Tile = lastRow*dec.IsoDec.nCols;
 				paso = !paso;
 				

@@ -13,13 +13,16 @@ public class DecorateModule : MapEditorModule {
 	// InspectorGUI vars
 	private Vector2 scroll;
 	private bool parallelDecoration;
-	private bool rotateDecoration;
 	private IsoDecoration paintingIsoDecoration;
 
 	// SceneGUI vars
 
-
 	private GUIStyle titleStyle;
+
+	//AutoAnimator Vars;
+	private bool autoanimate = false;
+	private int[] FrameSecuence;
+	private float FrameRate;
 	
 	public DecorateModule(){
 		titleStyle = new GUIStyle();
@@ -51,13 +54,57 @@ public class DecorateModule : MapEditorModule {
 
 	public void OnInspectorGUI(){
 
+		GUIStyle style = new GUIStyle();
+
 		EditorGUILayout.HelpBox("Press left button to put the textures over the faces of the cell. Hold shift and press left button to copy the current texture of the hovering face.", MessageType.None);
 		EditorGUILayout.Space();
 
 		parallelDecoration = EditorGUILayout.Toggle("Draw Parallel",parallelDecoration);
 		EditorGUILayout.Space();
-		
-		rotateDecoration = EditorGUILayout.Toggle("Rotate to be Perpendicular",rotateDecoration);
+
+		autoanimate = EditorGUILayout.Toggle ("Auto Animate", autoanimate);
+
+		if (autoanimate) {
+			FrameRate = float.Parse(EditorGUILayout.TextField("Frame Rate:", FrameRate.ToString()));
+
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.PrefixLabel("Frame Secuence:",GUIStyle.none, titleStyle);
+			EditorGUILayout.EndHorizontal();
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.HelpBox("Let the frame secuence list empty if you want to use the default frame loop.", MessageType.None);
+			EditorGUILayout.EndHorizontal();
+			EditorGUILayout.BeginHorizontal();
+
+			EditorGUILayout.BeginVertical();
+
+			GUIContent btt = new GUIContent("Add Frame");
+			Rect btr = GUILayoutUtility.GetRect(btt, style);		
+			if(GUI.Button(btr,btt)){
+				if(FrameSecuence==null) FrameSecuence = new int[0];
+				int [] tmpFrameSecuence = new int[FrameSecuence.Length+1]; 
+				for(int i=0; i<FrameSecuence.Length; i++) tmpFrameSecuence[i] = FrameSecuence[i];
+				tmpFrameSecuence[tmpFrameSecuence.Length-1] = 0;
+				FrameSecuence=tmpFrameSecuence;
+			}
+			EditorGUILayout.EndVertical();
+			EditorGUILayout.BeginVertical();
+			btt = new GUIContent("Remove Frame");
+			btr = GUILayoutUtility.GetRect(btt, style);		
+			if(GUI.Button(btr,btt)){
+				if(FrameSecuence.Length>0){
+					if(FrameSecuence==null) FrameSecuence = new int[0];
+					int [] tmpFrameSecuence = new int[FrameSecuence.Length-1]; 
+					for(int i=0; i<FrameSecuence.Length-1; i++) tmpFrameSecuence[i] = FrameSecuence[i];
+					FrameSecuence=tmpFrameSecuence;
+				}
+			}
+			EditorGUILayout.EndVertical();
+			EditorGUILayout.EndHorizontal();
+
+			if(FrameSecuence!=null)
+			for(int i=0; i<FrameSecuence.Length; i++)
+				FrameSecuence[i] = int.Parse(EditorGUILayout.TextField(i.ToString(), FrameSecuence[i].ToString()));
+		}
 		EditorGUILayout.Space();
 		
 		EditorGUILayout.PrefixLabel("Decoration Objects",GUIStyle.none, titleStyle);
@@ -167,12 +214,19 @@ public class DecorateModule : MapEditorModule {
 					else ang = 1;
 					
 					if(paintingIsoDecoration != null){
-						Debug.Log ("Decoration");
 						if(decorateLater){
-							cs.addDecoration(info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
+							GameObject tmpdec = cs.addDecoration(info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
+
+							if(autoanimate){
+								AutoAnimator tmpautoanim = tmpdec.AddComponent("AutoAnimator") as AutoAnimator;
+
+								tmpautoanim.FrameSecuence = this.FrameSecuence;
+								tmpautoanim.FrameRate = this.FrameRate;
+							}
+
 							cs.refresh();
 						}else
-							map.ghostDecoration(cs, info.point, ang, rotateDecoration, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
+							map.ghostDecoration(cs, info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration, 0.5f);
 					}
 				}
 			}

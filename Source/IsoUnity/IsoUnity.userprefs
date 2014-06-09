@@ -1,16 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Entity\Entity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\Entity\RoutePlanifier.cs" Line="112" Column="40" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="30" Column="24" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="46" Column="3" />
-      <File FileName="Assets\IsoUnitySource\GUIs\Option.cs" Line="23" Column="26" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Inventory.cs" Line="46" Column="30" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\ItemScript.cs" Line="8" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" Line="63" Column="54" />
-      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="39" Column="45" />
-      <File FileName="Assets\IsoUnitySource\Entity\Entity.cs" Line="137" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Decoration.cs" Line="212" Column="39" />
+      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Decoration.cs" Line="263" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Managers\DecorationManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Map.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Map\Cell.cs" Line="439" Column="3" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Mover.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Scripts\AutoAnimator.cs" Line="42" Column="9" />
+      <File FileName="Assets\Editor\MapEditor\Modules\DecorateModule.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs" Line="21" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -17,19 +17,46 @@ public class Decoration : MonoBehaviour{
 		set { isoDec = value; }
 	}
 	[SerializeField]
-	private Cell father;
+	private Object father;
 
-	public Cell Father {
+	public Object Father {
 		get { return father;}
 		set { father = value; }
 	}
-	
 
-	private int Angle {
-		get { return Angle;}
-		set { Angle = value; }
+	[SerializeField]
+	private Vector3 center;
+	
+	public Vector3 Center {
+		get { return center;}
+		set { center = value; }
 	}
 
+	[SerializeField]
+	private int angle;
+
+	public int Angle {
+		get { return angle;}
+		set { angle = value; }
+	}
+
+	[SerializeField]
+	private bool parallel;
+
+	public bool Parallel {
+		get { return parallel;}
+		set { parallel = value; }
+	}
+
+	[SerializeField]
+	private bool centered;
+	
+	public bool Centered {
+		get { return centered;}
+		set { centered = value; }
+	}
+
+	private Vector3[] quadVertices;
 
 	/** ********************
 	 * END ATRIBS
@@ -38,23 +65,66 @@ public class Decoration : MonoBehaviour{
 	public Decoration (){
 	}
 
-	public void refresh(){
-		this.updateTextures();
-		//this.updatePosition ();
-		//transform.LookAt(Camera.main.transform.position, -Vector3.up);
+	public void setParameters(Vector3 center, int angle, bool parallel, bool centered){
+		this.center = center;
+		this.angle = angle;
+		this.parallel = parallel;
+		this.centered = centered;
+
+		adaptate ();
 	}
 
-	private void updateTextures(){
+	public void adaptate(){
+		this.updateTextures ();
+		this.colocate ();
+		this.setRotation ();
+	}
+
+	public void updateTextures(){
 		float scale = Mathf.Sqrt (2f) / IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width;
 
-		/*float angulo = Mathf.Rad2Deg * Mathf.Acos(IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale.height / (IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width*1f));
-		angulo = 90 - Mathf.Abs(angulo);*/
-		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols),
-			                                        (isoDec.getTexture().height * scale) / ((float)isoDec.nRows),1);
+		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols),(isoDec.getTexture().height * scale) / ((float)isoDec.nRows),1);
 
-		this.transform.localScale = new Vector3(this.transform.localScale.x,
-		                                        this.transform.localScale.y / Mathf.Sin(45f),
-		                                        1);
+		if (!parallel)
+			this.transform.localScale = new Vector3 (this.transform.localScale.x,this.transform.localScale.y / Mathf.Sin (45f),1);
+		else {
+			if(this.angle==0)
+				this.transform.localScale = new Vector3 (this.transform.localScale.x,this.transform.localScale.y*2f,1);
+			else{
+				this.transform.localScale = new Vector3 (Mathf.Sqrt(2f*(this.transform.localScale.x*this.transform.localScale.x)),this.transform.localScale.y / Mathf.Sin(45f),1);
+
+				Mesh mesh = this.GetComponent<MeshFilter>().mesh;
+
+
+				if(quadVertices==null){
+					quadVertices = new Vector3[mesh.vertices.Length];
+					for(int i=0; i<mesh.vertices.Length; i++) 
+						quadVertices[i] = new Vector3(mesh.vertices[i].x,mesh.vertices[i].y,mesh.vertices[i].z); 
+				}
+
+				Vector3[] vertices = new Vector3[quadVertices.Length];
+				for(int i=0; i<quadVertices.Length; i++) 
+					vertices[i] = new Vector3(quadVertices[i].x,quadVertices[i].y,quadVertices[i].z); 
+
+				float xprima = this.transform.localScale.x;
+				float omega = xprima*0.57735026f;
+				float gamma = omega/(this.transform.localScale.y*Mathf.Sqrt(2));
+
+				Vector3 bajada = new Vector3(0,gamma,0);
+
+				if(this.angle==2){
+					vertices[0] -= bajada;
+					vertices[3] -= bajada;
+				}else if(this.angle==1){
+					vertices[1] -= bajada;
+					vertices[2] -= bajada;
+				}
+
+				mesh.vertices = vertices;
+
+				this.GetComponent<MeshFilter>().sharedMesh = mesh;
+			}
+		}
 
 		Material myMat = new Material(this.renderer.sharedMaterial);
 		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
@@ -65,67 +135,90 @@ public class Decoration : MonoBehaviour{
 
 	}
 
-	public void colocate(Vector3 v, int angle, bool rotate, bool parallel, bool centered){
-		
-		this.transform.parent = this.father.transform;
-		Vector3 invfather = this.father.transform.InverseTransformPoint (v);
+	public void colocate(){
+		if (this.father is Cell) {
+			Cell celdapadre = this.father as Cell;
+			this.transform.parent = celdapadre.transform;
+			Vector3 invfather = celdapadre.transform.InverseTransformPoint (this.center);
 
-		//###################
-		//        / \
-		//       /   \
-		//      /     \
-		//     /   0   \
-		//    |\       /|
-		//    | \     / |
-		//    |  \   /  |
-		//    | 2 \_/ 1 |
-		//     \   |   /
-		//      \  |  /
-		//       \ | /
-		//        \|/
-		//####################
+			//###################
+			//        / \
+			//       /   \
+			//      /     \
+			//     /   0   \
+			//    |\       /|
+			//    | \     / |
+			//    |  \   /  |
+			//    | 2 \_/ 1 |
+			//     \   |   /
+			//      \  |  /
+			//       \ | /
+			//        \|/
+			//####################
 
-		Vector3 position = new Vector3 ();
+			Vector3 position = new Vector3 ();
+			this.transform.localRotation = celdapadre.transform.rotation;
 
-		// Segun la zona de actuacion, definiremos la posicion de una manera u otra.
-		switch (angle) {
-		case 0:{
-				if(centered)
-					position = new Vector3(-0.5f,(this.father.Height * this.father.getCellWidth()) + this.transform.localScale.y/2,-0.5f);
-				else
-					position = new Vector3(invfather.x,(this.father.Height * this.father.getCellWidth()) + this.transform.localScale.y/2,invfather.z);
-				break;
+			// Segun la zona de actuacion, definiremos la posicion de una manera u otra.
+			switch (this.angle) {
+			case 0:
+				{
+					if (this.centered)
+						if (!this.parallel)
+							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.getCellWidth ()) + this.transform.localScale.y / 2, -0.5f);
+						else
+							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.getCellWidth () + 0.01f), -0.5f);
+					else
+						if (!this.parallel)
+							position = new Vector3 (invfather.x, (celdapadre.Height * celdapadre.getCellWidth ()) + this.transform.localScale.y / 2, invfather.z);
+						else
+							position = new Vector3 (invfather.x, (celdapadre.Height * celdapadre.getCellWidth ()) + 0.01f, invfather.z);
+					break;
+				}
+			case 1:
+				{
+					if (this.centered)
+						if (!this.parallel)
+							position = new Vector3 (-celdapadre.getCellWidth () / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1, -celdapadre.getCellWidth () / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+						else
+							position = new Vector3 (-celdapadre.getCellWidth () / 2, invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.getCellWidth () / 2);
+					else
+						if (!this.parallel)
+							position = new Vector3 (invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+						else
+							position = new Vector3 (invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.getCellWidth () / 2);
+					break;
+				}
+			case 2:
+				{
+					if (this.centered)
+						if (!this.parallel)
+							position = new Vector3 (-celdapadre.getCellWidth () / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1, -celdapadre.getCellWidth () / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+						else
+							position = new Vector3 (-0.01f - celdapadre.getCellWidth () / 2, invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1 + (this.transform.localScale.y / 2), -celdapadre.getCellWidth () / 2);
+					else
+						if (!this.parallel)
+							position = new Vector3 (invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+						else
+							position = new Vector3 (-0.01f - celdapadre.getCellWidth () / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);	
+					break;
+				}
 			}
-		case 1:{
-			if(!rotate){
-				if(centered)
-					position = new Vector3(-this.father.getCellWidth()/2 +((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)), invfather.y-(invfather.y%this.father.getCellWidth())+1,-this.father.getCellWidth()/2 -((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)));
-				else
-					position = new Vector3(invfather.x +((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)), invfather.y, invfather.z -((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)));
 
-			}
-			break;
+			if (!this.centered)
+					this.transform.localPosition = invfather;
+
+			this.transform.localPosition = position;
+		}else if(this.father is Decoration){
+			Decoration decorationpadre = this.father as Decoration;
+			this.transform.parent = decorationpadre.transform;
+
+			Vector3 position = new Vector3 ();
+
+			position = new Vector3 (0f, this.transform.localScale.y, 0f);
+
+			this.transform.localPosition = position;
 		}
-		case 2:{
-			if(!rotate){
-				if(centered)
-					position = new Vector3(-this.father.getCellWidth()/2 -((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)), invfather.y-(invfather.y%this.father.getCellWidth())+1,-this.father.getCellWidth()/2 +((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)));
-				else
-					position = new Vector3(invfather.x -((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)), invfather.y, invfather.z +((this.transform.localScale.x/2)*Mathf.Cos(45*Mathf.Deg2Rad)));
-				
-			}
-			break;
-		}
-		}
-
-		//Ponemos la altura en su sitio
-		if (!centered) 
-			this.transform.localPosition = invfather;
-
-
-		this.transform.localPosition = position;
-		//setRotation (angle, parallel);
-
 	}
 
 	[SerializeField]
@@ -141,30 +234,28 @@ public class Decoration : MonoBehaviour{
 			
 			this.renderer.material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
 		}
-
 	}
 
-	public void setRotation(int angle, bool parallel){
-		//x = v.y - father.transform.localPosition.y;
+	public void setRotation(){
 		float x = 0, y = 45, z = 0;
 
-		if (parallel) {
-			switch (angle) {
-			case 0:{z=0;	y=45;	x=90;	break;}
-			case 1:{z=270;	y=0;	break;}
-			case 2:{z=90;	y=90;	break;}
-			}
-		}else{
-			switch (angle) {
-			case 0:{z=0;
-				break;}
-			case 1:{z=270;break;}
-			case 2:{z=90;break;}
+		if (this.father is Cell) {
+			this.transform.localRotation = (this.father as Cell).transform.rotation;
+
+			if (this.parallel) {
+				switch (this.angle) {
+				case 0:{x=90; y=45; break;}
+				case 1:{y=0; break;}
+				case 2:{y=90;break;}
+				}
 			}
 		}
 
+		else if (this.father is Decoration){
+			this.transform.localRotation = (this.father as Decoration).transform.rotation;
+			y = -45;
+		}
 
-		this.transform.localRotation = new Quaternion ();
 		this.transform.Rotate (x, y, z);
 	}
 }

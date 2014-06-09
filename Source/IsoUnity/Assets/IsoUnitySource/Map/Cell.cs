@@ -405,7 +405,7 @@ public class Cell : MonoBehaviour {
 	 * 					DECORATION THINGS
 	 * */
 
-	public GameObject addGhost(Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec, float intensity){
+	public GameObject addGhost(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
 		if (this.ghost == null) {
 			ghost = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 			ghost.name = "GhostDer";
@@ -419,8 +419,7 @@ public class Cell : MonoBehaviour {
 		der.Father = this;
 		der.IsoDec = dec;
 
-		der.refresh ();
-		der.colocate(position,angle,rotate,parallel,centered);
+		der.setParameters (position,angle,parallel,centered);
 
 		return this.ghost;
 	}
@@ -431,22 +430,23 @@ public class Cell : MonoBehaviour {
 	}
 
 
-	public void addDecoration(Vector3 position, int angle, bool rotate, bool parallel, bool centered, IsoDecoration dec){
+	public GameObject addDecoration(Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec){
 		if (decorations == null)
 			decorations = new List<GameObject> ();
 
 		GameObject newdecoration = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultDecorationPrefab) as GameObject;
 		newdecoration.name = "Decoration (clone)";
-		newdecoration.renderer.sharedMaterial = new Material(Shader.Find("Unlit/Transparent"));
+		newdecoration.renderer.sharedMaterial = new Material(Shader.Find("Transparent/Cutout/Diffuse"));
 		newdecoration.GetComponent<Decoration>().Father = this;
 
 		Decoration der = newdecoration.GetComponent<Decoration>();
 		der.IsoDec = dec;
 
-		der.refresh ();
-		der.colocate(position,angle,rotate,parallel,centered);
+		der.setParameters(position,angle,parallel,centered);
 
 		this.decorations.Add (newdecoration);
+
+		return newdecoration;
 	}
 	
 	public void removeDecoration(Decoration d){
