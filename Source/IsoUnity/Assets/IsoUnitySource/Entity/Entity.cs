@@ -21,6 +21,7 @@ public class Entity : MonoBehaviour {
 		set {
 			position = value;
 			this.transform.parent = position.transform;
+			my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
 		}
 	}
 

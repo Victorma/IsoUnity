@@ -18,12 +18,14 @@ public class Game : MonoBehaviour {
 		//commands = new Queue<Command>();
 		CameraManager.initialize();
 		CameraManager.lookTo (look);
+		MapManager.getInstance().hideAllMaps();
 		MapManager.getInstance().setActiveMap(map);
 		ControllerManager.Enabled = true;
 		IsoSwitchesManager.getInstance ().getIsoSwitches ();
 
 		managers = new List<EventManager> ();
 		managers.Add (new AnimationManager ());
+		managers.Add (new SecuenceManager ());
 	}
 	
 	// Update is called once per frame
@@ -36,6 +38,8 @@ public class Game : MonoBehaviour {
 	}
 
 	public void enqueueEvent(GameEvent ge){
+		if(ge == null)
+			return;
 		this.events.Enqueue(ge);
 	}
 
@@ -75,6 +79,9 @@ public class Game : MonoBehaviour {
 			broadcastEvent(ge);
 		}
 
+		foreach(EventManager manager in managers)
+			manager.Tick();
+
 		foreach(Map map in MapManager.getInstance().getMapList())
 		{
 			map.tick();
@@ -84,7 +91,7 @@ public class Game : MonoBehaviour {
 	private void broadcastEvent(GameEvent ge){
 
 		foreach(EventManager manager in managers)
-			manager.receiveEvent(ge);
+			manager.ReceiveEvent(ge);
 
 		foreach(Map map in MapManager.getInstance().getMapList())
 		{

@@ -73,7 +73,6 @@
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\DefaultEventEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\EventEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\EventEditorFactory.cs" />
-     <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\GameEventPropertyDrawer.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\MoveEventEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ParamEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventNodeEditor.cs" />
@@ -82,7 +81,11 @@
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkNodeEditor.cs" />
      <Compile Include="Assets\Editor\TalkerEditor.cs" />
+     <Compile Include="Assets\Editor\TeleporterEditor.cs" />
      <Compile Include="Assets\Editor\TextureAssistant.cs" />
+ <Reference Include="GoKit">
+ <HintPath>C:/Users/Victorma/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>

@@ -6,13 +6,13 @@ public class RoutePlanifier
 
 	private static Dictionary<Entity,Stack<Cell>> routes = new Dictionary<Entity, Stack<Cell>>();
 
-	public static void planifyRoute(Entity entity, Cell destination) {
-		planifyRoute(entity, destination, 0);
+	public static bool planifyRoute(Entity entity, Cell destination) {
+		return planifyRoute(entity, destination, 0);
 	}
 
-	public static void planifyRoute(Entity entity, Cell destination, int distance){
+	public static bool planifyRoute(Entity entity, Cell destination, int distance){
 		if(routes.ContainsKey(entity)){
-			return;
+			return false;
 			//Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
 			Stack<Cell> ruta = new Stack<Cell>();
 			ruta.Push (destination);
@@ -28,6 +28,8 @@ public class RoutePlanifier
 				//ruta.Pop(); //Quito en la que estoy
 				routes.Add(entity,ruta);
 			}
+
+			return ruta!=null;
 		}
 	}
 
@@ -38,11 +40,15 @@ public class RoutePlanifier
 			if(routes[entity].Count == 0)
 				routes.Remove(entity);
 			else{
-				routes[entity].Pop();
-				if(routes[entity].Count == 0)
+				if(routes[entity].Peek() != entity.Position)
 					routes.Remove(entity);
-				else
-					nextCell = routes[entity].Peek();
+				else{
+					routes[entity].Pop();
+					if(routes[entity].Count == 0)
+						routes.Remove(entity);
+					else
+						nextCell = routes[entity].Peek();
+				}
 
 			}
 		}
@@ -81,7 +87,8 @@ public class RoutePlanifier
 		if(!cells.Contains(to)){
 			cells.Add(to);
 			foreach(Cell c in to.Map.getNeightbours(to))
-				GetSurroundCellsAtRadius(c, distance-1, cells);
+				if(c!= null)
+					GetSurroundCellsAtRadius(c, distance-1, cells);
 		}
 	}
 	

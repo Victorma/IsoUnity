@@ -19,7 +19,8 @@ public class Player : EntityScript {
 		if(toLaunch == null){
 			if( args.options != null){
 				if(args.options.Length==1){
-					args.options[0].Action.setParameter("Executer", this.Entity);
+					if(args.options[0].Action!=null)
+						args.options[0].Action.setParameter("Executer", this.Entity);
 
 					if(args.options[0].HasToMove){
 						GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();

@@ -63,6 +63,7 @@
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Player.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" />
      <Compile Include="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs" />
+     <Compile Include="Assets\IsoUnitySource\EvenManagers\SecuenceManager.cs" />
      <Compile Include="Assets\IsoUnitySource\EventManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIManager\GUIManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\DialogGUI.cs" />
@@ -91,11 +92,22 @@
      <Compile Include="Assets\IsoUnitySource\Scripts\AutoAnimator.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Forks\Checkable.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Forks\ISwitchFork.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\ISecuenceInterpreter.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\Interpreters\CheckableInterpreter.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\Interpreters\DialogInterpreter.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\Interpreters\Factoria\SecuenceInterpreterFactory.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\Interpreters\GameEventInterpreter.cs" />
+     <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\SecuenceInterpreter.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Secuence.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\SecuenceNode.cs" />
      <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
+     <Compile Include="Assets\RandomMovement.cs" />
      <Compile Include="Assets\Resources\Gustos.cs" />
+     <Compile Include="Assets\Teleporter.cs" />
      <Compile Include="Assets\TestDeltaTime.cs" />
+ <Reference Include="GoKit">
+ <HintPath>C:/Users/Victorma/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
