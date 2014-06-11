@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class EventManager {
+public interface EventManager {
 
-	public abstract void receiveEvent (GameEvent ev);
+	void ReceiveEvent (GameEvent ev);
+	void Tick ();
 
 }

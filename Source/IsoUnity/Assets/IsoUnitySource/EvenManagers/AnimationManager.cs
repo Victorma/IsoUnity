@@ -3,9 +3,7 @@ using System.Collections;
 
 public class AnimationManager : EventManager {
 
-
-
-	public override void receiveEvent (GameEvent ev)
+	public void ReceiveEvent (GameEvent ev)
 	{
 		if(ev.Name == "ShowAnimation"){
 			Decoration dec = (ev.getParameter("Objetive") as GameObject).GetComponent<Decoration>();
@@ -23,5 +21,7 @@ public class AnimationManager : EventManager {
 			anim.registerEvent(ev);
 		}
 	}
+
+	public void Tick(){}
 	
 }

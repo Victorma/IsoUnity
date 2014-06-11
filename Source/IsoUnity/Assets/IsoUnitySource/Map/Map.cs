@@ -274,8 +274,8 @@ public class Map : MonoBehaviour
 	 * **********/
 
 	public void setVisible(bool visible){
-		foreach(Cell cell in this.transform.GetComponentsInChildren<Cell>())
-			cell.renderer.enabled = visible;
+		foreach(Renderer r in this.transform.GetComponentsInChildren<Renderer>())
+			r.enabled = visible;
 	}
 
 	public void broadcastEvent(GameEvent ge){

@@ -17,7 +17,11 @@ public abstract class MapManager
 	public abstract void fillControllerEvent(ControllerEventArgs args);
 
 	public abstract void setActiveMap(Map map);
+
+	public abstract void hideAllMaps();
 }
+
+
 
 public class MapManagerInstance : MapManager 
 {
@@ -57,6 +61,11 @@ public class MapManagerInstance : MapManager
 		foreach(Map map in activeMaps){
 			map.fillControllerEvent(args);
 		}
+	}
+
+	public override void hideAllMaps(){
+		foreach(Map map in GameObject.FindObjectsOfType<Map>())
+			map.setVisible(false);
 	}
 
 }

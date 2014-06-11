@@ -24,6 +24,7 @@ public class GameEvent : ScriptableObject{
 
 	private Dictionary<string, Object> args = new Dictionary<string, Object>();
 	public object getParameter(string param){
+		param = param.ToLower();
 		if (args.ContainsKey (param)) 
 			return (args[param] is IsoUnityBasicType)? ((IsoUnityBasicType)args [param]).Value: args[param];
 		else 
@@ -31,6 +32,7 @@ public class GameEvent : ScriptableObject{
 	}
 
 	public void setParameter(string param, object content){
+		param = param.ToLower();
 		object c = content;
 		if(c is System.ValueType || c is string){
 			c = ScriptableObject.CreateInstance<IsoUnityBasicType>();
@@ -44,6 +46,7 @@ public class GameEvent : ScriptableObject{
 	}
 
 	public void removeParameter(string param){
+		param = param.ToLower();
 		if(args.ContainsKey(param))
 			args.Remove(param);
 
@@ -60,6 +63,48 @@ public class GameEvent : ScriptableObject{
 			}
 			return myParams;
 		}
+	}
+
+	public override bool Equals (object o)
+	{
+		return this == o;
+	}
+
+	public override int GetHashCode ()
+	{
+		return base.GetHashCode ();
+	}
+
+	public static bool operator ==(GameEvent ge1, GameEvent ge2)
+	{
+		// http://msdn.microsoft.com/en-us/library/ms173147(v=vs.80).aspx
+		// If both are null, or both are same instance, return true.
+		if (System.Object.ReferenceEquals(ge1, ge2))
+		{
+			return true;
+		}
+		
+		// If one is null, but not both, return false.
+		if (((object)ge1 == null) || ((object)ge2 == null))
+		{
+			return false;
+		}
+
+
+		bool result = ge1.Name.ToLower().Equals(ge2.Name.ToLower()) && ge1.args.Count == ge2.args.Count;
+
+		if(result)
+			foreach(string arg in ge1.args.Keys){
+				result = ge2.args.ContainsKey(arg) && (ge2.args[arg] == ge1.args[arg]);
+				if(!result)break;
+			}
+		
+		return result;
+	}
+
+	public static bool operator !=(GameEvent ge1, GameEvent ge2)
+	{
+		return !(ge1 == ge2);
 	}
 }
 

@@ -345,7 +345,8 @@ public class Cell : MonoBehaviour {
 		for(int i = 0; i< faces.Length; i++)
 			faces[i].regenerateUVs(posTexturas[i]);
 
-		Material myMat = new Material(this.renderer.sharedMaterial);
+		Material myMat = new Material(Shader.Find("Transparent/Cutout/Diffuse"));
+		TextureAtlas.filterMode = FilterMode.Point;
 		myMat.SetTexture("_MainTex",TextureAtlas);
 		this.renderer.sharedMaterial = myMat;
 	}

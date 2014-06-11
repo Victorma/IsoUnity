@@ -7,22 +7,21 @@ public class DialogGUI : IsoGUI {
 	private Texture2D picture;
 	private string name;
 	private string msg;
-	private Talker tlk;
+	private Object launcher;
 
 	private int mode; // 0 = fragment mode; 1 = option mode;
 
-	public DialogGUI(Talker tlk, Dialog.Fragment frg){
-		this.frg = frg;
+	public DialogGUI(Object launcher, Dialog.Fragment frg){
 		this.picture = frg.Face;
 		this.name = frg.Name;
 		this.msg = frg.Msg;
-		this.tlk = tlk;
+		this.launcher = launcher;
 		this.mode = 0;
 	}
 
-	public DialogGUI(Talker tlk, Dialog.DialogOption[] opt){
+	public DialogGUI(Object launcher, Dialog.DialogOption[] opt){
 		this.opt = opt;
-		this.tlk = tlk;
+		this.launcher = launcher;
 		this.mode = 1;
 	}
 
@@ -55,8 +54,9 @@ public class DialogGUI : IsoGUI {
 			for(int i=0; i<opt.Length; i++){
 				if (GUI.Button (new Rect (0, i*height, Screen.width, height), this.opt[i].text)){
 					GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
-					tlk.chosenOption = i;
-					ge.Name = "chosen option"; ge.setParameter ("Talker", tlk);
+					ge.Name = "chosen option"; 
+					ge.setParameter ("launcher", launcher);
+					ge.setParameter("option", i);
 					Game.main.enqueueEvent (ge);
 					GUIManager.removeGUI (this);
 				}
@@ -72,7 +72,7 @@ public class DialogGUI : IsoGUI {
 		if(this.mode == 0)
 		if (args.isLeftDown) {
 			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
-			ge.Name = "ended fragment"; ge.setParameter ("Talker", tlk);
+			ge.Name = "ended fragment"; ge.setParameter ("Launcher", launcher);
 			Game.main.enqueueEvent (ge);
 			GUIManager.removeGUI (this);
 		}

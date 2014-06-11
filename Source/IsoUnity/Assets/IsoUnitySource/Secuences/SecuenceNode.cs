@@ -7,8 +7,6 @@ public class SecuenceNode : ScriptableObject {
 	private List<SecuenceNode> childs;
 	[SerializeField]
 	private Object content = null;
-	[SerializeField]
-	private string name = "";
 
 	public void init(){
 		childs = new List<SecuenceNode> ();

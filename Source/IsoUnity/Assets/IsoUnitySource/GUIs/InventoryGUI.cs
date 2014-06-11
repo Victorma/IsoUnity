@@ -79,7 +79,7 @@ public class InventoryGUI : IsoGUI {
 			GUI.BeginGroup(new Rect(0,itemYPos, anchoScroll, itemHeight));
 				GUI.Box(new Rect(0,0, anchoScroll, itemHeight),"");
 				GUI.Box(new Rect(0,0, itemHeight, itemHeight),"");
-				GUIStyle bgImage = new GUIStyle ();
+//				GUIStyle bgImage = new GUIStyle ();
 				style.normal.background = i.Image;
 				GUI.Box(new Rect(1,1, itemHeight-2, itemHeight-2),"", style);
 

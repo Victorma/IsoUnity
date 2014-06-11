@@ -17,11 +17,11 @@ public abstract class IsoSwitchesManager
 
 public class IsoSwitchesManagerInstance : IsoSwitchesManager
 {
-	private String ruta;
+	//private String ruta;
 	private IsoSwitches instance;
 
 	public IsoSwitchesManagerInstance(){
-		ruta = "Assets/Resources/IsoSwitches.asset";
+		//ruta = "Assets/Resources/IsoSwitches.asset";
 	}
 	
 	

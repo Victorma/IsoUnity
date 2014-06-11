@@ -32,12 +32,9 @@ public class TextureAssistant : EditorWindow {
 	private float lastValue;
 	IsoTexture currentText = null;
 	int selected;
-	Vector2 scrollPos = new Vector2(0,0);
+	//Vector2 scrollPos = new Vector2(0,0);
 	Rect textureRect;
 	void OnGUI(){
-
-		Event e = Event.current;
-		float auxWidth = position.width;
 
 		IsoTexture[] textures = TextureManager.getInstance().textureList();
 

@@ -23,7 +23,6 @@ public class ISwitchFork : Checkable {
 	public override bool check(){
 
 		System.IComparable chk = (System.IComparable) IsoSwitchesManager.getInstance().getIsoSwitches().consultSwitch(id);
-		Debug.Log ("Comparando: " + chk + " " + comparationType + " " + value.Value);
 		if(chk == null)
 			return false;
 

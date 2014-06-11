@@ -7,7 +7,9 @@ public class Mover : EntityScript {
 	public IsoDecoration jumpingSprite;
 
 	private Cell moveToCell;
+	private Cell teleportToCell;
 	private bool move = false;
+	private bool teleport = false;
 	private bool movementFinished = false;
 	private int distanceToMove = 0;
 	private GameEvent bcEvent;
@@ -17,15 +19,21 @@ public class Mover : EntityScript {
 		switch(ge.Name.ToLower()){
 		case "move": {
 			if(ge.getParameter("entity") == this.Entity || ge.getParameter("entity") == this.gameObject){
-				this.move  = true;
 				this.moveToCell = (Cell) ge.getParameter("cell");
+				this.move  = moveToCell!=null;
 
 				distanceToMove = (ge.getParameter("distance")!=null)? (int) ge.getParameter("distance"): 0;
 
 				this.bcEvent = ge;
 			} 
 			}break;
-			
+
+		case "teleport": {
+			if(ge.getParameter("entity") == this.Entity || ge.getParameter("entity") == this.gameObject){
+				teleport = true;
+				teleportToCell = ge.getParameter("Cell") as Cell;
+			}
+		}break;
 		}
 	}
 
@@ -36,13 +44,27 @@ public class Mover : EntityScript {
 			movementEvent = null;
 		}
 
-		if(move){
+		if(teleport){
+			if(Entity.Position.Map == teleportToCell.Map){
+				Entity.Position = teleportToCell;
+			}else{
+				Entity.Position = teleportToCell;
+				this.renderer.enabled = false;
+				foreach(Renderer r in this.GetComponentsInChildren<Renderer>())r.enabled = false;
+				if(this.GetComponent<Player>()!=null)
+					MapManager.getInstance().setActiveMap(teleportToCell.Map);
+			}
+			teleport = false;
+			move = false;
+		}else if(move){
 			if(!IsMoving){
 				movementEvent = bcEvent;
 				moveTo(moveToCell);
 			}
 			this.move = false;
 		}
+
+
 		
 	}
 	

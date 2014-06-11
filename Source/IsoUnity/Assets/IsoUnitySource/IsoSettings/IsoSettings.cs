@@ -11,6 +11,10 @@ public class IsoSettings : ScriptableObject
 	public GameObject defaultDecorationPrefab;
 	[SerializeField]
 	public Texture2D defautTextureScale;
+	[SerializeField]
+	public AnimationCurve cameraSpeed;
+	[SerializeField]
+	public float targetCameraSpeed;
 
 
 
