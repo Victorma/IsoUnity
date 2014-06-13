@@ -90,7 +90,7 @@ public class Player : EntityScript {
 		ge.Name = "Hola!";
 		Option o = new Option("Hola mundo!",ge,false,0);
 
-		return new Option[]{o,o,o,o,o,o,o,o,o};
+		return new Option[]{o};
 	}
 
 	public override void Update(){

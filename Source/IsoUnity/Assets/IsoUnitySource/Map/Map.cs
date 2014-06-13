@@ -98,10 +98,6 @@ public class Map : MonoBehaviour
 			ghost.name = "Ghost";
 			ghost.hideFlags = HideFlags.HideAndDontSave;
 			ghost.GetComponent<Cell>().Map = this;
-
-			Material mat = new Material(Shader.Find("Transparent/Diffuse"));
-			mat.color = new Color(mat.color.r,mat.color.g,mat.color.b,intensity);
-			ghost.renderer.sharedMaterial = mat;
 		}
 		
 		// Getting the localPosition
@@ -114,6 +110,10 @@ public class Map : MonoBehaviour
 		Vector2 coords = getCoords(position);
 		cell.Height = position.y;
 		cell.transform.localPosition = new Vector3((coords.x+0.5f) * cellSize, 0, (coords.y+0.5f) * cellSize);
+
+		Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+		mat.color = new Color(mat.color.r,mat.color.g,mat.color.b,intensity);
+		ghost.renderer.sharedMaterial = mat;
 	}
 
 	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){

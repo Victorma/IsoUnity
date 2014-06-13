@@ -6,36 +6,6 @@ public class InventoryGUI : IsoGUI {
 	private Inventory inventory;
 	public InventoryGUI(Inventory inventory){
 		this.inventory = inventory;
-		GameEvent g1 = new GameEvent(),
-				g2 = new GameEvent(),
-				g3 = new GameEvent(),
-				g4 = new GameEvent(),
-				g5 = new GameEvent();
-		g1.Name = "add item";
-		g1.setParameter("Item", new Hierbajo());
-		g1.setParameter("Inventory", inventory);
-
-		g2.Name = "add item";
-		g2.setParameter("Item", new Hierbajo());
-		g2.setParameter("Inventory", inventory);
-
-		g3.Name = "add item";
-		g3.setParameter("Item", new Hierbajo());
-		g3.setParameter("Inventory", inventory);
-
-		g4.Name = "add item";
-		g4.setParameter("Item", new Hierbajo());
-		g4.setParameter("Inventory", inventory);
-
-		g5.Name = "add item";
-		g5.setParameter("Item", new Hierbajo());
-		g5.setParameter("Inventory", inventory);
-
-		Game.main.enqueueEvent(g1);
-		Game.main.enqueueEvent(g2);
-		Game.main.enqueueEvent(g3);
-		Game.main.enqueueEvent(g4);
-		Game.main.enqueueEvent(g5);
 	}
 
 	private Vector2 scroll = new Vector2(0,0);
@@ -106,40 +76,6 @@ public class InventoryGUI : IsoGUI {
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
 
-	}
-
-	private class Hierbajo : Item {
-		public override string Description {
-			get {
-				return "Un hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonicoUn hierbajo mu bonico";
-			}
-			set {}
-		}
-
-		public override string Name {
-			get {
-				return "Hierbajo";
-			}
-			set {}
-		}
-
-		public override Texture2D Image {
-			get {
-				return Resources.Load<Texture2D>("grassImage");
-			}
-			set {}
-		}
-		public override IsoDecoration Representation {
-			get {
-				return Resources.Load<IsoDecoration>("Grass");
-			}
-			set {}
-		}
-		public override bool isEqualThan (Item other)
-		{
-			return other is Hierbajo;
-		}
-		public override void use (){}
 	}
 
 }

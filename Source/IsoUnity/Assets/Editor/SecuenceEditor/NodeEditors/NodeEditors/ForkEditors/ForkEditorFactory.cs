@@ -26,7 +26,7 @@ public class ForkEditorFactoryImp : ForkEditorFactory {
 	public ForkEditorFactoryImp(){
 		this.forkEditors = new List<ForkEditor> ();
 		this.forkEditors.Add (new ISwitchForkEditor ());
-		//this.forkEditors.Add (new ChangeSwitchEventEditor ());
+		this.forkEditors.Add (new ItemForkEditor ());
 
 		this.defaultForkEditor = new ISwitchForkEditor ();
 	}
@@ -44,8 +44,8 @@ public class ForkEditorFactoryImp : ForkEditorFactory {
 
 	public override ForkEditor createForkEditorFor (string forkName)
 	{
-		if (forkName.ToLower () == "default")
-			return defaultForkEditor;
+		/*if (forkName.ToLower () == "default")
+			return defaultForkEditor;*/
 
 		foreach (ForkEditor forkEditor in forkEditors) {
 			if(forkEditor.ForkName.ToLower() == forkName.ToLower()){
@@ -56,10 +56,10 @@ public class ForkEditorFactoryImp : ForkEditorFactory {
 	}
 
 	public override int ForkEditorIndex(Checkable fork){
-		if (defaultForkEditor.manages(fork))
-			return 0;
+		/*if (defaultForkEditor.manages(fork))
+			return 0;*/
 
-		int i = 0;
+		int i = 1;
 		foreach (ForkEditor forkEditor in forkEditors) 
 			if(forkEditor.manages(fork))	return i;
 			else 							i++;

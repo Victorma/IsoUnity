@@ -7,25 +7,30 @@ public class Inventory : EntityScript {
 	private List<Item> itemsToRemove = new List<Item>();
 	private bool openInventory = false;
 	private List<Item> itemsToUse = new List<Item>();
+	private List<GameEvent> events = new List<GameEvent>();
 
 	public override void eventHappened (GameEvent ge)
 	{
-		if(ge.getParameter("Inventory") == this)
+		if(ge.getParameter("Inventory") == this || ge.getParameter("Inventory") == this.Entity.gameObject)
 		{
 			Item item = (Item)ge.getParameter("Item");
 			switch (ge.Name.ToLower()) 
 			{
 			case "open inventory": 
 				openInventory = true;
+				events.Add(ge);
 				break;
 			case "add item": 
 				itemsToAdd.Add (item);
+				events.Add(ge);
 				break;
 			case "remove item": 
 				itemsToRemove.Add(item);
+				events.Add(ge);
 				break;
 			case "use item": 
 				itemsToUse.Add(item);
+				events.Add(ge);
 				break;
 			}
 		}
@@ -52,7 +57,8 @@ public class Inventory : EntityScript {
 		}	
 		//ADDS
 		while (itemsToAdd.Count > 0) { 
-			if (!items.Contains (itemsToAdd [0])) items.Add (itemsToAdd [0]);
+			//if (!items.Contains (itemsToAdd [0])) 
+			items.Add (itemsToAdd [0]);
 			itemsToAdd.RemoveAt (0);
 		}
 		//USES
@@ -64,6 +70,11 @@ public class Inventory : EntityScript {
 		while (itemsToRemove.Count > 0) { 
 			if (!items.Contains (itemsToAdd [0])) items.Remove (itemsToAdd [0]);
 			itemsToUse.RemoveAt (0);
+		}
+
+		while (events.Count > 0) { 
+			Game.main.eventFinished(events[0]);
+			events.RemoveAt(0);
 		}
 	}
 

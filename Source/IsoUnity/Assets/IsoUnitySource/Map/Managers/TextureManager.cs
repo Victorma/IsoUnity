@@ -39,10 +39,12 @@ public class TextureManagerInstance : TextureManager {
 
 			lists = new Dictionary<Texture, List<IsoTexture>> ();
 			foreach (IsoTexture it in textureList()){
-				if(!lists.ContainsKey(it.getTexture()))
-					lists.Add(it.getTexture(), new List<IsoTexture>());
+				if(it.getTexture()!=null){
+					if(!lists.ContainsKey(it.getTexture()))
+						lists.Add(it.getTexture(), new List<IsoTexture>());
 
-				lists[it.getTexture()].Add(it);
+					lists[it.getTexture()].Add(it);
+				}
 			}
 
 		} else {

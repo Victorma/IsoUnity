@@ -19,7 +19,7 @@ public class ISwitchForkEditor : ForkEditor {
 	}
 
 	public bool manages(Checkable c){
-		return c is ISwitchFork;
+		return c!=null && c is ISwitchFork;
 	}
 
 	public ForkEditor clone(){

@@ -26,6 +26,8 @@ public class EventEditorFactoryImp : EventEditorFactory {
 		this.eventEditors = new List<EventEditor> ();
 		this.eventEditors.Add (new MoveEventEditor ());
 		this.eventEditors.Add (new ChangeSwitchEventEditor ());
+		this.eventEditors.Add (new AddItemEditor ());
+
 
 		this.defaultEventEditor = new DefaultEventEditor ();
 	}

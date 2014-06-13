@@ -69,6 +69,7 @@
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditorFactory.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\DialogNodeEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EmptyNodeEditor.cs" />
+     <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\AddItemEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ChangeSwitchEventEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\DefaultEventEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\EventEditor.cs" />
@@ -79,6 +80,7 @@
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ForkEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ForkEditorFactory.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs" />
+     <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ItemForkEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkNodeEditor.cs" />
      <Compile Include="Assets\Editor\TalkerEditor.cs" />
      <Compile Include="Assets\Editor\TeleporterEditor.cs" />
