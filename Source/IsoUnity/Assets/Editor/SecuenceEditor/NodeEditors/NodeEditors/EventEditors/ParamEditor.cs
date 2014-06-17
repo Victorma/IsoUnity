@@ -71,10 +71,10 @@ public class ParamEditor {
 		MethodInfo mi = null;
 
 		if(pt.fieldEditorName == "ObjectField"){	
-			returnable = EditorGUILayout.ObjectField((Object)returnable, typeof(Object), true);
+			returnable = EditorGUILayout.ObjectField(label,(Object)returnable, typeof(Object), true);
 		}else{						
 			mi = typeof(EditorGUILayout).GetMethod(pt.fieldEditorName, new System.Type[]{typeof(string), new List<System.Type>(typesAccepted.Keys)[tipo], typeof(GUILayoutOption)});
-			returnable = mi.Invoke(null,new object[]{"",returnable, new GUILayoutOption[0]});
+			returnable = mi.Invoke(null,new object[]{label,returnable, new GUILayoutOption[0]});
 		}
 
 

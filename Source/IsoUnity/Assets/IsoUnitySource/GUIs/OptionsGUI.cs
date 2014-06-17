@@ -13,7 +13,7 @@ public class OptionsGUI : IsoGUI {
 	private Option[] returningOption;
 	private ControllerEventArgs args;
 
-	public OptionsGUI(ControllerEventArgs args, Vector2 position, Option[] options){
+	public void init(ControllerEventArgs args, Vector2 position, Option[] options){
 		this.args = args;
 		this.position = position;
 		this.position.y = Screen.height - position.y;
@@ -26,6 +26,7 @@ public class OptionsGUI : IsoGUI {
 			this.radius = ((minDist/2f) / Mathf.Sin (angle/2f)) + minDist/2f;
 		}
 	}
+
 	private bool sended = false;
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
@@ -35,6 +36,8 @@ public class OptionsGUI : IsoGUI {
 			args.cell = this.args.cell;
 			GUIManager.removeGUI(this);
 			sended = true;
+			ScriptableObject.Destroy(this);
+
 		}else
 			args.send = false;
 	}
@@ -42,6 +45,7 @@ public class OptionsGUI : IsoGUI {
 	public override void draw(){
 		if(!survive){
 			GUIManager.removeGUI(this);
+			ScriptableObject.Destroy(this);
 			return;
 		}
 

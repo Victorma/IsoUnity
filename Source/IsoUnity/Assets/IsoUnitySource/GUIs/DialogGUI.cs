@@ -11,7 +11,7 @@ public class DialogGUI : IsoGUI {
 
 	private int mode; // 0 = fragment mode; 1 = option mode;
 
-	public DialogGUI(Object launcher, Dialog.Fragment frg){
+	public void init(Object launcher, Dialog.Fragment frg){
 		this.picture = frg.Face;
 		this.name = frg.Name;
 		this.msg = frg.Msg;
@@ -19,7 +19,7 @@ public class DialogGUI : IsoGUI {
 		this.mode = 0;
 	}
 
-	public DialogGUI(Object launcher, Dialog.DialogOption[] opt){
+	public void init(Object launcher, Dialog.DialogOption[] opt){
 		this.opt = opt;
 		this.launcher = launcher;
 		this.mode = 1;
@@ -75,6 +75,7 @@ public class DialogGUI : IsoGUI {
 			ge.Name = "ended fragment"; ge.setParameter ("Launcher", launcher);
 			Game.main.enqueueEvent (ge);
 			GUIManager.removeGUI (this);
+			ScriptableObject.DestroyImmediate(this);
 		}
 		//throw new System.NotImplementedException ();
 	}

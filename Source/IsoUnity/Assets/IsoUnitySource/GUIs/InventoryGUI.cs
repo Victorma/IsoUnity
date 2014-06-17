@@ -4,11 +4,12 @@ using System.Collections.Generic;
 public class InventoryGUI : IsoGUI {
 
 	private Inventory inventory;
-	public InventoryGUI(Inventory inventory){
+	public void init(Inventory inventory){
 		this.inventory = inventory;
 	}
 
 	private Option[] OptionsToCreate;
+	private OptionsGUI optionsGUI = null;
 	private Vector2 scroll = new Vector2(0,0);
 	public override void draw ()
 	{
@@ -47,7 +48,7 @@ public class InventoryGUI : IsoGUI {
 			                             new Rect(0, 0, anchoScroll, itemHeight*cantidades.Count));
 			foreach(Item i in cantidades.Keys){
 			//Cada item
-			if(GUI.Button(new Rect(0,itemYPos, anchoScroll, itemHeight), "", GUIStyle.none)){
+			if(GUI.Button(new Rect(0,itemYPos, anchoScroll, itemHeight), "", GUIStyle.none) && optionsGUI == null){
 				GameEvent use = ScriptableObject.CreateInstance<GameEvent>();
 				use.Name = "use item";
 				use.setParameter("inventory", this.inventory);
@@ -57,7 +58,6 @@ public class InventoryGUI : IsoGUI {
 				remove.setParameter("inventory", this.inventory);
 				remove.setParameter("item", i);
 				OptionsToCreate = new Option[]{new Option("Use", use,false,0), new Option("Remove", remove,false,0)};
-
 			}
 
 			GUI.BeginGroup(new Rect(0,itemYPos, anchoScroll, itemHeight));
@@ -82,17 +82,20 @@ public class InventoryGUI : IsoGUI {
 			}
 
 			GUI.EndScrollView();
-			if (GUI.Button (new Rect(0, altoGUI-100, anchoGUI, 100), "Close"))
+			if (GUI.Button (new Rect(0, altoGUI-100, anchoGUI, 100), "Close")){
 				GUIManager.removeGUI (this);
+				ScriptableObject.Destroy(this);
+			}
 		GUI.EndGroup();
 	}
 
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
 		if(OptionsToCreate!=null){
-
-			GUIManager.addGUI(new OptionsGUI(args, args.mousePos, OptionsToCreate),100);
+			optionsGUI = ScriptableObject.CreateInstance<OptionsGUI>();
+			optionsGUI.init(args, args.mousePos, OptionsToCreate);
 			OptionsToCreate = null;
+			GUIManager.addGUI(optionsGUI,100);
 		}
 		if(args.options != null)
 			Debug.Log("he recibido opciones");

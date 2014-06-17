@@ -51,7 +51,9 @@ public class Inventory : EntityScript {
 	public override void tick ()
 	{
 		if (openInventory) {
-			GUIManager.addGUI (new InventoryGUI (this),2);
+			InventoryGUI gui = ScriptableObject.CreateInstance<InventoryGUI>();
+			gui.init(this);
+			GUIManager.addGUI (gui,2);
 			openInventory = false;
 		}	
 		//ADDS

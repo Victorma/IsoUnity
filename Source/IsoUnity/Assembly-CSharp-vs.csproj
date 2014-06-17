@@ -104,6 +104,7 @@
      <Compile Include="Assets\IsoUnitySource\Secuences\SecuenceNode.cs" />
      <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
      <Compile Include="Assets\Item\GameBoyItem.cs" />
+     <Compile Include="Assets\Item\LlaveItem.cs" />
      <Compile Include="Assets\Resources\Gustos.cs" />
      <Compile Include="Assets\TestDeltaTime.cs" />
  <Reference Include="GoKit">

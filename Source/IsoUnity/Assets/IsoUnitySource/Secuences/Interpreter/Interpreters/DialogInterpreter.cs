@@ -65,10 +65,15 @@ public class DialogInterpreter : ScriptableObject, ISecuenceInterpreter {
 			if(fragments.Count > 0){
 				if(fragments.Peek().Entity != null)
 					CameraManager.smoothLookTo(fragments.Peek().Entity.gameObject);
-				GUIManager.addGUI (new DialogGUI (this, fragments.Dequeue()));
+				DialogGUI gui = ScriptableObject.CreateInstance<DialogGUI>();
+				gui.init(this, fragments.Dequeue());
+				GUIManager.addGUI (gui);
 			}else{
-				if(dialog.getOptions() != null && dialog.getOptions().Length>1)
-					GUIManager.addGUI (new DialogGUI (this, dialog.getOptions()));
+				if(dialog.getOptions() != null && dialog.getOptions().Length>1){
+					DialogGUI gui = ScriptableObject.CreateInstance<DialogGUI>();
+					gui.init(this, dialog.getOptions());
+					GUIManager.addGUI (gui);
+				}
 				else chosen = 0;
 			}
 			next = false;

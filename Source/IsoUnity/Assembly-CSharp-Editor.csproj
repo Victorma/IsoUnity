@@ -64,7 +64,6 @@
      <Compile Include="Assets\Editor\Menus\IsoSwitchesMenu.cs" />
      <Compile Include="Assets\Editor\Menus\MapMenu.cs" />
      <Compile Include="Assets\Editor\Menus\TextureMenu.cs" />
-     <Compile Include="Assets\Editor\SecuenceEditor\DialogWindow.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditorFactory.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\DialogNodeEditor.cs" />
@@ -82,6 +81,7 @@
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ItemForkEditor.cs" />
      <Compile Include="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkNodeEditor.cs" />
+     <Compile Include="Assets\Editor\SecuenceEditor\SecuenceWindow.cs" />
      <Compile Include="Assets\Editor\TalkerEditor.cs" />
      <Compile Include="Assets\Editor\TeleporterEditor.cs" />
      <Compile Include="Assets\Editor\TextureAssistant.cs" />
