@@ -43,7 +43,7 @@ public class DialogGUI : IsoGUI {
 
 				stl = new GUIStyle ();
 				stl.fontStyle = FontStyle.Bold;
-				stl.fontSize = 20;
+				stl.fontSize = 20; 
 				stl.normal.textColor = Color.white;
 				GUI.Label (new Rect (250, 50, Screen.width - 50, 25), this.name);
 				GUI.Label (new Rect (250, 75, Screen.width - 50, 175), this.msg);

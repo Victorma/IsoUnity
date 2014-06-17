@@ -15,7 +15,16 @@ public class GUIManager {
 	public static void tick(){
 		//GUISkin skin = GUI.skin;
 		isInTick = true;
-		foreach(IsoGUI gui in guis)	gui.draw();
+		int depth = GUI.depth;
+		GUI.depth = guis.Count;
+
+		guis.Sort(new InversePrioOrder(priorities));
+		foreach(IsoGUI gui in guis){
+			gui.draw();
+			GUI.depth = GUI.depth-1;
+		}
+		GUI.depth = depth;
+		guis.Sort(new PrioOrder(priorities));
 		isInTick = false;
 		foreach(IsoGUI gui in toRemove) removeGUI(gui);
 		toRemove.Clear ();
@@ -29,13 +38,15 @@ public class GUIManager {
 	}
 
 	public static void addGUI(IsoGUI newGUI, int priority){
+		if(!priorities.ContainsKey(newGUI))
+			priorities.Add(newGUI,priority);
 		if(!isInTick){
 			guis.Add(newGUI);
-			priorities.Add(newGUI,priority);
 			guis.Sort(new PrioOrder(priorities));
 		}else{
 			toAdd.Add(newGUI);
 		}
+
 
 	}
 
@@ -48,9 +59,23 @@ public class GUIManager {
 
 		public int Compare(IsoGUI i1, IsoGUI i2)
 		{
-			return prios[i1] - prios[i2];
+			return prios[i2] - prios[i1];
 		}
 
+	}
+
+	private class InversePrioOrder : IComparer<IsoGUI> {
+		
+		private Dictionary<IsoGUI, int> prios;
+		public InversePrioOrder(Dictionary<IsoGUI, int> prios){
+			this.prios = prios;
+		}
+		
+		public int Compare(IsoGUI i1, IsoGUI i2)
+		{
+			return prios[i1] - prios[i2];
+		}
+		
 	}
 
 	public static void removeGUI(IsoGUI gui){

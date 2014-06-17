@@ -1,22 +1,22 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ForkEditorFactory.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\GUIs\InventoryGUI.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Inventory.cs" Line="57" Column="5" />
-      <File FileName="Assets\IsoUnitySource\Entity\Item.cs" Line="1" Column="1" />
-      <File FileName="Assets\Item\GameBoyItem.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\ItemScript.cs" Line="1" Column="1" />
       <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\MoveEventEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\AddItemEditor.cs" Line="32" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\EventEditorFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Secuences\Forks\ItemFork.cs" Line="20" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Secuences\Forks\Checkable.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs" Line="22" Column="10" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ForkEditorFactory.cs" Line="57" Column="2" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ItemForkEditor.cs" Line="22" Column="20" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkNodeEditor.cs" Line="36" Column="46" />
+      <File FileName="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" Line="61" Column="5" />
+      <File FileName="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\GUIs\OnScreenControlsGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\GUIs\IsoGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Inventory.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\Game\Game.cs" Line="91" Column="60" />
+      <File FileName="Assets\IsoUnitySource\EventManager.cs" Line="4" Column="17" />
+      <File FileName="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs" Line="25" Column="18" />
+      <File FileName="Assets\IsoUnitySource\EvenManagers\SecuenceManager.cs" Line="18" Column="5" />
+      <File FileName="Assets\IsoUnitySource\Map\Managers\MapManager.cs" Line="52" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

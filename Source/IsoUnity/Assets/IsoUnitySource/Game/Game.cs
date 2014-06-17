@@ -7,7 +7,9 @@ public class Game : MonoBehaviour {
 	//Queue<Command> commands;
 	public GameObject look;
 	public Map map;
-	public List<EventManager> managers;
+	public List<string> managers = new List<string>(new string[]{"AnimationManager", "SecuenceManager"});
+	private List<EventManager> eventManagers;
+	public bool onScreenControls;
 
 	public static Game main;
 
@@ -23,9 +25,13 @@ public class Game : MonoBehaviour {
 		ControllerManager.Enabled = true;
 		IsoSwitchesManager.getInstance ().getIsoSwitches ();
 
-		managers = new List<EventManager> ();
-		managers.Add (new AnimationManager ());
-		managers.Add (new SecuenceManager ());
+		eventManagers = new List<EventManager> ();
+		foreach(string manager in managers){
+			eventManagers.Add (ScriptableObject.CreateInstance(manager) as EventManager);
+		}
+
+		if(this.onScreenControls)
+			GUIManager.addGUI(new OnScreenControlsGUI(), 99);
 	}
 	
 	// Update is called once per frame
@@ -79,7 +85,7 @@ public class Game : MonoBehaviour {
 			broadcastEvent(ge);
 		}
 
-		foreach(EventManager manager in managers)
+		foreach(EventManager manager in eventManagers)
 			manager.Tick();
 
 		foreach(Map map in MapManager.getInstance().getMapList())
@@ -90,7 +96,7 @@ public class Game : MonoBehaviour {
 
 	private void broadcastEvent(GameEvent ge){
 
-		foreach(EventManager manager in managers)
+		foreach(EventManager manager in eventManagers)
 			manager.ReceiveEvent(ge);
 
 		foreach(Map map in MapManager.getInstance().getMapList())

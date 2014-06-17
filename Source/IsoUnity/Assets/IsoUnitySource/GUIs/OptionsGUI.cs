@@ -11,10 +11,12 @@ public class OptionsGUI : IsoGUI {
 	private float angle;
 	private Option[] options;
 	private Option[] returningOption;
+	private ControllerEventArgs args;
 
-	public OptionsGUI(Vector2 position, Option[] options){
-
+	public OptionsGUI(ControllerEventArgs args, Vector2 position, Option[] options){
+		this.args = args;
 		this.position = position;
+		this.position.y = Screen.height - position.y;
 		this.options = options;
 
 		angle = (2f*Mathf.PI)/((float)options.Length);
@@ -30,6 +32,7 @@ public class OptionsGUI : IsoGUI {
 		if(returningOption != null && !sended){
 			args.options = returningOption;
 			args.send = true;
+			args.cell = this.args.cell;
 			GUIManager.removeGUI(this);
 			sended = true;
 		}else
@@ -45,6 +48,7 @@ public class OptionsGUI : IsoGUI {
 		Vector2 pos = GUIUtility.ScreenToGUIPoint(position);
 		
 		Rect rect = new Rect(pos.x-radius, pos.y-radius, radius*2f, radius*2f);
+		GUISkin natural = GUI.skin;
 		GUI.skin = Resources.Load<GUISkin>("Skin");
 		GUI.Box(rect,"");
 		
@@ -57,10 +61,14 @@ public class OptionsGUI : IsoGUI {
 			}
 			GUI.Button(buttonRect, options[i].Name);
 		}
+		GUI.skin = natural;
 	}
 	private bool survive = true;
 	public override bool captureEvent(ControllerEventArgs args){
-		bool enRango = (Vector2.Distance(args.mousePos, this.position) <= this.radius);
+		Vector2 mo = args.mousePos;
+		mo.y = Screen.height - mo.y;
+
+		bool enRango = (Vector2.Distance(mo, this.position) <= this.radius);
 		if(!enRango && args.leftStatus == true)
 			survive = false;
 

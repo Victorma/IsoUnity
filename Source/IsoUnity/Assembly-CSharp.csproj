@@ -69,6 +69,7 @@
      <Compile Include="Assets\IsoUnitySource\GUIs\DialogGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\IsoGUI.cs" />
+     <Compile Include="Assets\IsoUnitySource\GUIs\OnScreenControlsGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\Option.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" />
      <Compile Include="Assets\IsoUnitySource\Game\Command.cs" />

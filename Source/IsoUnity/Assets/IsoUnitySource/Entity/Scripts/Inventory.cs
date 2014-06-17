@@ -51,8 +51,7 @@ public class Inventory : EntityScript {
 	public override void tick ()
 	{
 		if (openInventory) {
-			Debug.Log ("Abriendo inventario");
-			GUIManager.addGUI (new InventoryGUI (this));
+			GUIManager.addGUI (new InventoryGUI (this),2);
 			openInventory = false;
 		}	
 		//ADDS
@@ -68,8 +67,8 @@ public class Inventory : EntityScript {
 		}
 		//REMOVES
 		while (itemsToRemove.Count > 0) { 
-			if (!items.Contains (itemsToAdd [0])) items.Remove (itemsToAdd [0]);
-			itemsToUse.RemoveAt (0);
+			if (items.Contains (itemsToRemove [0])) items.Remove (itemsToRemove [0]);
+			itemsToRemove.RemoveAt (0);
 		}
 
 		while (events.Count > 0) { 
@@ -80,6 +79,7 @@ public class Inventory : EntityScript {
 
 	public override void Update (){}
 
+	[SerializeField]
 	private List<Item> items = new List<Item> ();
 	public Item[] Items{
 		get{return items.ToArray() as Item[];}

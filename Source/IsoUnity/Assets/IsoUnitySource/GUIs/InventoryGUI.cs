@@ -8,6 +8,7 @@ public class InventoryGUI : IsoGUI {
 		this.inventory = inventory;
 	}
 
+	private Option[] OptionsToCreate;
 	private Vector2 scroll = new Vector2(0,0);
 	public override void draw ()
 	{
@@ -46,6 +47,19 @@ public class InventoryGUI : IsoGUI {
 			                             new Rect(0, 0, anchoScroll, itemHeight*cantidades.Count));
 			foreach(Item i in cantidades.Keys){
 			//Cada item
+			if(GUI.Button(new Rect(0,itemYPos, anchoScroll, itemHeight), "", GUIStyle.none)){
+				GameEvent use = ScriptableObject.CreateInstance<GameEvent>();
+				use.Name = "use item";
+				use.setParameter("inventory", this.inventory);
+				use.setParameter("item", i);
+				GameEvent remove = ScriptableObject.CreateInstance<GameEvent>();
+				remove.Name = "remove item";
+				remove.setParameter("inventory", this.inventory);
+				remove.setParameter("item", i);
+				OptionsToCreate = new Option[]{new Option("Use", use,false,0), new Option("Remove", remove,false,0)};
+
+			}
+
 			GUI.BeginGroup(new Rect(0,itemYPos, anchoScroll, itemHeight));
 				GUI.Box(new Rect(0,0, anchoScroll, itemHeight),"");
 				GUI.Box(new Rect(0,0, itemHeight, itemHeight),"");
@@ -53,7 +67,7 @@ public class InventoryGUI : IsoGUI {
 				style.normal.background = i.Image;
 				GUI.Box(new Rect(1,1, itemHeight-2, itemHeight-2),"", style);
 
-				float quantityLabel = 0;
+				float quantityLabel = 0; 
 				//Dependiendo de la cantidad pintaremos la cantidad o no
 				if(cantidades[i]>1){
 					quantityLabel = 50;
@@ -75,7 +89,13 @@ public class InventoryGUI : IsoGUI {
 
 	public override void fillControllerEvent (ControllerEventArgs args)
 	{
+		if(OptionsToCreate!=null){
 
+			GUIManager.addGUI(new OptionsGUI(args, args.mousePos, OptionsToCreate),100);
+			OptionsToCreate = null;
+		}
+		if(args.options != null)
+			Debug.Log("he recibido opciones");
 	}
 
 }

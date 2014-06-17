@@ -6,7 +6,7 @@ public class SecuenceManager : EventManager {
 	private ControllerManager.ControllerDelegate de;
 	private SecuenceInterpreter secuenceInterpreter;
 
-	public void ReceiveEvent (GameEvent ev)
+	public override void ReceiveEvent (GameEvent ev)
 	{
 		if(secuenceInterpreter == null){
 			if(ev.Name.ToLower() == "start secuence"){
@@ -19,7 +19,7 @@ public class SecuenceManager : EventManager {
 		}else secuenceInterpreter.EventHappened(ev);
 	}
 
-	public void Tick(){
+	public override void Tick(){
 		if(secuenceInterpreter != null){
 			secuenceInterpreter.Tick();
 			if(secuenceInterpreter.SecuenceFinished){

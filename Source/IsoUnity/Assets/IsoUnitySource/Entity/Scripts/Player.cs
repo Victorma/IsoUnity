@@ -35,7 +35,7 @@ public class Player : EntityScript {
 
 					toLaunch = args.options[0].Action;
 				}else if(args.options.Length > 1){
-					OptionsGUI gui = new OptionsGUI(Camera.main.WorldToScreenPoint(Entity.transform.position), Entity.getOptions());
+					OptionsGUI gui = new OptionsGUI(args, Camera.main.WorldToScreenPoint(args.entity.transform.position), args.options);
 					GUIManager.addGUI(gui, 100);
 				}
 

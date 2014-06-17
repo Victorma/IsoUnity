@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface EventManager {
+public abstract class EventManager : ScriptableObject{
 
-	void ReceiveEvent (GameEvent ev);
-	void Tick ();
+	public abstract void ReceiveEvent (GameEvent ev);
+	public abstract void Tick ();
 
 }
