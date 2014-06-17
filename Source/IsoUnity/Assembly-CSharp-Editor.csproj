@@ -86,7 +86,7 @@
      <Compile Include="Assets\Editor\TeleporterEditor.cs" />
      <Compile Include="Assets\Editor\TextureAssistant.cs" />
  <Reference Include="GoKit">
- <HintPath>C:/Users/Victorma/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
+ <HintPath>C:/Users/IvanJ/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>

@@ -108,7 +108,7 @@
      <Compile Include="Assets\Resources\Gustos.cs" />
      <Compile Include="Assets\TestDeltaTime.cs" />
  <Reference Include="GoKit">
- <HintPath>C:/Users/Victorma/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
+ <HintPath>C:/Users/IvanJ/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

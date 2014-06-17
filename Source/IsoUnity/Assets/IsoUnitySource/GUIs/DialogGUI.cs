@@ -11,6 +11,10 @@ public class DialogGUI : IsoGUI {
 
 	private int mode; // 0 = fragment mode; 1 = option mode;
 
+	bool initialized = false;
+	float textmultiplier = 1f;
+	GUIStyle sbox, stitle, smessage;
+
 	public void init(Object launcher, Dialog.Fragment frg){
 		this.picture = frg.Face;
 		this.name = frg.Name;
@@ -33,20 +37,42 @@ public class DialogGUI : IsoGUI {
 
 		switch (this.mode){
 		case 0: {
+				
+				float relation = 0.30f;
+
+				if(Screen.width<Screen.height)
+					relation = 0.20f;
+				
+				if(!initialized){
+					GUI.skin = Resources.Load<GUISkin>("Skin");
+					
+					sbox = new GUIStyle(GUI.skin.FindStyle("DialogGUIBox"));
+					stitle = new GUIStyle(GUI.skin.FindStyle ("DialogGUITitle"));
+				    smessage = new GUIStyle(GUI.skin.FindStyle("DialogGUIMessage"));
+
+					if(Screen.dpi!=0){
+						textmultiplier = (Screen.dpi/160f);
+					}
+
+					stitle.fontSize = Mathf.RoundToInt(stitle.fontSize*textmultiplier);
+					smessage.fontSize = Mathf.RoundToInt(smessage.fontSize*textmultiplier);
+					initialized = true;
+				}
+				
+
+				GUI.Box (new Rect (0, 0, Screen.width, Screen.height*relation),"", sbox);
+				
 				GUIStyle stl = new GUIStyle ();
-				//stl.normal.background = picture;
-				GUI.Box (new Rect (0, 0, Screen.width, 200), "");
-
-				stl = new GUIStyle ();
 				stl.normal.background = picture;
-				GUI.Box (new Rect (100, 50, 100, 100), "", stl);
-
+				GUI.Box (new Rect (Screen.height*relation*0.1f, Screen.height*relation*0.1f, Screen.height*relation*0.8f, Screen.height*relation*0.8f), "", stl);
+				
 				stl = new GUIStyle ();
 				stl.fontStyle = FontStyle.Bold;
 				stl.fontSize = 20; 
 				stl.normal.textColor = Color.white;
-				GUI.Label (new Rect (250, 50, Screen.width - 50, 25), this.name);
-				GUI.Label (new Rect (250, 75, Screen.width - 50, 175), this.msg);
+
+				GUI.Label (new Rect (Screen.height*relation, Screen.height*relation*0.1f, Screen.width - Screen.height*relation*0.1f, stitle.fontSize), this.name, stitle);
+				GUI.Label (new Rect (Screen.height*relation, Screen.height*relation*0.1f+stitle.fontSize+Screen.height*relation*0.05f, Screen.width - Screen.height*relation*0.1f, Screen.height*relation-(stitle.fontSize+Screen.height*relation*0.05f)), this.msg, smessage);
 				break;
 			}
 		case 1: {

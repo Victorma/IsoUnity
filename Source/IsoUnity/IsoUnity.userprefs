@@ -1,25 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\GUIs\DialogGUI.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Player.cs" Line="96" Column="49" />
-      <File FileName="Assets\IsoUnitySource\GUIs\IsoGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\InventoryGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="39" Column="12" />
+      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="111" Column="1" />
       <File FileName="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\OnScreenControlsGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIManager\GUIManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Entity\Scripts\Inventory.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Secuences\Interpreter\Interpreters\DialogInterpreter.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Controller\ControllerManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ParamEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\Secuences\Interpreter\SecuenceInterpreter.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\SecuenceWindow.cs" Line="21" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\DialogNodeEditor.cs" Line="36" Column="37" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventNodeEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\MoveEventEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\EventEditors\ChangeSwitchEventEditor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Editor\SecuenceEditor\NodeEditors\NodeEditors\ForkEditors\ISwitchForkEditor.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
