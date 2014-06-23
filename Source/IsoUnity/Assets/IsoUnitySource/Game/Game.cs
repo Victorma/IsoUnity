@@ -78,10 +78,6 @@ public class Game : MonoBehaviour {
 		while(events.Count>0)
 		{
 			GameEvent ge = events.Dequeue();
-			if(ge.Name == "ChangeSwitch"){
-				Debug.Log ("Seteando: " + ge.getParameter("switch") + " con " + ge.getParameter("value"));
-				IsoSwitchesManager.getInstance().getIsoSwitches().getSwitch((string)ge.getParameter("switch")).State = ge.getParameter("value");
-			}
 			broadcastEvent(ge);
 		}
 
