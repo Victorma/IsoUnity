@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_4_5_0;UNITY_4_5;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_1;UNITY_4_6;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -63,6 +63,7 @@
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Talker.cs" />
      <Compile Include="Assets\IsoUnitySource\Entity\Scripts\Teleporter.cs" />
      <Compile Include="Assets\IsoUnitySource\EvenManagers\AnimationManager.cs" />
+     <Compile Include="Assets\IsoUnitySource\EvenManagers\IsoSwitchesEventManager.cs" />
      <Compile Include="Assets\IsoUnitySource\EvenManagers\SecuenceManager.cs" />
      <Compile Include="Assets\IsoUnitySource\EventManager.cs" />
      <Compile Include="Assets\IsoUnitySource\GUIManager\GUIManager.cs" />
@@ -102,13 +103,10 @@
      <Compile Include="Assets\IsoUnitySource\Secuences\Interpreter\SecuenceInterpreter.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\Secuence.cs" />
      <Compile Include="Assets\IsoUnitySource\Secuences\SecuenceNode.cs" />
-     <Compile Include="Assets\IsoUnitySource\Texturizador.cs" />
      <Compile Include="Assets\Item\GameBoyItem.cs" />
      <Compile Include="Assets\Item\LlaveItem.cs" />
-     <Compile Include="Assets\Resources\Gustos.cs" />
-     <Compile Include="Assets\TestDeltaTime.cs" />
- <Reference Include="GoKit">
- <HintPath>C:/Users/IvanJ/Documents/GitHub/IsoUnity/Source/IsoUnity/Assets/IsoUnitySource/ThirdParty/GoKit.dll</HintPath>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

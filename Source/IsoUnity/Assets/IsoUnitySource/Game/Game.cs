@@ -7,7 +7,7 @@ public class Game : MonoBehaviour {
 	//Queue<Command> commands;
 	public GameObject look;
 	public Map map;
-	public List<string> managers = new List<string>(new string[]{"AnimationManager", "SecuenceManager"});
+	public List<string> managers = new List<string>(new string[]{"AnimationManager", "SecuenceManager", "IsoSwitchesEventManager"});
 	private List<EventManager> eventManagers;
 	public bool onScreenControls;
 
