@@ -7,6 +7,11 @@ public class DecorateModule : MapEditorModule {
 	public string Name {get{return "Decorate";}}
 	public int Order {get{return 3;}}
 
+	/**
+	 * Lines to start scrolling
+	 */
+	public int LTSS = 4;
+
 	private Map map;
 	private Tool selected;
 
@@ -117,9 +122,9 @@ public class DecorateModule : MapEditorModule {
 		
 		int maxTextures = 8;
 		float anchoTextura = (Screen.width - 30) / maxTextures;
-		
-		if(isoDecorations.Length > maxTextures*4)
-			scroll = EditorGUILayout.BeginScrollView(scroll, GUILayout.MaxHeight(anchoTextura));
+	
+		if(isoDecorations.Length > maxTextures*LTSS)
+			scroll = EditorGUILayout.BeginScrollView(scroll, GUILayout.MaxHeight(anchoTextura*LTSS));
 
 		Event e = Event.current;
 
@@ -155,7 +160,7 @@ public class DecorateModule : MapEditorModule {
 			EditorGUILayout.EndHorizontal();
 		}
 		
-		if(isoDecorations.Length > maxTextures*4)
+		if(isoDecorations.Length > maxTextures*LTSS)
 			EditorGUILayout.EndScrollView();
 
 		

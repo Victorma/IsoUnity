@@ -7,6 +7,11 @@ public class PaintModule : MapEditorModule {
 	public string Name {get{return "Paint";}}
 	public int Order {get{return 2;}}
 
+	/**
+	 * Lines to start scrolling
+	 */
+	public int LTSS = 4;
+
 	private Map map;
 	private Tool selected;
 
@@ -94,9 +99,12 @@ public class PaintModule : MapEditorModule {
 			int maxTextures = 8;
 			float anchoTextura = (Screen.width - 30) / maxTextures;
 			
-			if(isoTextures.Length > maxTextures*4)
-				scroll = EditorGUILayout.BeginScrollView(scroll, GUILayout.MaxHeight(anchoTextura));
-			
+			// This line controls the case when there are too many textures. In that case, 
+			// the line after the if creates a scroll to fix the size to a max, defined in
+			// GUILayout.MaxHeight(<<designed size>>)
+			if(isoTextures.Length > maxTextures*LTSS)
+				scroll = EditorGUILayout.BeginScrollView(scroll, GUILayout.MaxHeight(anchoTextura*LTSS));
+				
 			
 			int currentTexture = 0;
 			foreach(IsoTexture it in isoTextures){
@@ -130,7 +138,7 @@ public class PaintModule : MapEditorModule {
 				EditorGUILayout.EndHorizontal();
 			}
 			
-			if(isoTextures.Length > maxTextures*4){
+			if(isoTextures.Length > maxTextures*LTSS){
 				EditorGUILayout.EndScrollView();
 			}
 		
