@@ -1,10 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\IsoSettings\IsoSettingsManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\IsoUnitySource\Map\Cell.cs">
     <Files>
-      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Editor\MapEditor\Modules\PaintModule.cs" Line="30" Column="30" />
+      <File FileName="Assets\IsoUnitySource\GUIs\DialogGUI.cs" Line="111" Column="1" />
       <File FileName="Assets\IsoUnitySource\GUIs\OptionsGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\IsoUnitySource\IsoSettings\IsoSettingsManager.cs" Line="35" Column="24" />
+      <File FileName="Assets\IsoUnitySource\IsoSettings\IsoSettingsManager.cs" Line="49" Column="1" />
+      <File FileName="Assets\Editor\MapEditor\Modules\DecorateModule.cs" Line="11" Column="29" />
+      <File FileName="Assets\IsoUnitySource\Map\Cell.cs" Line="473" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
