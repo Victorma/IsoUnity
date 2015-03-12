@@ -372,11 +372,14 @@ public class Cell : MonoBehaviour {
 		}
 		return walkable;
 	}
-
+	// TODO enhacement improve this like in the map
 	public Entity[] getEntities(){
 		return this.transform.GetComponentsInChildren<Entity>();
 	}
-
+	
+	/**
+	 * Deprecated
+	 */
 	public void tick(){
 		foreach(Entity en in getEntities()){
 			en.tick();
@@ -386,20 +389,16 @@ public class Cell : MonoBehaviour {
 	/* #########################################################
 	 * 					ENTITIES THINGS
 	 * */
-	
-	[SerializeField]
-	private List<Entity> entities = new List<Entity>();
+
+	// TODO entity movement or teleportation maybe checked here? dunno...
 	public List<Entity> Entities{get;set;}
 
 	public void addEntity(Entity en){
-		if(!entities.Contains(en)){
-			entities.Add(en);
-		}
+
 	}
 
 	public void removeEntity(Entity en){
-		if(entities.Contains(en))
-			entities.Remove (en);
+
 	}
 
 	/* #########################################################

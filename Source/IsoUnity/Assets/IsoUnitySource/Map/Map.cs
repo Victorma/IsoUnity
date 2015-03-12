@@ -286,9 +286,58 @@ public class Map : MonoBehaviour
 		}
 	}
 
+	private Entity[] entities;
+	private List<Entity> toAdd;
+	private int removed;
+
+	public void OnEnable(){
+		this.entities = this.gameObject.GetComponentsInChildren<Entity> ();
+		toAdd = new List<Entity> ();
+	}
+
+	public void registerEntity(Entity entity){
+		toAdd.Add (entity);
+	}
+
+	public void unRegisterEntity(Entity entity){
+		bool r = false;
+		for (int i = 0; i< this.entities.Length; i++) {
+			if(entities[i] == entity) {
+				entities[i] = null;
+				r = true;
+				break;
+			}
+		}
+		if (r == false && toAdd.Contains (entity))
+			r = toAdd.Remove (entity);
+
+		if (r)
+			removed++;
+	}
+
+	private void UpdateEntities(){
+		Entity[] newEntities = new Entity[entities.Length - removed + toAdd.Count];
+		int pos = 0;
+		foreach(Entity e in this.entities)
+		if(e != null) {
+			newEntities[pos] = e; pos++;
+		}
+		foreach(Entity e in toAdd){
+			newEntities[pos] = e; pos++;
+		}
+		removed = 0;
+		toAdd.Clear();
+		this.entities = newEntities;
+	}
+
 	public void tick(){
-		foreach(Cell c in this.transform.GetComponentsInChildren<Cell>())
-			c.tick();
+
+		if (removed > 0 || toAdd.Count > 0)
+			UpdateEntities ();
+
+		foreach (Entity e in this.entities)
+			e.tick ();
+
 	}
 
 	/***************

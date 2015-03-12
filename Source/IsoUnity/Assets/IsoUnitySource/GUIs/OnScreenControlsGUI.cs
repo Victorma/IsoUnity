@@ -28,7 +28,7 @@ public class OnScreenControlsGUI : IsoGUI {
 		float targetWidth = 1080f;
 		float scale = Screen.width / targetWidth;
 
-		Rect leftButtonsArea = new Rect(20*scale, Screen.height-300*scale, 300*scale, 300*scale);
+		//Rect leftButtonsArea = new Rect(20*scale, Screen.height-300*scale, 300*scale, 300*scale);
 
 		GUIStyle style = Resources.Load<GUISkin>("Skin").FindStyle("OnScreenButton");
 			Vector2 point = GUIUtility.ScreenToGUIPoint(Event.current.mousePosition);

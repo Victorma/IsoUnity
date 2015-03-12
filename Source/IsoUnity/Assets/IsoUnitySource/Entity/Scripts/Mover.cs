@@ -48,11 +48,18 @@ public class Mover : EntityScript {
 			if(Entity.Position.Map == teleportToCell.Map){
 				Entity.Position = teleportToCell;
 			}else{
+				//TODO Dont like the register calls made here...
+				Entity.Position.Map.unRegisterEntity(Entity);
 				Entity.Position = teleportToCell;
+				Entity.Position.Map.registerEntity(Entity);
+
 				this.renderer.enabled = false;
 				foreach(Renderer r in this.GetComponentsInChildren<Renderer>())r.enabled = false;
+				//TODO maybe this should be checked in player script
 				if(this.GetComponent<Player>()!=null)
 					MapManager.getInstance().setActiveMap(teleportToCell.Map);
+
+
 			}
 			teleport = false;
 			move = false;

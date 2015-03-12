@@ -87,25 +87,7 @@ public class Player : EntityScript {
 
 	public override Option[] getOptions ()
 	{
-		GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
-		ge.Name = "Hola!";
-		Option o = new Option("Opcion 1",ge,false,0);
-
-		GameEvent ge2 = ScriptableObject.CreateInstance<GameEvent>();
-		ge.Name = "Hola!";
-		Option o2 = new Option("Opcion 2",ge,false,0);
-
-		Option o3 = new Option("Opcion 3",ge,false,0);
-
-		Option o4 = new Option("Opcion 4",ge,false,0);
-
-		Option o5 = new Option("Opcion 5",ge,false,0);
-
-		Option o6 = new Option("Opcion 6",ge,false,0);
-
-		Option o7 = new Option("Opcion 7",ge,false,0);
-
-		return new Option[]{o,o2,o3,o4,o5,o6,o7};
+		return new Option[]{};
 	}
 
 	public override void Update(){
