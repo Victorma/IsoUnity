@@ -25,20 +25,26 @@ public class Entity : MonoBehaviour {
 		}
 	}
 
+    public bool canMoveTo(Cell from, Cell to)
+    {
+        //canAccedTo(c);
+
+        bool canMove = false;
+
+        if (to != null && Mathf.Abs(from.WalkingHeight - to.WalkingHeight) <= maxJumpSize)
+        {
+            if (canBlockMe)
+                canMove = to.isAccesibleBy(this);
+            else
+                canMove = true;
+        }
+
+        //canGoThroughEntities(c);
+        return canMove;
+    }
+
 	public bool canMoveTo(Cell c){
-		//canAccedTo(c);
-
-		bool canMove = false;
-
-		if(c != null && Mathf.Abs(Position.WalkingHeight - c.WalkingHeight) <=maxJumpSize){
-			if(canBlockMe)
-				canMove = c.isAccesibleBy(this);
-			else
-				canMove = true;
-		}
-
-		//canGoThroughEntities(c);
-		return canMove;
+		return canMoveTo(position,c);
 	}
 
 	public bool letPass(Entity e){

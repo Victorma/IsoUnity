@@ -163,7 +163,7 @@ public class RoutePlanifier
 		List<Cell> accesibles = new List<Cell>();
 		foreach(Cell c in vecinas){
 			if(c!=null){
-				if(entity.canMoveTo(c))
+				if(entity.canMoveTo(celda, c))
 					accesibles.Add(c);
 			}
 		}
