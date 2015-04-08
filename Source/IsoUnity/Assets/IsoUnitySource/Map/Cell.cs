@@ -223,7 +223,7 @@ public class Cell : MonoBehaviour {
         Material myMat = new Material(Shader.Find("Transparent/Cutout/Diffuse"));
         myMat.SetTexture("_MainTex", MeshFactory.Instance.getTexture2D());
         this.GetComponent<Renderer>().sharedMaterial = myMat;
-
+        this.GetComponent<MeshCollider>().sharedMesh = MeshFactory.Instance.getMesh();
 	}
 
 
