@@ -192,12 +192,12 @@ public class PaintModule : MapEditorModule {
 			
 			Cell cs = selected.GetComponent<Cell>();
 			if(cs!=null){
-				Face f = cs.getFaceByPoint(info.point);
+                FaceNoSC f = cs.getFaceByPoint(info.point);
 				if(f!=null){
 					if(paintLater && paintingTexture != null){
 						f.Texture = paintingTexture;
 						f.TextureMapping = paintingIsoTexture;
-						cs.refresh();
+                        cs.forceRefresh();
 					}
 					
 					if(backupTextures){

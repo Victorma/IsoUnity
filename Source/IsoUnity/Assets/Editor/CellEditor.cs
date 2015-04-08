@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using System.Collections;
 
 [CanEditMultipleObjects]
@@ -10,33 +11,24 @@ public class CellEditor : Editor {
 	private Cell[] cell;
 		
 	// Cell properties
-
-	private SerializedProperty map;
+    private Quaternion angle = new Quaternion();
 
 	private float heightValue;
+    private bool justCreated = true;
 
 	void OnEnable(){
 
 		SceneView.onSceneGUIDelegate += this.OnSceneGUI2;
-
 		//Getting the targets
-		ArrayList acell = new ArrayList(targets);
-		acell.Add(target);
+		ArrayList acell = new ArrayList();
+        if (targets != null)
+            acell.AddRange(targets);
+        else
+            acell.Add(target);
 		cell = acell.ToArray(typeof(Cell)) as Cell[];
 
 		// Base Properties
-
-
-		//cellTopType = serializedObject.FindProperty("cellTop");
-		map = serializedObject.FindProperty("map");
-		//height = cell[0].Height;
-		//cellTopType = cell[0].CellTop;
-
-		// Search for different properties
-		//foreach(Cell c in cell){
-		//	if(height != c.Height) height = -1;
-		//	if(cellTopType != c.CellTop) cellTopType = CellTopType.undefined;
-		//}
+        angle.SetFromToRotation(new Vector3(0, 0, 1f), new Vector3(0, 1f, 0));
 
 	}
 
@@ -53,10 +45,10 @@ public class CellEditor : Editor {
 
 		serializedObject.Update();
 
-		SerializedProperty height = serializedObject.FindProperty("height");
-		SerializedProperty walkable = serializedObject.FindProperty("walkable");
-		SerializedProperty cellTopType = serializedObject.FindProperty("cellTop");
-		SerializedProperty cellTopRotation = serializedObject.FindProperty("cellTopRotation");
+		SerializedProperty height = serializedObject.FindProperty("properties.height");
+        SerializedProperty walkable = serializedObject.FindProperty("walkable");
+        SerializedProperty cellTopType = serializedObject.FindProperty("properties.top");
+        SerializedProperty cellTopRotation = serializedObject.FindProperty("properties.orientation");
 
 		EditorGUI.showMixedValue = walkable.hasMultipleDifferentValues;
 		EditorGUILayout.PropertyField (walkable);
@@ -65,13 +57,6 @@ public class CellEditor : Editor {
 		heightValue = height.floatValue;
 		EditorGUI.showMixedValue = height.hasMultipleDifferentValues;
 		heightValue = EditorGUILayout.FloatField("Height", heightValue);
-
-		/*
-		CellTopType last = cell[0].getTopType();
-		if(last != cellTopType){
-			foreach(Cell c in cell)
-				c.setTop(cellTopType);
-		}*/
 
 		CellTopType topType = (CellTopType)cellTopType.enumValueIndex;
 
@@ -90,16 +75,11 @@ public class CellEditor : Editor {
 		GUIContent select = new GUIContent("Select Map");
 		if (GUI.Button (GUILayoutUtility.GetRect(select, s), select)) selectMap();
 
-		vec = cell[0].Map.getNeightbours(cell[0]);
-		foreach(Cell ce in vec)
-			EditorGUILayout.ObjectField(ce,typeof(Cell),true);
-
 		if(EditorGUI.EndChangeCheck())
 		{
 			if(heightValue != height.floatValue){
-				//height.floatValue = heightValue;
-				foreach(Cell c in cell)
-					c.Height = heightValue;
+                foreach (Cell c in cell)
+                    c.Height = heightValue;
 			}
 			if(topType != ((CellTopType)cellTopType.enumValueIndex)){
 				foreach(Cell c in cell)
@@ -112,11 +92,18 @@ public class CellEditor : Editor {
 					c.CellTopRotation = topRotation;
 				cellTopRotation = serializedObject.FindProperty("cellTopRotation");
 			}
+            foreach (Cell c in cell)
+                EditorUtility.SetDirty(c);
 		}
 
 		serializedObject.ApplyModifiedProperties ();
 
 	}
+
+    Vector3 ident = new Vector3(0, 0, 0);
+    Vector3 diference = new Vector3(0,0,0);
+    Vector3 origin;
+    Dictionary<Cell, float> heights = new Dictionary<Cell, float>();
 
 	void OnSceneGUI (){
 
@@ -140,13 +127,76 @@ public class CellEditor : Editor {
 					movingObject = false;
 			}*/
 
+        Cell c = (Cell) target;
+
+        if (target == cell[0])
+        { 
+            Bounds bounds = new Bounds(cell[0].GetComponent<Renderer>().bounds.center,new Vector3(0,0,0));
+            for(int i = 0 ; i<cell.Length; i++)
+                bounds.Encapsulate(cell[i].GetComponent<Renderer>().bounds);
+
+            MyHandles.DragHandleResult dhResult;
+
+            Vector3 newPosition = MyHandles.DragHandle(bounds.center, angle, 7f, Handles.ArrowCap, Color.white, out dhResult);
+            
+            switch (dhResult)
+            {
+                case MyHandles.DragHandleResult.LMBPress:
+                    heights.Clear();
+                    origin = newPosition;
+                    break;
+                case MyHandles.DragHandleResult.LMBDrag:
+                    if (justCreated)
+                    {
+                        heights.Clear();
+                        origin = newPosition;
+                        justCreated = false;
+                    }
+
+                    diference = newPosition - origin;
+                    break;
+                case MyHandles.DragHandleResult.LMBRelease:
+                    diference = ident;
+                    
+                    break;
+            }
+
+        }
+
+        if (!heights.ContainsKey(c))
+            heights.Add(c, c.Height);
+
+        if (diference.y != 0)
+        {
+            Undo.RecordObject(target, "Cell height changed...");
+            float height = c.Height;
+            c.Height = heights[c] + diference.y;
+            EditorUtility.SetDirty(c);
+
+            if (c.Height != height)
+                c.gameObject.BroadcastMessage("Update");
+        }
+
+
 	}
 
+    bool hasMultipleDifferentValues(System.Object[] o, string propertyName)
+    {
+        System.Reflection.PropertyInfo property = o[0].GetType().GetProperty(propertyName);
+        object value = property.GetValue(o[0],null);
+        int i = 0;
+        while (i < o.Length && value == property.GetValue(o[i], null)) i++;
+
+        return i != o.Length;
+    }
+
 	private void selectMap(){
-		if(!this.map.hasMultipleDifferentValues){
-			int m = map.objectReferenceInstanceIDValue;
-			Selection.activeInstanceID = m;
-		}
+
+        if (!hasMultipleDifferentValues(cell, "Map"))
+        {
+            int m = cell[0].transform.parent.GetInstanceID();
+            Selection.activeInstanceID = m;
+        }
 
 	}
 

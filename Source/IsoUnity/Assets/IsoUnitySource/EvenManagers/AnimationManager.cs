@@ -13,7 +13,7 @@ public class AnimationManager : EventManager {
 
 			Decoration animation2 = go.GetComponent<Decoration>();
 
-			animation2.renderer.sharedMaterial = new Material(Shader.Find("Transparent/Cutout/Diffuse"));
+			animation2.GetComponent<Renderer>().sharedMaterial = new Material(Shader.Find("Transparent/Cutout/Diffuse"));
 			animation2.Father = dec;
 			animation2.adaptate();
 

@@ -25,7 +25,7 @@ public class CameraManager  {
 		}
 		RenderSettings.ambientLight = Color.white;
 
-		Camera.main.isOrthoGraphic = true;
+		Camera.main.orthographic = true;
 		Texture2D baseTile = IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale;
 
 		float angle = 30;

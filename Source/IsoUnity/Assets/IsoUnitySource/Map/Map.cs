@@ -46,7 +46,7 @@ public class Map : MonoBehaviour
 			Vector2 coords = getCoords(c.gameObject);
 
 			c.transform.position.Set(coords.x * cellSize,c.transform.position.y, coords.y * cellSize);
-			c.setCellWidth(cellSize);
+			c.Width = cellSize;
 		}
 	}
 
@@ -104,7 +104,7 @@ public class Map : MonoBehaviour
 		position = m_transform.InverseTransformPoint(position);
 		
 		Cell cell = ghost.GetComponent<Cell>();
-		cell.setCellWidth(cellSize);	
+		cell.Width = cellSize;	
 
 		//La refresco
 		Vector2 coords = getCoords(position);
@@ -113,7 +113,7 @@ public class Map : MonoBehaviour
 
 		Material mat = new Material(Shader.Find("Transparent/Diffuse"));
 		mat.color = new Color(mat.color.r,mat.color.g,mat.color.b,intensity);
-		ghost.renderer.sharedMaterial = mat;
+		ghost.GetComponent<Renderer>().sharedMaterial = mat;
 	}
 
 	public void ghostDecoration(Cell cs, Vector3 position, int angle, bool parallel, bool centered, IsoDecoration dec, float intensity){
@@ -154,7 +154,7 @@ public class Map : MonoBehaviour
 		checkTransform();
 
 		// Creating the gameObject
-		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab) as GameObject;
+		GameObject go = UnityEditor.PrefabUtility.InstantiatePrefab(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab) as GameObject;
 
 		// Getting the localPosition
 		position = m_transform.InverseTransformPoint(position);
@@ -162,8 +162,10 @@ public class Map : MonoBehaviour
 		// Setting base properties
 		Cell cell = go.GetComponent<Cell>();
 		cell.Map = this;
-		cell.transform.localPosition = position;
-		cell.setCellWidth(cellSize);	
+		cell.transform.localPosition = new Vector3(position.x,0,position.z);
+        cell.Height = position.y;
+		cell.Width = cellSize;
+        cell.forceRefresh();
 
 		//Añado la celda al conjunto de celdas
 		vecinas.Add(cell, new Cell[4]);

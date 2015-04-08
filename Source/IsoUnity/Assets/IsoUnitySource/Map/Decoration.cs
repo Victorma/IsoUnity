@@ -126,11 +126,11 @@ public class Decoration : MonoBehaviour{
 			}
 		}
 
-		Material myMat = new Material(this.renderer.sharedMaterial);
+		Material myMat = new Material(this.GetComponent<Renderer>().sharedMaterial);
 		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
 		myMat.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
 		myMat.SetTexture("_MainTex",isoDec.getTexture());
-		this.renderer.sharedMaterial = myMat;
+		this.GetComponent<Renderer>().sharedMaterial = myMat;
 
 
 	}
@@ -165,42 +165,42 @@ public class Decoration : MonoBehaviour{
 				{
 					if (this.centered)
 						if (!this.parallel)
-							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.getCellWidth ()) + this.transform.localScale.y / 2, -0.5f);
+							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, -0.5f);
 						else
-							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.getCellWidth () + 0.01f), -0.5f);
+                            position = new Vector3(-0.5f, (celdapadre.Height * celdapadre.Width + 0.01f), -0.5f);
 					else
 						if (!this.parallel)
-							position = new Vector3 (invfather.x, (celdapadre.Height * celdapadre.getCellWidth ()) + this.transform.localScale.y / 2, invfather.z);
+                            position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, invfather.z);
 						else
-							position = new Vector3 (invfather.x, (celdapadre.Height * celdapadre.getCellWidth ()) + 0.01f, invfather.z);
+                            position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + 0.01f, invfather.z);
 					break;
 				}
 			case 1:
 				{
 					if (this.centered)
 						if (!this.parallel)
-							position = new Vector3 (-celdapadre.getCellWidth () / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1, -celdapadre.getCellWidth () / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+                            position = new Vector3(-celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
 						else
-							position = new Vector3 (-celdapadre.getCellWidth () / 2, invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.getCellWidth () / 2);
+                            position = new Vector3(-celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
 					else
 						if (!this.parallel)
 							position = new Vector3 (invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
 						else
-							position = new Vector3 (invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.getCellWidth () / 2);
+                            position = new Vector3(invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
 					break;
 				}
 			case 2:
 				{
 					if (this.centered)
 						if (!this.parallel)
-							position = new Vector3 (-celdapadre.getCellWidth () / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1, -celdapadre.getCellWidth () / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
+                            position = new Vector3(-celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
 						else
-							position = new Vector3 (-0.01f - celdapadre.getCellWidth () / 2, invfather.y - (invfather.y % celdapadre.getCellWidth ()) + 1 + (this.transform.localScale.y / 2), -celdapadre.getCellWidth () / 2);
+                            position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -celdapadre.Width / 2);
 					else
 						if (!this.parallel)
 							position = new Vector3 (invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
 						else
-							position = new Vector3 (-0.01f - celdapadre.getCellWidth () / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);	
+                            position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);	
 					break;
 				}
 			}
@@ -232,7 +232,7 @@ public class Decoration : MonoBehaviour{
 			int x = tile % (isoDec.nCols);
 			int y = Mathf.FloorToInt(tile/isoDec.nCols);
 			
-			this.renderer.material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
+			this.GetComponent<Renderer>().material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
 		}
 	}
 

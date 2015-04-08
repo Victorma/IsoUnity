@@ -4,7 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 [Serializable]
-public class Face : ScriptableObject, IComparable<Face> {
+public class FaceNoSC : IComparable<FaceNoSC>
+{
 	
 	private int[] vertexIndex;
 	private int[] finalVertexListIndexes;
@@ -96,9 +97,8 @@ public class Face : ScriptableObject, IComparable<Face> {
 		
 	}
 
-	public static Face extractFaceInfoFromMesh(Mesh mesh, int numVertices, int offset){
-        Face face = new Face();
-
+    public static void extractFaceInfoFromMesh(Mesh mesh, int numVertices, int offset, FaceNoSC face)
+    {
 		face.sharedVertex = mesh.vertices;
 		face.vertexIndex = new int[numVertices];
 		for (int i = 0; i < numVertices; i++) 
@@ -106,8 +106,6 @@ public class Face : ScriptableObject, IComparable<Face> {
 
 		face.finalVertexListIndexes = face.vertexIndex;
 		face.regenerateTriangles ();
-
-		return face;
 	}
 	
 	public void regenerateUVs(Rect textureRect){
@@ -179,39 +177,13 @@ public class Face : ScriptableObject, IComparable<Face> {
 	private void generateBounds(){
 		if(sharedVertex == null)
 			return;
-		
-		Mesh meshecilla = new Mesh();
-		Vector3[] puntos = new Vector3[vertexIndex.Length];
-		for(int i = 0; i< puntos.Length; i++){
-			puntos[i] = sharedVertex[vertexIndex[i]];
-		}
-		int[] trianglecillos;
-		if(vertexIndex.Length == 3){
-			trianglecillos = new int[3];
-			trianglecillos[0] = 0;
-			trianglecillos[1] = 2;
-			trianglecillos[2] = 1;
-		}else{
-			trianglecillos = new int[6];
-			
-			trianglecillos[0] = 0;
-			trianglecillos[1] = 2;
-			trianglecillos[2] = 1;
-			trianglecillos[3] = 2;
-			trianglecillos[4] = 0;
-			trianglecillos[5] = 3;
-		}
-		
-		meshecilla.vertices = puntos;
-		meshecilla.triangles = trianglecillos; 
-		meshecilla.RecalculateBounds();
-		
-		bounds = meshecilla.bounds;
+
 		boundsGenerated = true;
-		
-		/*bounds = new Bounds();
+
+        bounds = new Bounds(sharedVertex[vertexIndex[0]],new Vector3(0.001f,0.001f,0.001f));
+        //bounds.Encapsulate(new Vector3(-0.001f, -0.001f, -0.001f));
 		foreach(int i in vertexIndex)
-			bounds.Encapsulate(sharedVertex[i]);*/
+            bounds.Encapsulate(sharedVertex[i]);
 	}
 	
 	public bool contains(Vector3 point){
@@ -221,7 +193,7 @@ public class Face : ScriptableObject, IComparable<Face> {
 	}
 
 
-    public int CompareTo(Face other)
+    public int CompareTo(FaceNoSC other)
     {
         return (this.texture == other.texture && this.textureMapping == other.textureMapping) ? 0 : 1;
     }

@@ -194,7 +194,7 @@ public class DecorateModule : MapEditorModule {
 		if(selected != null){
 			Cell cs = selected.GetComponent<Cell>();
 			if(cs != null){
-				Face f = (cs!=null)?cs.getFaceByPoint(info.point):null;
+                FaceNoSC f = (cs != null) ? cs.getFaceByPoint(info.point) : null;
 				if(f!=null){
 					Vector3 position = selected.transform.position;
 					if(cs != null)
@@ -223,7 +223,7 @@ public class DecorateModule : MapEditorModule {
 							GameObject tmpdec = cs.addDecoration(info.point, ang, parallelDecoration, (Event.current.shift)?false:true, paintingIsoDecoration);
 
 							if(autoanimate){
-								AutoAnimator tmpautoanim = tmpdec.AddComponent("AutoAnimator") as AutoAnimator;
+								AutoAnimator tmpautoanim = tmpdec.AddComponent<AutoAnimator>() as AutoAnimator;
 
 								tmpautoanim.FrameSecuence = this.FrameSecuence;
 								tmpautoanim.FrameRate = this.FrameRate;

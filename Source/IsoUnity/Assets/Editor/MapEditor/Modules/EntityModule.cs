@@ -51,7 +51,7 @@ public class EntityModule : MapEditorModule {
 		if(selected != null){
 			Cell cs = selected.GetComponent<Cell>();
 			if(cs!=null){
-				Face f = cs.getFaceByPoint(info.point);
+                FaceNoSC f = cs.getFaceByPoint(info.point);
 				if(f!=null){
 					if(moveEntity)
 						entity.Position = cs;

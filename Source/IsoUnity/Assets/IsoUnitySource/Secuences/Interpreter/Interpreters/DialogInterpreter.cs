@@ -81,8 +81,9 @@ public class DialogInterpreter : ScriptableObject, ISecuenceInterpreter {
 
 		if(chosen != -1){
 			finished = true;
-			CameraManager.lookTo(wasLooking);
-			nextNode = node.Childs[chosen];
+             CameraManager.lookTo(wasLooking);
+            if (node.Childs.Length > chosen)
+                nextNode = node.Childs[chosen];
 			chosen = -1;
 		}
 	}
