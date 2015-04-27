@@ -2,7 +2,7 @@
 using System.Collections;
 
 [System.Serializable]
-public class IsoUnityBasicType : ScriptableObject {
+public class IsoUnityBasicType : IsoUnityType {
 
 	public int i;
 	public float f;
@@ -15,7 +15,18 @@ public class IsoUnityBasicType : ScriptableObject {
 	public char c;
 
 	public string whatIs;
-	public object Value {
+
+    public override IsoUnityType clone()
+    {
+        return IsoUnityBasicType.CreateInstance<IsoUnityBasicType>();
+    }
+
+    public override bool canHandle(object o)
+    {
+        return  c is System.String || c is Vector2 || c is Vector3 || c is Vector4 || c is Quaternion || c is System.ValueType;
+    }
+
+	public override object Value {
 		get{
 			object vt = null;
 
