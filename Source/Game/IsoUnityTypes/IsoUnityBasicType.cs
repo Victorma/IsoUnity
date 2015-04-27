@@ -23,7 +23,25 @@ public class IsoUnityBasicType : IsoUnityType {
 
     public override bool canHandle(object o)
     {
-        return  c is System.String || c is Vector2 || c is Vector3 || c is Vector4 || c is Quaternion || c is System.ValueType;
+        string[] types = new string[]{
+            typeof(string).ToString(),
+            typeof(Vector2).ToString(),
+            typeof(Vector3).ToString(),
+            typeof(Vector4).ToString(),
+            typeof(Quaternion).ToString(),
+            typeof(int).ToString(),
+            typeof(float).ToString(),
+            typeof(bool).ToString(),
+            typeof(char).ToString()
+        };
+
+        var myType = o.GetType().ToString();
+
+        foreach (var type in types)
+            if (type == myType)
+                return true;
+
+        return false;
     }
 
 	public override object Value {
@@ -61,4 +79,42 @@ public class IsoUnityBasicType : IsoUnityType {
 
 		}
 	}
+
+    public override JSONObject toJSONObject()
+    {
+
+        JSONObject o = null;
+        if (whatIs == typeof(int).ToString()) { o = new JSONObject(i); }
+        else if (whatIs == typeof(float).ToString()) { o = new JSONObject(f); }
+        else if (whatIs == typeof(string).ToString()) { o = JSONObject.CreateStringObject(s); }
+        else if (whatIs == typeof(Vector2).ToString()) { o = JSONObject.CreateStringObject(v2.ToString()); }
+        else if (whatIs == typeof(Vector3).ToString()) { o = JSONObject.CreateStringObject(v3.ToString()); }
+        else if (whatIs == typeof(Vector4).ToString()) { o = JSONObject.CreateStringObject(v4.ToString()); }
+        else if (whatIs == typeof(Quaternion).ToString()) { o = JSONObject.CreateStringObject(q.ToString()); }
+        else if (whatIs == typeof(bool).ToString()) { o = new JSONObject(b); }
+        else if (whatIs == typeof(char).ToString()) { o = new JSONObject(c); }
+        return o;
+    }
+
+    public override void fromJSONObject(JSONObject json)
+    {
+        if (json.IsString)
+        {
+            object vq = null;// VectorUtil.getVQ(param.str);
+            if (vq == null)
+                Value = json.str;
+            else Value = vq;
+        }
+        else if (json.IsBool)
+        {
+            Value = json.b;
+        }
+        else if (json.IsNumber)
+        {
+            int i = Mathf.RoundToInt(json.n);
+            if (json.n == i) Value = i;
+            else Value = json.n;
+        }
+    }
+
 }

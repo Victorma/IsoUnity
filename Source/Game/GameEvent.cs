@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public class GameEvent : ScriptableObject, JSONAble{
@@ -120,25 +121,10 @@ public class GameEvent : ScriptableObject, JSONAble{
         JSONObject parameters = new JSONObject();
         foreach (KeyValuePair<string, Object> entry in args)
         {
-            if (entry.Value is IsoUnityBasicType)
+            if (entry.Value is JSONAble)
             {
-                IsoUnityBasicType val = (IsoUnityBasicType)entry.Value;
-                string whatIs = val.whatIs;
-
-                // Basic Type Assignation
-                if (whatIs == typeof(int).ToString()) { parameters.AddField(entry.Key, (int)val.Value); }
-                else if (whatIs == typeof(float).ToString()) { parameters.AddField(entry.Key, (float)val.Value); }
-                else if (whatIs == typeof(string).ToString()) { parameters.AddField(entry.Key, (string)val.Value); }
-                else if (whatIs == typeof(Vector2).ToString()) { parameters.AddField(entry.Key, val.Value.ToString()); }
-                else if (whatIs == typeof(Vector3).ToString()) { parameters.AddField(entry.Key, val.Value.ToString()); }
-                else if (whatIs == typeof(Vector4).ToString()) { parameters.AddField(entry.Key, val.Value.ToString()); }
-                else if (whatIs == typeof(Quaternion).ToString()) { parameters.AddField(entry.Key, val.Value.ToString()); }
-                else if (whatIs == typeof(bool).ToString()) { parameters.AddField(entry.Key, (bool)val.Value); }
-                else if (whatIs == typeof(char).ToString()) { parameters.AddField(entry.Key, (char)val.Value); }
-            }
-            else if (entry.Value is GameEvent)
-            {
-                parameters.AddField(entry.Key, (entry.Value as GameEvent).toJSONObject());
+                var jsonAble = entry.Value as JSONAble;
+                parameters.AddField(entry.Key, JSONSerializer.Serialize(jsonAble));
             }
             else
             {
@@ -174,21 +160,8 @@ public class GameEvent : ScriptableObject, JSONAble{
         foreach (string key in parameters.keys)
         {
             JSONObject param = parameters[key];
-            IsoUnityBasicType val = ScriptableObject.CreateInstance<IsoUnityBasicType>();
-            if (param.IsString)
-            {
-                object vq = VectorUtil.getVQ(param.str);
-                if (vq == null) val.Value = param.str;
-                else val.Value = vq;
-            }
-            else if (param.IsBool) val.Value = param.b;
-            else if (param.IsNumber)
-            {
-                int i = Mathf.RoundToInt(param.n);
-                if (param.n == i) val.Value = i;
-                else val.Value = param.n;
-            }
-            args.Add(key, val);
+            JSONAble unserialized = JSONSerializer.UnSerialize(param);
+            this.setParameter(key, unserialized);
         }
     }
 }

@@ -9,7 +9,7 @@ public abstract class IsoUnityTypeFactory
         get
         {
             if (instance == null)
-                instance = null;
+                instance = new IsoUnityTypeFactoryImp();
             return instance;
         }
     }
