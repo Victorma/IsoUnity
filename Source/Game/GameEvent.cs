@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
-public class GameEvent : ScriptableObject{
+public class GameEvent : ScriptableObject, JSONAble{
 
 	void Awake(){
 		if (args == null || args.Count != keys.Count) {
@@ -33,11 +34,10 @@ public class GameEvent : ScriptableObject{
 
 	public void setParameter(string param, object content){
 		param = param.ToLower();
-		object c = content;
-		if(c is System.ValueType || c is string){
-			c = ScriptableObject.CreateInstance<IsoUnityBasicType>();
-			((IsoUnityBasicType)c).Value = content;
-		}
+		object c = IsoUnityTypeFactory.Instance.getIsoUnityType(content);
+        if (c == null)
+            c = content;
+		
 		if(args.ContainsKey(param))	args[param] = (Object)c;
 		else						args.Add(param, (Object)c);
 
@@ -47,8 +47,14 @@ public class GameEvent : ScriptableObject{
 
 	public void removeParameter(string param){
 		param = param.ToLower();
-		if(args.ContainsKey(param))
-			args.Remove(param);
+        if (args.ContainsKey(param))
+        {
+            UnityEngine.Object v = args[param];
+            if (v is IsoUnityBasicType)
+                IsoUnityTypeFactory.Instance.Destroy(v as IsoUnityBasicType);
+
+            args.Remove(param);
+        }
 
 		this.keys = new List<string> (args.Keys);
 		this.values = new List<Object> (args.Values);
@@ -106,5 +112,57 @@ public class GameEvent : ScriptableObject{
 	{
 		return !(ge1 == ge2);
 	}
+
+
+    public JSONObject toJSONObject()
+    {
+        JSONObject json = new JSONObject();
+        json.AddField("name", name);
+        JSONObject parameters = new JSONObject();
+        foreach (KeyValuePair<string, Object> entry in args)
+        {
+            if (entry.Value is JSONAble)
+            {
+                var jsonAble = entry.Value as JSONAble;
+                parameters.AddField(entry.Key, JSONSerializer.Serialize(jsonAble));
+            }
+            else
+            {
+                parameters.AddField(entry.Key, entry.Value.GetInstanceID());
+            }
+        }
+
+
+        json.AddField("parameters", parameters);
+        return json;
+    }
+
+    private static void destroyBasic(Dictionary<string, Object> args)
+    {
+        if (args == null || args.Count == 0)
+            return;
+
+        foreach (KeyValuePair<string, Object> entry in args)
+            if (entry.Value is IsoUnityBasicType)
+                IsoUnityBasicType.DestroyImmediate(entry.Value);
+    }
+
+    public void fromJSONObject(JSONObject json)
+    {
+        this.name = json["name"].ToString();
+
+        //Clean basic types
+        destroyBasic(this.args);
+
+        this.args = new Dictionary<string, Object>();
+
+        JSONObject parameters = json["parameters"];
+        foreach (string key in parameters.keys)
+        {
+            JSONObject param = parameters[key];
+            JSONAble unserialized = JSONSerializer.UnSerialize(param);
+            this.setParameter(key, unserialized);
+        }
+    }
 }
 

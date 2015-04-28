@@ -224,6 +224,7 @@ public class Cell : MonoBehaviour {
         myMat.SetTexture("_MainTex", MeshFactory.Instance.getTexture2D());
         this.GetComponent<Renderer>().sharedMaterial = myMat;
         this.GetComponent<MeshCollider>().sharedMesh = MeshFactory.Instance.getMesh();
+        UnityEditor.EditorUtility.SetDirty(this);
 	}
 
 
