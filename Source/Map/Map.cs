@@ -154,9 +154,13 @@ public class Map : MonoBehaviour
 		checkTransform();
 
 		// Creating the gameObject
+#if UNITY_EDITOR
 		GameObject go = UnityEditor.PrefabUtility.InstantiatePrefab(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab) as GameObject;
+#else
+        GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultCellPrefab);
+#endif
 
-		// Getting the localPosition
+        // Getting the localPosition
 		position = m_transform.InverseTransformPoint(position);
 
 		// Setting base properties

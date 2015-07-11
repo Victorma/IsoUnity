@@ -55,29 +55,37 @@ public class Cell : MonoBehaviour {
 	// Deserialization moment
 	void Awake (){
 
+#if UNITY_EDITOR
 
-        if (faces != null && faces.Length != 0)
-        { // The first time i have to initialize those
+        if (Application.isEditor && !Application.isPlaying)
+        {
 
-            FaceNoSC[] nfaces = new FaceNoSC[faces.Length];
-            for (int i = 0; i < faces.Length; i++)
-            {
-                if (faces[i] == null)
+            // Code to prevent losing information from old versions
+            if (faces != null && faces.Length != 0)
+            { // The first time i have to initialize those
+
+                FaceNoSC[] nfaces = new FaceNoSC[faces.Length];
+                for (int i = 0; i < faces.Length; i++)
                 {
-                    // Debug.Log("Null face detected at " + this + " at map " + Map);
-                    break;
+                    if (faces[i] == null)
+                    {
+                        // Debug.Log("Null face detected at " + this + " at map " + Map);
+                        break;
+                    }
+
+                    nfaces[i] = new FaceNoSC();
+                    nfaces[i].Texture = faces[i].Texture;
+                    nfaces[i].TextureMapping = faces[i].TextureMapping;
                 }
 
-                nfaces[i] = new FaceNoSC();
-                nfaces[i].Texture = faces[i].Texture;
-                nfaces[i].TextureMapping = faces[i].TextureMapping;
+
+                this.properties = new CellProperties(height, topType, cellTopRotation, 1, faces != null ? nfaces : new FaceNoSC[0]);
+                Debug.Log("No era null");
+                faces = null;
             }
 
-
-            this.properties = new CellProperties(height, topType, cellTopRotation, 1, faces != null ? nfaces : new FaceNoSC[0]);
-            Debug.Log("No era null");
-            faces = null;
         }
+#endif
 
 		// This will prevent older versions to lose face information about textures.
 		/*if (this.faces == null) {
@@ -92,17 +100,25 @@ public class Cell : MonoBehaviour {
 	}
 	
 	// Serialization moment
-	void OnDestroy () {
-        if (this.Map != null)
-            this.Map.removeCell(this);
-        
-        this.GetComponent<MeshFilter>().sharedMesh = null;
-        this.GetComponent<Renderer>().sharedMaterial = null;
-        UnityEditor.EditorUtility.SetDirty(this);
+	void OnDestroy ()
+    {
 
-		// This will close the cycle of the serialized face saving
-		faces = null;
-	}
+#if UNITY_EDITOR
+        if (Application.isEditor && !Application.isPlaying)
+        {
+            // Previous serialization moment, only interesting in editor
+            if (this.Map != null)
+                this.Map.removeCell(this);
+
+            this.GetComponent<MeshFilter>().sharedMesh = null;
+            this.GetComponent<Renderer>().sharedMaterial = null;
+            UnityEditor.EditorUtility.SetDirty(this);
+
+            // This will close the cycle of the serialized face saving
+            faces = null;
+        }
+#endif
+    }
 
 
 	/*******************************
@@ -224,7 +240,10 @@ public class Cell : MonoBehaviour {
         myMat.SetTexture("_MainTex", MeshFactory.Instance.getTexture2D());
         this.GetComponent<Renderer>().sharedMaterial = myMat;
         this.GetComponent<MeshCollider>().sharedMesh = MeshFactory.Instance.getMesh();
+
+#if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
+#endif
 	}
 
 
