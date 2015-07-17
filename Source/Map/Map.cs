@@ -11,6 +11,8 @@ public class Map : MonoBehaviour
 
 	[SerializeField]
 	private List<Cell> celdas;
+    // Auxiliar dictionary for optimizations ingame
+    private Dictionary<Vector2, Cell> cells;
 
 	[SerializeField]
 	private float cellSize;
@@ -33,6 +35,11 @@ public class Map : MonoBehaviour
 		vecinas = new Dictionary<Cell,Cell[]>();
 		cellSize = 1;
 	}
+
+    void Awake(){
+        cells = new Dictionary<Vector2, Cell>();
+        vecinas = new Dictionary<Cell, Cell[]>();
+    }
 
 	/***********************
 	 * Getter Zone
@@ -217,6 +224,12 @@ public class Map : MonoBehaviour
 		this.celdas.Remove(cell);
 	}
 
+    public void registerCell(Cell cell){
+        Vector2 coords = getCoords(cell.gameObject);
+        if (!cells.ContainsKey(coords))
+            cells.Add(coords, cell);
+    }
+
 
 	/* ***************** *
 	 * Neighborhood Zone *
@@ -227,20 +240,29 @@ public class Map : MonoBehaviour
 
 		Vector2 current = getCoords(cell.gameObject);
 
-		foreach(Cell c in celdas){
-			Vector2 other = getCoords(c.gameObject);
-			if(other.x == current.x){
-				if(other.y == current.y + cellSize)
-					v[0] = c;
-				else if(other.y == current.y - cellSize)
-					v[2] = c;
-			}else if(other.y == current.y){
-				if(other.x == current.x + cellSize)
-					v[1] = c;
-				else if(other.x == current.x - cellSize)
-					v[3] = c;
-			}
-		}
+        // If all cells have registered
+        if (cells.Count == this.celdas.Count && Application.isPlaying){
+            cells.TryGetValue(new Vector2(current.x, current.y + cellSize), out v[0]);
+            cells.TryGetValue(new Vector2(current.x + cellSize, current.y), out v[1]);
+            cells.TryGetValue(new Vector2(current.x, current.y - cellSize), out v[2]);
+            cells.TryGetValue(new Vector2(current.x - cellSize, current.y), out v[3]);
+        }else{
+            // Code fragment in case registration is done wrong or something...
+		    foreach(Cell c in celdas){
+			    Vector2 other = getCoords(c.gameObject);
+			    if(other.x == current.x){
+				    if(other.y == current.y + cellSize)
+					    v[0] = c;
+				    else if(other.y == current.y - cellSize)
+					    v[2] = c;
+			    }else if(other.y == current.y){
+				    if(other.x == current.x + cellSize)
+					    v[1] = c;
+				    else if(other.x == current.x - cellSize)
+					    v[3] = c;
+			    }
+		    }
+        }
 
 		if(!vecinas.ContainsKey(cell))
 			vecinas.Add(cell, v);
@@ -386,10 +408,6 @@ public class Map : MonoBehaviour
 			}
 		}
 		args.send = args.UP || args.DOWN || args.LEFT || args.RIGHT || encontrado;
-	}
-	
-	public void Start(){
-
 	}
 
 	public void Update(){

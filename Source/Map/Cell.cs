@@ -378,7 +378,8 @@ public class Cell : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        if (this.Map != null && Application.isPlaying)
+            this.Map.registerCell(this);
 	}
 
 	void Update () {
