@@ -81,6 +81,72 @@ public class GameEvent : ScriptableObject, JSONAble{
 		return base.GetHashCode ();
 	}
 
+    /*
+     * Belong methods
+     */
+
+    private const string OWNER_PARAM = "entity";
+
+    public bool belongsTo(GameObject g) { return belongsTo(g, OWNER_PARAM); }
+    public bool belongsTo(Entity e) { return belongsTo(e, OWNER_PARAM); }
+    public bool belongsTo(EntityScript es) { return belongsTo(es, OWNER_PARAM); }
+    public bool belongsTo(ScriptableObject so) { return belongsTo(so, OWNER_PARAM); }
+    public bool belongsTo(string tag) { return belongsTo(tag, OWNER_PARAM); }
+
+    public bool belongsTo(GameObject g, string parameter)
+    {
+        object entityParam = getParameter(parameter);
+        if (entityParam == null || g == null)
+            return false;
+
+        return entityParam == g || entityParam == g.tag;
+    }
+
+    public bool belongsTo(Entity e, string parameter)
+    {
+        object entityParam = getParameter(parameter);
+        if (entityParam == null || e == null)
+            return false;
+
+        // Compare If is entity, if is gameobject or if is tag
+        return entityParam == e || entityParam == e.gameObject || entityParam == e.tag;
+    }
+
+    public bool belongsTo(EntityScript es, string parameter)
+    {
+        object entityParam = getParameter(parameter);
+        if (entityParam == null || es == null)
+            return false;
+
+        // Same as in entity but entity script comparition also.
+        return entityParam == es || entityParam == es.Entity || entityParam == es.gameObject || entityParam == es.tag;
+    }
+
+    public bool belongsTo(ScriptableObject so, string parameter)
+    {
+        object entityParam = getParameter(parameter);
+        if (entityParam == null || so == null)
+            return false;
+
+        // Compare normal and name
+        return entityParam == so || entityParam == so.name;
+    }
+
+    public bool belongsTo(string tag, string parameter)
+    {
+        object entityParam = getParameter(parameter);
+        if (entityParam == null || tag == null)
+            return false;
+
+        return entityParam == tag
+            || (entityParam is GameObject) ? (entityParam as GameObject).CompareTag(tag) : false
+            || (entityParam is Component) ? (entityParam as Component).CompareTag(tag) : false;
+    }
+
+    /*
+     * Operators 
+     **/
+
 	public static bool operator ==(GameEvent ge1, GameEvent ge2)
 	{
 		// http://msdn.microsoft.com/en-us/library/ms173147(v=vs.80).aspx
@@ -108,11 +174,14 @@ public class GameEvent : ScriptableObject, JSONAble{
 		return result;
 	}
 
-	public static bool operator !=(GameEvent ge1, GameEvent ge2)
-	{
-		return !(ge1 == ge2);
-	}
+    public static bool operator !=(GameEvent ge1, GameEvent ge2)
+    {
+        return !(ge1 == ge2);
+    }
 
+    /// <summary>
+    /// JSon serialization things
+    /// </summary>
 
     public JSONObject toJSONObject()
     {
