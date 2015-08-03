@@ -25,6 +25,7 @@ public abstract class IsoUnityTypeFactory
             types = new List<IsoUnityType>();
             types.Add(ScriptableObject.CreateInstance<IsoUnityBasicType>());
             types.Add(ScriptableObject.CreateInstance<IsoUnityCollectionType>());
+            types.Add(ScriptableObject.CreateInstance<IsoUnityEnumType>());
         }
 
         public override void Destroy(IsoUnityType i)

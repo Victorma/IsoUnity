@@ -27,7 +27,7 @@ public class GameEvent : ScriptableObject, JSONAble{
 	public object getParameter(string param){
 		param = param.ToLower();
 		if (args.ContainsKey (param)) 
-			return (args[param] is IsoUnityBasicType)? ((IsoUnityBasicType)args [param]).Value: args[param];
+			return (args[param] is IsoUnityType)? ((IsoUnityType)args [param]).Value: args[param];
 		else 
 			return null;
 	}

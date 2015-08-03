@@ -12,12 +12,13 @@ public class RoutePlanifier
 
 	public static bool planifyRoute(Entity entity, Cell destination, int distance){
 		if(routes.ContainsKey(entity)){
-			return false;
-			//Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity);
-			Stack<Cell> ruta = new Stack<Cell>();
-			ruta.Push (destination);
+			//return false;
+			Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity, distance);
+			//Stack<Cell> ruta = new Stack<Cell>();
+			//ruta.Push (destination);
 			ruta.Push(routes[entity].Peek());
 			routes[entity] = ruta;
+            return ruta != null;
 		}else{
 			/*Stack<Cell> ruta = new Stack<Cell>();
 			ruta.Push (destination);*/

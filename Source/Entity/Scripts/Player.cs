@@ -103,10 +103,31 @@ public class Player : EntityScript {
                         ge.Name = "move";
                         Game.main.enqueueEvent(ge);
                     }
+                    else
+                    {
+                        GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+                        ge.setParameter("entity", this.Entity);
+                        ge.setParameter("direction", fromIndex(to));
+                        ge.Name = "turn";
+                        Game.main.enqueueEvent(ge);
+                    }
 				}
 			} 
 		}
 	}
+
+    private Mover.Direction fromIndex(int i)
+    {
+        switch (i)
+        {
+            case 0: return Mover.Direction.North;
+            case 1: return Mover.Direction.East;
+            case 2: return Mover.Direction.South;
+            case 3: return Mover.Direction.West;
+        }
+
+        return Mover.Direction.North;
+    }
 
 	private bool registered = false;
 
