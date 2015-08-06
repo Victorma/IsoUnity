@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5786971ddb0469e44b1cafd6736ef042, type: 3}
+  m_Name: IsoSettings
+  m_EditorClassIdentifier: 
+  defaultMapPrefab: {fileID: 100000, guid: 4972cff46a1a13b41a02459d32de1ca3, type: 2}
+  defaultCellPrefab: {fileID: 100000, guid: 8a1da15bc40e9ac4897e6f088f39ae14, type: 2}
+  defaultDecorationPrefab: {fileID: 100000, guid: e28f5d31a7e1b4a419fb3f4ec51bbc88,
+    type: 2}
+  defautTextureScale: {fileID: 2800000, guid: 139de670a81288745a7f6c4583ccf3e8, type: 3}
+  cameraSpeed:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  targetCameraSpeed: 0
