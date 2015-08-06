@@ -5,10 +5,11 @@ osx_image: xcode61
 rvm:
 - 2.1.2
 sudo: true
-before_script:
+before_install:
 - chmod a+x ./Scripts/install.sh
-- chmod a+x ./Scripts/build.sh
 install:
 - ./Scripts/install.sh
+before_script:
+- chmod a+x ./Scripts/build.sh
 script:
 - ./Scripts/build.sh
