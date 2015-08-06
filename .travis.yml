@@ -1,5 +1,3 @@
-# Example Travis config. See the entire example: https://github.com/JonathanPorta/ci-build
-
 language: objective-c
 osx_image: xcode61
 rvm:
@@ -8,8 +6,16 @@ sudo: true
 before_install:
 - chmod a+x ./Scripts/install.sh
 install:
-- ./Scripts/install.sh
+- "./Scripts/install.sh"
 before_script:
 - chmod a+x ./Scripts/build.sh
 script:
-- ./Scripts/build.sh
+- "./Scripts/build.sh"
+deploy:
+  provider: s3
+  access_key_id: AKIAJ2QOKJVHUM5RNAIQ
+  secret_access_key:
+    secure: Bw3f+EcVLsZgsC6X+E/PgD0NT+2QbVb5WysoNBWRHCfxesQ/WfRYFERc7Hr5qJvT2s1CgwTsQmTbMCZaxoEnNaW7Gff7WuPvjr+tmbrend+Mufn7z+jax/pdQfS5UwfGvXcPHhcI4S5/9UzQ7x4PAwik/H/les6q6KpScKdU9HL03n/RxpFL0sKsS/sD0C3Gr7V2j6yVnyx55yaqdLVd2l+gwYYYjSsuudoZ1z86YIxsZoKDGeiQmUoWgKs17plhTqW7sl0oT1Hy/Ye8PN8iexECA86tBfpeEEAuLyUhTKLQkZUyVdDERoWFJGsni9t/ETGzXlz89wgde4vTvXhASQogy+s8uZQfn+gOrlcc6in5+rRjq/7cIt0NY6Qx3vLGuxyZ4njfvRlp/XluM3W/dvdob+Rsqdwkjd7mRbetmcmK1Y5LCo6VzVge6k6aE+rSH9vGRVePSQjtwijru1DXKYNFZyMxs80xoAe8vTUlhDa0VCjDhiwgHvWTvGbOfbi9gEi9sqCns5Lo0d5sDGlQs/e6XcxYnUa3L7/N9sVKJfI4Xz9RMombFtBnT9ZE+d7anpcFfj+Rt1GxJeov7vqmzkKIxV9Vaaa7wXX9U49j3gHBjp0U+qWm8vgZKXCCG6s3PBzzogtZ1vKcQPwy22JyJ1iT7p9mdBMPd3vc1QNagvI=
+  bucket: isounitybucket
+  skip_cleanup: true
+  region: eu-west-1
