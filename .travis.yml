@@ -19,3 +19,5 @@ deploy:
   bucket: isounitybucket
   skip_cleanup: true
   region: eu-west-1
+  local_dir: Build
+  

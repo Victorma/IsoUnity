@@ -12,9 +12,5 @@ echo "Attempting to build $project for Windows"
 
 echo 'Logs from build'
 cat $(pwd)/unity.log
-echo 'Root file dir:'
-ls -la $(pwd)
 echo 'Build file dir:'
 ls -la $(pwd)/Build/
-echo 'Temp file dir:'
-ls -la $(pwd)/Temp/
