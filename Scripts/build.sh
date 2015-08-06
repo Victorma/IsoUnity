@@ -5,14 +5,12 @@
 # Change this the name of your project. This will be the name of the final executables as well.
 project="IsoUnity"
 
-mkdir $(pwd)/Build/
+echo "Creating Build dir"
+mkdir -p $(pwd)/Build/
 echo "Attempting to build $project for Windows"
-/Applications/Unity/Unity.app/Contents/MacOS/Unity \
-  -silent-crashes \
-  -logFile $(pwd)/unity.log \
-  -projectPath $(pwd) \
-  -exportPackage Assets\IsoUnity "$(pwd)/Build/IsoUnity.unitypackage" \
-  -quit
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -silent-crashes -logFile $(pwd)/unity.log -projectPath $(pwd) -exportPackage Assets/IsoUnity "$(pwd)/Build/$project.unitypackage" -quit
 
 echo 'Logs from build'
 cat $(pwd)/unity.log
+echo 'Build file dir:'
+ls -la $(pwd)/Build/
