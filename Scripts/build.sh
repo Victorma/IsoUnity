@@ -10,7 +10,7 @@ echo "Attempting to build $project for Windows"
   -silent-crashes \
   -logFile $(pwd)/unity.log \
   -projectPath $(pwd) \
-  -exportPackage Assets\IsoUnity $(pwd)/IsoUnity.unitypackage \
+  -exportPackage Assets\IsoUnity "$(pwd)/Build/IsoUnity.unitypackage" \
   -quit
 
 echo 'Logs from build'
