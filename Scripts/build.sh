@@ -5,6 +5,7 @@
 # Change this the name of your project. This will be the name of the final executables as well.
 project="IsoUnity"
 
+mkdir $(pwd)/Build/
 echo "Attempting to build $project for Windows"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -silent-crashes \
