@@ -172,11 +172,14 @@ public class TextureAssistant : EditorWindow {
 				Vector2 xOtherCorner = rectCorner + new Vector2(converter * currentText.getOppositeXCorner(), textureRect.height);
 				Vector2 yOtherCorner = rectCorner + new Vector2(textureRect.width, converter * currentText.getOppositeYCorner());
 
-				Drawing.DrawLine(xCorner,yCorner, Color.yellow, 0.5f, true);
-				Drawing.DrawLine(yCorner,xOtherCorner, Color.yellow, 0.5f, true);
-				Drawing.DrawLine(xOtherCorner,yOtherCorner, Color.yellow, 0.5f, true);
-				Drawing.DrawLine(yOtherCorner,xCorner, Color.yellow, 0.5f, true);
+                Handles.BeginGUI( );
+                Handles.color = Color.yellow;
+                Handles.DrawLine(xCorner, yCorner);
+                Handles.DrawLine(yCorner, xOtherCorner);
+                Handles.DrawLine(xOtherCorner, yOtherCorner);
+                Handles.DrawLine(yOtherCorner, xCorner);
 
+                Handles.EndGUI();
 			}
 			else
 				EditorGUILayout.LabelField("Please asign a texture!");
