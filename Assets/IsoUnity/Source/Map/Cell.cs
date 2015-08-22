@@ -13,7 +13,8 @@ public enum CellTopOrientation {
 };
 
 [ExecuteInEditMode]
-public class Cell : MonoBehaviour {
+public class Cell : MonoBehaviour, ISerializationCallbackReceiver
+{
 
 	/**
 	 * Ser De
@@ -51,6 +52,17 @@ public class Cell : MonoBehaviour {
 	//TODO remove the face serialization
 	[SerializeField]
 	private Face[] faces;
+
+
+    public void OnBeforeSerialize()
+    {
+
+    }
+
+    public void OnAfterDeserialize()
+    {
+
+    }
 
 	// Deserialization moment
 	void Awake (){
@@ -102,14 +114,14 @@ public class Cell : MonoBehaviour {
 	// Serialization moment
 	void OnDestroy ()
     {
+        if (this.Map != null)
+            this.Map.removeCell(this);
 
+        // TODO move this to OnBeforeSerialization
 #if UNITY_EDITOR
         if (Application.isEditor && !Application.isPlaying)
         {
             // Previous serialization moment, only interesting in editor
-            if (this.Map != null)
-                this.Map.removeCell(this);
-
             this.GetComponent<MeshFilter>().sharedMesh = null;
             this.GetComponent<Renderer>().sharedMaterial = null;
             UnityEditor.EditorUtility.SetDirty(this);
@@ -378,8 +390,13 @@ public class Cell : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        if (this.Map != null && Application.isPlaying)
-            this.Map.registerCell(this);
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            if (this.Map != null)
+                this.Map.registerCell(this);
+        }
+#endif
 	}
 
 	void Update () {

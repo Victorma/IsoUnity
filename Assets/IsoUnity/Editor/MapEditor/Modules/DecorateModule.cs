@@ -19,6 +19,8 @@ public class DecorateModule : MapEditorModule {
 	private Vector2 scroll;
 	private bool parallelDecoration;
 	private IsoDecoration paintingIsoDecoration;
+    private int currentTile = 0;
+    private int maxTile;
 
 	// SceneGUI vars
 
@@ -47,14 +49,31 @@ public class DecorateModule : MapEditorModule {
 		if(!loaded){
 			string[] paths = AssetDatabase.GetAllAssetPaths();
 			foreach(string path in paths)
-				AssetDatabase.LoadAssetAtPath(path, typeof(IsoDecoration));
+                if(path.StartsWith("Assets") || path.StartsWith("assets"))
+				    AssetDatabase.LoadAssetAtPath(path, typeof(IsoDecoration));
+
+            IsoDecoration[] isoDecorations = DecorationManager.getInstance().textureList();
+            foreach (var id in isoDecorations)
+            {
+                if (id.nCols * id.nRows > maxTile)
+                    maxTile = id.nCols * id.nRows;
+            }
 			loaded = true;
 		}
+
+#if UNITY_EDITOR
+        m_LastEditorUpdateTime = Time.realtimeSinceStartup;
+        EditorApplication.update += OnEditorUpdate;
+#endif
 	}
 	
 	public void OnDisable(){
 		Tools.current = selected;
 		map.removeGhost();
+
+#if UNITY_EDITOR
+        EditorApplication.update -= OnEditorUpdate;
+#endif
 	}
 
 	public void OnInspectorGUI(){
@@ -148,7 +167,23 @@ public class DecorateModule : MapEditorModule {
 			
 			if(it == paintingIsoDecoration)
 				EditorGUI.DrawRect(border,Color.yellow);
-			GUI.DrawTexture(auxRect,it.getTexture());
+
+            Rect textCoord = it.getTextCoordsFor(currentTile);
+            Rect textureRect = new Rect(auxRect);
+            float ratio = (textCoord.height * it.getTexture().height) / (textCoord.width * it.getTexture().width);
+            if (ratio < 1)
+            {
+                float yCenter = auxRect.y + auxRect.height / 2.0f;
+                textureRect = new Rect(auxRect.x, yCenter - (auxRect.height / 2f) * ratio, auxRect.width, auxRect.height * ratio);
+            }
+            else
+            {
+                float inverseRatio = 1 / ratio;
+                float xCenter = auxRect.x + auxRect.width / 2.0f;
+                textureRect = new Rect(xCenter - (auxRect.width / 2f) * inverseRatio, auxRect.y, auxRect.width * inverseRatio, auxRect.height);
+            }
+
+            GUI.DrawTextureWithTexCoords(textureRect, it.getTexture(), textCoord);
 			
 			currentTexture++;
 			if(currentTexture == maxTextures){EditorGUILayout.EndHorizontal(); currentTexture = 0;}
@@ -249,4 +284,30 @@ public class DecorateModule : MapEditorModule {
 			this.repaint = value;
 		}
 	}
+
+    /**
+     * Tile progress
+     * */
+
+    private float m_LastEditorUpdateTime;
+    private float m_TimeElapsed;
+
+    protected virtual void OnEditorUpdate()
+    {
+        // In here you can check the current realtime, see if a certain
+        // amount of time has elapsed, and perform some task.
+        m_TimeElapsed += Time.realtimeSinceStartup - m_LastEditorUpdateTime;
+
+
+        if (m_TimeElapsed > 0.3)
+        {
+            currentTile++;
+            m_TimeElapsed = 0;
+            this.Repaint = true;
+        }
+
+        m_LastEditorUpdateTime = Time.realtimeSinceStartup;
+
+
+    }
 }

@@ -33,7 +33,7 @@ public class MyHandles
         RMBRelease,
     };
 
-    public static Vector3 DragHandle(Vector3 position, Quaternion angle, float handleSize, Handles.DrawCapFunction capFunc, Color colorSelected, out DragHandleResult result)
+    public static Vector3 DragHandle(Vector3 position, Quaternion angle, float handleSize, Handles.DrawCapFunction capFunc, Color colorSelected, Color colorIdle, out DragHandleResult result)
     {
         int id = GUIUtility.GetControlID(s_DragHandleHash, FocusType.Passive);
         lastDragHandleID = id;
@@ -120,8 +120,13 @@ public class MyHandles
 
             case EventType.Repaint:
                 Color currentColour = Handles.color;
-                if (id == GUIUtility.hotControl && s_DragHandleHasMoved)
+                if (s_DragHandleHasMoved)
+                    s_DragHandleHasMoved = !(!s_DragHandleHasMoved); // Shut up please :D
+
+                if (id == GUIUtility.hotControl)
                     Handles.color = colorSelected;
+                else
+                    Handles.color = colorIdle;
 
                 Handles.matrix = Matrix4x4.identity;
                 capFunc(id, screenPosition, angle, handleSize);

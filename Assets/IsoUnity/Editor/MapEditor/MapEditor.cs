@@ -48,6 +48,12 @@ public class MapEditor : Editor {
 
 		toolBarStyle = new GUIStyle();
 		toolBarStyle.margin = new RectOffset(50,50,5,10);
+
+        IsoSettings iso = IsoSettingsManager.getInstance().getIsoSettings();
+        if (!iso.Configured)
+        {
+
+        }
 	}
 	
 	void OnDestroy() 
@@ -64,6 +70,8 @@ public class MapEditor : Editor {
 			modules[selected].Repaint = false;
 		}
 	}
+
+    private bool SetPerspective = false;
 
 	public override void OnInspectorGUI(){
 
@@ -93,6 +101,11 @@ public class MapEditor : Editor {
 		}
 
 		modules[selected].OnInspectorGUI();
+
+        // Align to de game view			
+        if (GUILayout.Button("Set camera to game view"))
+            SetPerspective = true;
+
 		checkRepaint();
 
 	}
@@ -102,12 +115,36 @@ public class MapEditor : Editor {
 	void OnSceneGUI (){
 		SceneView sceneView = SceneView.currentDrawingSceneView;
 
+        if (SetPerspective)
+        {
+            setPerspective(sceneView);
+            SetPerspective = false;
+        }
+
 		modules[selected].OnSceneGUI(sceneView);
 
 		sceneView.Repaint();
 
 		checkRepaint();
 	}
+
+    private void setPerspective(SceneView scene)
+    {
+        /* Selection.transforms	*/
+
+        float angle = 30;
+        Texture baseTile = IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale;
+        if (baseTile != null)
+        {
+            float angulo = Mathf.Rad2Deg * Mathf.Acos(baseTile.height / (baseTile.width * 1f));
+            angle = 90f - angulo;
+        }
+
+        scene.LookAtDirect(scene.pivot, Quaternion.Euler(angle, 45, 0));
+        scene.orthographic = true;
+
+        scene.Repaint();
+    }
 	
 }
 	

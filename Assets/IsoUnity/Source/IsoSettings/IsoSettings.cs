@@ -20,4 +20,12 @@ public class IsoSettings : ScriptableObject
 
 	public IsoSettings (){
 	}
+
+    public bool Configured
+    {
+        get
+        {
+            return defaultMapPrefab != null && defaultCellPrefab != null && defaultDecorationPrefab != null && defautTextureScale != null;
+        }
+    }
 }

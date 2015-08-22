@@ -15,7 +15,7 @@ public class EditModule : MapEditorModule {
 
 	// InspectorGUI vars
 	private bool setPerspective;
-	private bool fixView;
+	private bool fixView = true;
 	private float gridHeight;
 	private Quaternion fixedRotation;
 
@@ -61,8 +61,11 @@ public class EditModule : MapEditorModule {
 	}
 	
 	private void createCell(){
-		if(creating)
-			map.addCell(map.getMousePositionOverMap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition),gridHeight));
+        if (creating)
+        {
+            map.addCell(map.getMousePositionOverMap(HandleUtility.GUIPointToWorldRay(Event.current.mousePosition), gridHeight));
+            EditorUtility.SetDirty(map);
+        }
 	}
 
 	
@@ -73,6 +76,7 @@ public class EditModule : MapEditorModule {
 	public void OnEnable(){
 		selected = Tools.current;
 		Tools.current = Tool.None;
+        backUpAngle();
 	}
 
 	public void OnDisable(){
@@ -87,10 +91,6 @@ public class EditModule : MapEditorModule {
 		
 		GUIStyle style = new GUIStyle();
 		style.padding = new RectOffset(2,2,2,2);
-
-		// Align to de game view			
-		if(GUILayout.Button("Set camera to game view", style))
-			setPerspective = true;
 
 		GUILayout.Space(5f);
 
@@ -107,26 +107,8 @@ public class EditModule : MapEditorModule {
 
 	public void OnSceneGUI(SceneView scene){
 		
-		if(setPerspective){
-			/* Selection.transforms	*/
-			setPerspective = false;
-			float angle = 30;
-			Texture baseTile = IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale;
-			if(baseTile != null){
-				float angulo = Mathf.Rad2Deg * Mathf.Acos(baseTile.height / (baseTile.width*1f));
-				angle = 90f - angulo;
-			}
-			scene.LookAtDirect(scene.pivot,Quaternion.Euler(angle, 45, 0));
-			scene.orthographic = true;
-			
-			if(fixView)
-				fixedRotation = Quaternion.Euler(angle, 45, 0);
-			
-			scene.Repaint();
-		}
-		
 		if(fixView)
-			scene.LookAtDirect(scene.pivot,fixedRotation);
+			scene.LookAtDirect(scene.pivot, fixedRotation);
 		
 		HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 		if(Event.current.isMouse){

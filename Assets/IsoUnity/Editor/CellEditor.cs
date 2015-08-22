@@ -98,6 +98,10 @@ public class CellEditor : Editor {
 
 		serializedObject.ApplyModifiedProperties ();
 
+        /*vec = cell[0].Map.getNeightbours(cell[0]);
+        foreach (Cell ce in vec)
+            EditorGUILayout.ObjectField(ce, typeof(Cell), true);*/
+
 	}
 
     Vector3 ident = new Vector3(0, 0, 0);
@@ -137,12 +141,22 @@ public class CellEditor : Editor {
 
             MyHandles.DragHandleResult dhResult;
 
-            Vector3 newPosition = MyHandles.DragHandle(bounds.center, angle, 7f, Handles.ArrowCap, Color.white, out dhResult);
+
+            Vector3 screenStart = SceneView.currentDrawingSceneView.camera.WorldToScreenPoint(bounds.center);
+            Vector3 end = SceneView.currentDrawingSceneView.camera.ScreenToWorldPoint(screenStart + new Vector3(0, 120, 0));
+
+            float height = (end -  bounds.center).magnitude;
+
+            end = bounds.center + new Vector3(0, height, 0);
+
+            Handles.DrawLine(bounds.center, end);
+
+            Vector3 newPosition = MyHandles.DragHandle(end, angle, 0.1f*height, Handles.CubeCap, Color.white, Color.gray, out dhResult);
             
             switch (dhResult)
             {
                 case MyHandles.DragHandleResult.LMBPress:
-                    heights.Clear();
+                    heights.Clear();    
                     origin = newPosition;
                     break;
                 case MyHandles.DragHandleResult.LMBDrag:
@@ -157,7 +171,6 @@ public class CellEditor : Editor {
                     break;
                 case MyHandles.DragHandleResult.LMBRelease:
                     diference = ident;
-                    
                     break;
             }
 
@@ -203,7 +216,7 @@ public class CellEditor : Editor {
 	void OnSceneGUI2 (SceneView sceneView){
 
 		if(Event.current.button == 0 )
-			if(Event.current.rawType == EventType.used){				
+			if(Event.current.type == EventType.DragUpdated){				
 				for(int i = 0; i<cell.Length; i++){
 					if(cell[i].Map != null)
 						cell[i].Map.updateCell(cell[i], Event.current.type == EventType.MouseUp);

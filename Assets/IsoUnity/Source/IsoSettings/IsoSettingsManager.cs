@@ -23,6 +23,17 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 
 	}
 
+    public Rect windowRect = new Rect(20, 20, 120, 50);
+    /*void OnGUI()
+    {
+        
+    }
+    void DoMyWindow(int windowID)
+    {
+        if (GUI.Button(new Rect(10, 20, 100, 20), "Hello World"))
+            print("Got a click");
+
+    }*/
 
 	public override IsoSettings getIsoSettings(){
 
@@ -41,7 +52,22 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 					instance = ScriptableObject.CreateInstance<IsoSettings> ();
 				}
 			}
-		}
+
+            #if UNITY_EDITOR
+            /*if (!instance.Configured)
+            {
+                // Only if called in OnGUI
+                if (Event.current.type == EventType.Repaint)
+                {
+                    if (showPopup)
+                    {
+                        Rect windowRect = GUI.Window(0, windowRect, DoMyWindow, "My Window");
+                    }
+                }
+
+            }*/
+            #endif
+        }
 
 		return instance;
 	}

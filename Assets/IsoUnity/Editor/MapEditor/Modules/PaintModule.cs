@@ -47,7 +47,8 @@ public class PaintModule : MapEditorModule {
 		if(!loaded){
 			string[] paths = AssetDatabase.GetAllAssetPaths();
 			foreach(string path in paths)
-				AssetDatabase.LoadAssetAtPath(path, typeof(IsoTexture));
+                if (path.StartsWith("Assets") || path.StartsWith("assets"))
+				    AssetDatabase.LoadAssetAtPath(path, typeof(IsoTexture));
 			loaded = true;
 		}
 	}
