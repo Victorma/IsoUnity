@@ -19,21 +19,12 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 	private String ruta;
 	private IsoSettings instance;
 
+    private static bool ignore = false;
+
 	public IsoSettingsManagerInstance(){
 
 	}
 
-    public Rect windowRect = new Rect(20, 20, 120, 50);
-    /*void OnGUI()
-    {
-        
-    }
-    void DoMyWindow(int windowID)
-    {
-        if (GUI.Button(new Rect(10, 20, 100, 20), "Hello World"))
-            print("Got a click");
-
-    }*/
 
 	public override IsoSettings getIsoSettings(){
 
@@ -52,22 +43,31 @@ public class IsoSettingsManagerInstance : IsoSettingsManager
 					instance = ScriptableObject.CreateInstance<IsoSettings> ();
 				}
 			}
-
-            #if UNITY_EDITOR
-            /*if (!instance.Configured)
-            {
-                // Only if called in OnGUI
-                if (Event.current.type == EventType.Repaint)
-                {
-                    if (showPopup)
-                    {
-                        Rect windowRect = GUI.Window(0, windowRect, DoMyWindow, "My Window");
-                    }
-                }
-
-            }*/
-            #endif
         }
+
+#if UNITY_EDITOR
+        if (!instance.Configured && Application.isEditor)
+        {
+            if (!ignore)
+                if (UnityEditor.EditorUtility.DisplayDialog("IsoSettings not configured", "IsoSettings seems to be not configured properly. ¿Go to IsoSettings? (Ignoring can cause unexpected bugs...)", "Show", "Ignore"))
+                    UnityEditor.Selection.activeObject = instance;
+                else
+                    ignore = true;
+
+            /*Type isoSettingsPopup = Type.GetType("IsoSettingsPopup");
+
+            if (isoSettingsPopup != null)
+            {
+                System.Reflection.MethodInfo showAgain = isoSettingsPopup.GetMethod("IsShowAgain");
+                System.Reflection.MethodInfo createPopup = isoSettingsPopup.GetMethod("ShowIsoSettingsPopup");
+                // Only if called in OnGUI
+                if ((bool)showAgain.Invoke(null, null))
+                {
+                    createPopup.Invoke(null, null);
+                }
+            }*/
+        }
+#endif
 
 		return instance;
 	}

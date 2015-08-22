@@ -52,7 +52,7 @@ public class MapEditor : Editor {
         IsoSettings iso = IsoSettingsManager.getInstance().getIsoSettings();
         if (!iso.Configured)
         {
-
+            IsoSettingsPopup.ShowIsoSettingsPopup(iso);
         }
 	}
 	
