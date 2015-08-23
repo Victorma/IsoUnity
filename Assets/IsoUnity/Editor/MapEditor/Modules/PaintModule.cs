@@ -21,11 +21,18 @@ public class PaintModule : MapEditorModule {
 	private Texture2D paintingTexture;
 	private IsoTexture paintingIsoTexture;
 
+    public Texture2D PaintingTexture{ get{return paintingTexture;} set{paintingTexture = value;}}
+    public IsoTexture PaintingIsoTexture{ get{return paintingIsoTexture;} set{paintingIsoTexture = value;}}
+
 	// SceneGUI vars
 	private bool collectTexture;
 	private bool backupTextures;
 	private bool painting;
-	
+
+    //Brushes
+    private int selectedBrush = 0;
+    private Brush[] brushes;
+    private string[] brushNames;
 
 	private GUIStyle titleStyle;
 
@@ -33,6 +40,17 @@ public class PaintModule : MapEditorModule {
 		titleStyle = new GUIStyle();
 		titleStyle.fontStyle = FontStyle.Bold;
 		titleStyle.margin = new RectOffset(0,0,5,5);
+
+        brushes = new Brush[] { new NormalBrush(), new SurfaceBrush() };
+        List<string> names = new List<string>();
+
+        foreach (var b in brushes)
+        {
+            b.PaintModule = this;
+            names.Add(b.BrushName);
+        }
+
+        brushNames = names.ToArray();
 	}
 
 	public void useMap(Map map){
@@ -61,6 +79,10 @@ public class PaintModule : MapEditorModule {
 		//paintingMode = EditorGUILayout.BeginToggleGroup("Painting mode",paintingMode);
 		EditorGUILayout.HelpBox("Press left button to put the textures over the faces of the cell. Hold shift and press left button to copy the current texture of the hovering face.", MessageType.None);
 		EditorGUILayout.Space();
+
+        EditorGUILayout.PrefixLabel("Brush", GUIStyle.none, titleStyle);
+
+        selectedBrush = EditorGUILayout.Popup(selectedBrush, brushNames);
 
 		EditorGUILayout.PrefixLabel("Texture", GUIStyle.none, titleStyle);
 
@@ -149,81 +171,19 @@ public class PaintModule : MapEditorModule {
 	public void OnSceneGUI(SceneView scene){
 
 		HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
-		RaycastHit info = new RaycastHit();
-		
-		Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
-		GameObject selected = null;
-		if(Physics.Raycast(ray, out info/*, LayerMask.NameToLayer("Cells Layer")*/)) //TODO Arreglar esto porque al parecer la distancia no funciona correctamente
-			if(info.collider.transform.IsChildOf(this.map.transform))
-				selected = info.collider.gameObject;
 		
 		
-		bool paintLater = false;
-		bool backupTextures = false;
-		
-		/* 
-		 * Mouse Events of painting mode 
-		 */
-		if(Event.current.isMouse){
-			if(Event.current.button == 0){
-				if(Event.current.shift){
+        /**
+         * BRUSH ACTIONS
+         **/
 
-					if(Event.current.type == EventType.mouseDown)						collectTexture = true;
-					if(collectTexture && Event.current.type != EventType.MouseUp)		backupTextures = true;
-					else																collectTexture = false;
-
-				}else if(Event.current.type == EventType.MouseDown){
-					painting = true;
-					paintLater = true;
-				}else if(Event.current.type == EventType.MouseUp){
-					painting = false;
-				}else{
-					if(painting)
-						paintLater = true;
-				}
-			}
-		}
-		
-		/**
-		* Working zone
-		*/
-		
-		if(selected != null){
-			
-			Cell cs = selected.GetComponent<Cell>();
-			if(cs!=null){
-                FaceNoSC f = cs.getFaceByPoint(info.point);
-				if(f!=null){
-					if(paintLater && paintingTexture != null){
-						f.Texture = paintingTexture;
-						f.TextureMapping = paintingIsoTexture;
-                        cs.forceRefresh();
-					}
-					
-					if(backupTextures){
-						this.paintingTexture = f.Texture;
-						this.paintingIsoTexture = f.TextureMapping;
-
-						repaint = true; 
-					}
-
-					Vector3[] vertex = f.SharedVertex;
-					int[] indexes = f.VertexIndex;
-					
-					Vector3[] puntos = new Vector3[4];
-					for(int i = 0; i< indexes.Length; i++)
-						puntos[i] = cs.transform.TransformPoint(vertex[indexes[i]]);
-					
-					if(indexes.Length == 3)
-						puntos[3] = cs.transform.TransformPoint(vertex[indexes[2]]);
-					
-					Handles.DrawSolidRectangleWithOutline(puntos, (Event.current.shift)? Color.blue : Color.yellow, Color.white);
-				}
-			}
-		}
-
+        brushes[selectedBrush].Prepare();
+        brushes[selectedBrush].Display();
+        brushes[selectedBrush].Work();
 	}
+
+
 	public void OnDestroy(){}
 
 	private bool repaint;
@@ -235,6 +195,250 @@ public class PaintModule : MapEditorModule {
 			this.repaint = value;
 		}
 	}
+
+    private abstract class Brush
+    {
+
+        protected PaintModule paintModule = null;
+        public PaintModule PaintModule { set { paintModule = value; } }
+
+        public abstract string BrushName { get; }
+        public abstract void Prepare();
+        public abstract void Display();
+        public abstract void Work();
+
+    }
+
+    private abstract class LeftButtonAbstractBrush : Brush{
+
+        protected bool painting = false;
+        protected bool paintLater = false;
+        protected bool collectTexture = false;
+        protected bool backupTextures = false;
+
+        protected Cell cs;
+        protected FaceNoSC f;
+
+        public override void Prepare()
+        {
+            paintLater = false;
+            backupTextures = false;
+
+            RaycastHit info = new RaycastHit();
+
+            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+
+            GameObject go = null;
+            if (Physics.Raycast(ray, out info/*, LayerMask.NameToLayer("Cells Layer")*/)) //TODO Arreglar esto porque al parecer la distancia no funciona correctamente
+                if (info.collider.transform.IsChildOf(paintModule.map.transform))
+                    go = info.collider.gameObject;
+
+            if (Event.current.isMouse)
+            {
+                if (Event.current.button == 0)
+                {
+                    if (Event.current.shift)
+                    {
+
+                        if (Event.current.type == EventType.mouseDown) collectTexture = true;
+                        if (collectTexture && Event.current.type != EventType.MouseUp) backupTextures = true;
+                        else collectTexture = false;
+
+                    }
+                    else if (Event.current.type == EventType.MouseDown)
+                    {
+                        painting = true;
+                        paintLater = true;
+                    }
+                    else if (Event.current.type == EventType.MouseUp)
+                    {
+                        painting = false;
+                    }
+                    else
+                    {
+                        if (painting)
+                            paintLater = true;
+                    }
+                }
+            }
+            if (go != null)
+                cs = go.GetComponent<Cell>();
+            else cs = null;
+            if (cs != null)
+                f = cs.getFaceByPoint(info.point);
+            else f = null;
+        }
+
+    }
+
+    private class NormalBrush : LeftButtonAbstractBrush
+    {
+
+        public override string BrushName { get{ return "Single Face"; } }
+        
+
+        public override void Display()
+        {
+            if (f != null)
+            {
+                Vector3[] vertex = f.SharedVertex;
+                int[] indexes = f.VertexIndex;
+
+                Vector3[] puntos = new Vector3[4];
+                for (int i = 0; i < indexes.Length; i++)
+                    puntos[i] = cs.transform.TransformPoint(vertex[indexes[i]]);
+
+                if (indexes.Length == 3)
+                    puntos[3] = cs.transform.TransformPoint(vertex[indexes[2]]);
+
+                Handles.DrawSolidRectangleWithOutline(puntos, (Event.current.shift) ? Color.blue : Color.yellow, Color.white);
+            }
+        }
+
+        public override void Work()
+        {
+            if(f!=null){
+				if(paintLater && paintModule.PaintingTexture != null){
+					f.Texture = paintModule.PaintingTexture;
+					f.TextureMapping = paintModule.PaintingIsoTexture;
+                    cs.forceRefresh();
+				}
+					
+				if(backupTextures){
+					paintModule.PaintingTexture = f.Texture;
+					paintModule.PaintingIsoTexture = f.TextureMapping;
+
+					paintModule.Repaint = true; 
+				}
+			}
+        }
+    }
+
+    private class SurfaceBrush : LeftButtonAbstractBrush
+    {
+
+        public override string BrushName { get { return "Surface"; } }
+
+        private Vector3[] getRealPointsOf(FaceNoSC f)
+        {
+            Vector3[] vertex = f.SharedVertex;
+            int[] indexes = f.VertexIndex;
+
+            Vector3[] puntos = new Vector3[4];
+            for (int i = 0; i < indexes.Length; i++)
+                puntos[i] = cs.transform.TransformPoint(vertex[indexes[i]]);
+
+            if (indexes.Length == 3)
+                puntos[3] = cs.transform.TransformPoint(vertex[indexes[2]]);
+
+            return puntos;
+        }
+
+        private List<Cell.CellFace> faces;
+
+        private List<Cell.CellFace> generateFaces(Cell.CellFace cf)
+        {
+            List<Cell.CellFace> faces = new List<Cell.CellFace>();
+            Dictionary<FaceNoSC, bool> closed = new Dictionary<FaceNoSC, bool>();
+
+            faces.Add(cf);
+            closed.Add(cf.f, false);
+            generateFaces(cf, faces, closed);
+
+            return faces;
+        }
+
+        private void generateFaces(Cell.CellFace cf, List<Cell.CellFace> result, Dictionary<FaceNoSC, bool> closed)
+        {
+            closed[cf.f] = true;
+
+            Cell.CellFace[] faces = cf.c.getSameSurfaceAdjacentFaces(cf.f);
+            foreach (var nf in faces)
+                if (!closed.ContainsKey(nf.f))
+                {
+                    result.Add(nf);
+                    closed.Add(nf.f, false);
+                    generateFaces(nf, result, closed);
+                }
+
+        }
+
+        public override void Prepare()
+        {
+            base.Prepare();
+
+            if (f != null) faces = generateFaces(new Cell.CellFace(cs, f));
+            else faces = null;
+            
+
+        }
+
+        public override void Display()
+        {
+            if (faces != null)
+            {
+                foreach (var cfs in faces)
+                {
+
+                    if (cfs.f != null)
+                    {
+                        Vector3[] vertex = cfs.f.SharedVertex;
+                        int[] indexes = cfs.f.VertexIndex;
+
+                        Vector3[] puntos = new Vector3[4];
+                        for (int i = 0; i < indexes.Length; i++)
+                            puntos[i] = cfs.c.transform.TransformPoint(vertex[indexes[i]]);
+
+                        if (indexes.Length == 3)
+                            puntos[3] = cfs.c.transform.TransformPoint(vertex[indexes[2]]);
+
+                        Handles.DrawSolidRectangleWithOutline(puntos, (Event.current.shift) ? Color.blue : new Color(255f,255f,0f,0.5f), Color.white);
+                    }
+                }
+            }
+        }
+
+        public override void Work()
+        {
+
+            if (faces != null)
+            {
+
+                Dictionary<Cell, List<FaceNoSC>> eachCellFaces = new Dictionary<Cell, List<FaceNoSC>>();
+                foreach (var cfs in faces)
+                {
+                    // First i recopilate all faces
+                    if (paintLater && paintModule.PaintingTexture != null)
+                    {
+                        if (!eachCellFaces.ContainsKey(cfs.c))
+                            eachCellFaces.Add(cfs.c, new List<FaceNoSC>());
+
+                        eachCellFaces[cfs.c].Add(cfs.f);
+                    }
+
+                    if (backupTextures)
+                    {
+                        paintModule.PaintingTexture = cfs.f.Texture;
+                        paintModule.PaintingIsoTexture = cfs.f.TextureMapping;
+
+                        paintModule.Repaint = true;
+                    }
+                }
+
+                // Then I update all of them
+                foreach (var clf in eachCellFaces)
+                {
+                    foreach (var eachFace in clf.Value)
+                    {
+                        eachFace.Texture = paintModule.PaintingTexture;
+                        eachFace.TextureMapping = paintModule.PaintingIsoTexture;
+                        
+                    }
+                    clf.Key.forceRefresh();
+                }
+            }
+        }
+    }
 	
 }
 

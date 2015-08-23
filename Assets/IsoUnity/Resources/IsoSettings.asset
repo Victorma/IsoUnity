@@ -16,9 +16,3 @@ MonoBehaviour:
   defaultDecorationPrefab: {fileID: 100000, guid: e28f5d31a7e1b4a419fb3f4ec51bbc88,
     type: 2}
   defautTextureScale: {fileID: 2800000, guid: 139de670a81288745a7f6c4583ccf3e8, type: 3}
-  cameraSpeed:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-  targetCameraSpeed: 0

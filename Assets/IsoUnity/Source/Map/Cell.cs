@@ -53,6 +53,106 @@ public class Cell : MonoBehaviour, ISerializationCallbackReceiver
 	[SerializeField]
 	private Face[] faces;
 
+    public class CellFace
+    {
+        public CellFace(Cell c, FaceNoSC f) { this.c = c; this.f = f; }
+
+        public Cell c;
+        public FaceNoSC f;
+
+        public override bool Equals(object other)
+        {
+            if (other is CellFace)
+            {
+                var cfo = other as CellFace;
+                return cfo.f == f && cfo.c == c;
+            }
+
+            return false;
+        }
+    }
+
+    private int getFaceIndex(FaceNoSC f)
+    {
+        if (f == properties.faces[properties.faces.Length - 1])
+        {
+            return properties.faces.Length - 1;
+        }
+        else
+        {
+            for (int i = 0; i < properties.faces.Length; i++)
+            {
+                if (properties.faces[i] == f)
+                    return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public bool isCoveredByOthers(FaceNoSC f, int pos, Cell[] neighbors)
+    {
+        bool isCovered = false;
+
+        float height = ((pos / 4) + 1) * this.properties.width;
+        int direction = pos % 4;
+        switch (direction)
+        {
+            case 0: direction = 2;break;
+            case 2: direction = 0; break;
+        }
+
+        if (neighbors[direction] != null)
+            if (neighbors[direction].Height >= height)
+                isCovered = true;
+
+        return isCovered;
+
+    }
+
+    public CellFace[] getSameSurfaceAdjacentFaces(FaceNoSC face){
+
+        List<CellFace> adjacents = new List<CellFace>();
+
+        int index = getFaceIndex(face);
+        Cell[] neighbors = this.Map.getNeightbours(this);
+
+        if (index == this.properties.faces.Length - 1)
+        {
+            // Es el top
+            foreach(var n in neighbors)
+                if(n !=null)
+                    if(n.Height == this.Height)
+                        adjacents.Add(new CellFace(n, n.properties.faces[n.properties.faces.Length-1]));
+
+        }
+        else if(index != -1)
+        {
+            // The lower one
+            if (index - 4 >= 0 && !isCoveredByOthers(this.properties.faces[index - 4], index - 4, neighbors))
+                adjacents.Add(new CellFace(this, this.properties.faces[index - 4]));
+            // The upper one
+            if (index + 4 < this.properties.faces.Length-1 && !isCoveredByOthers(this.properties.faces[index + 4], index + 4, neighbors))
+                adjacents.Add(new CellFace(this, this.properties.faces[index + 4]));
+
+
+            int direction = index % 4;
+            Cell leftOne = neighbors[(direction+1) % 4];
+
+            //The left one
+            if (leftOne != null && index < leftOne.properties.faces.Length - 1 && !isCoveredByOthers(leftOne.properties.faces[index], index, leftOne.Map.getNeightbours(leftOne)))
+                adjacents.Add(new CellFace(leftOne, leftOne.properties.faces[index]));
+
+            Cell rightOne = neighbors[(direction + 3) % 4];
+            //The rightOne
+            if (rightOne != null && index < rightOne.properties.faces.Length - 1 && !isCoveredByOthers(rightOne.properties.faces[index], index, rightOne.Map.getNeightbours(rightOne)))
+                adjacents.Add(new CellFace(rightOne, rightOne.properties.faces[index]));
+
+        }
+
+        return adjacents.ToArray();
+    }
+
 
     public void OnBeforeSerialize()
     {
