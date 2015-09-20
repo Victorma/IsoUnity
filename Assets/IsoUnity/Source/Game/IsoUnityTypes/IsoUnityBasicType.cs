@@ -23,6 +23,9 @@ public class IsoUnityBasicType : IsoUnityType {
 
     public override bool canHandle(object o)
     {
+        if (o == null)
+            return false;
+
         string[] types = new string[]{
             typeof(string).ToString(),
             typeof(Vector2).ToString(),

@@ -8,4 +8,5 @@ public interface EventEditor  {
 	string EventName{ get; }
 	EventEditor clone();
 	void useEvent(GameEvent ge);
+    void detachEvent(GameEvent ge);
 }

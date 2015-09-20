@@ -21,12 +21,10 @@ public class SecuenceWindow: EditorWindow{
 		string[] editorNames = NodeEditorFactory.Intance.CurrentNodeEditors;
 
 		int preEditorSelected = NodeEditorFactory.Intance.NodeEditorIndex(myNode);
-		int editorSelected = EditorGUILayout.Popup (
-			preEditorSelected,
-			NodeEditorFactory.Intance.CurrentNodeEditors
-			);
+		int editorSelected = EditorGUILayout.Popup (preEditorSelected, editorNames);
 		
-		NodeEditor editor = (editors.ContainsKey(myNode))?editors[myNode]:null;
+		NodeEditor editor = null;
+        editors.TryGetValue(myNode, out editor);
 
 		if(editor == null || preEditorSelected!=editorSelected){
 			editor = NodeEditorFactory.Intance.createNodeEditorFor (editorNames[editorSelected]);

@@ -32,4 +32,10 @@ public class AddItemEditor : EventEditor {
 		ge.setParameter("item", EditorGUILayout.ObjectField("Item", (Object)ge.getParameter("item"), typeof(Item), true));
 		ge.setParameter("inventory", EditorGUILayout.ObjectField("Inventory", (Object)ge.getParameter("inventory"), typeof(Inventory), true));
 	}
+
+    public void detachEvent(GameEvent ge)
+    {
+        if (ge.getParameter("item") == null)       ge.removeParameter("item");
+        if (ge.getParameter("inventory") == null)  ge.removeParameter("inventory");
+    }
 }

@@ -36,5 +36,14 @@ public class ChangeSwitchEventEditor : EventEditor {
 		ge.setParameter("switch", EditorGUILayout.TextField("SwitchID", (string) ge.getParameter("switch")));
 		ge.setParameter("value", ParamEditor.editorFor("Value", ge.getParameter("value")));
 	}
+
+    public void detachEvent(GameEvent ge)
+    {
+        if (ge.getParameter("switch") == "")
+        {
+            ge.removeParameter("switch");
+            ge.removeParameter("value");
+        }
+    }
 	
 }

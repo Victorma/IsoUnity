@@ -33,4 +33,10 @@ public class MoveEventEditor : EventEditor {
 		ge.setParameter("cell", EditorGUILayout.ObjectField("Cell", (Object)ge.getParameter("cell"), typeof(Cell), true));
 	}
 
+    public void detachEvent(GameEvent ge)
+    {
+        if (ge.getParameter("entity") == null) ge.removeParameter("entity");
+        if (ge.getParameter("cell") == null) ge.removeParameter("cell");
+    }
+
 }

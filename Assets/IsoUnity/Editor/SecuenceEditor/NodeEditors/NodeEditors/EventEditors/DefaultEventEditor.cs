@@ -21,6 +21,8 @@ public class DefaultEventEditor : EventEditor {
 	public void useEvent(GameEvent ge){
 		this.ge = ge;
 	}
+
+    public void detachEvent(GameEvent ge){}
 	
 	private string newParameter;
 	public void draw(){
@@ -28,13 +30,16 @@ public class DefaultEventEditor : EventEditor {
 		ge.Name = EditorGUILayout.TextField ("Name", ge.Name);
 		
 		foreach (string param in ge.Params) {
-			EditorGUILayout.BeginHorizontal ();
+            if (param != "synchronous")
+            {
+                EditorGUILayout.BeginHorizontal();
 
-			ge.setParameter(param, ParamEditor.editorFor(param, ge.getParameter(param)));
-			//ge.setParameter (param, EditorGUILayout.ObjectField (param, (Object)ge.getParameter (param), typeof(Object), true));
-			if (GUILayout.Button ("X"))
-				ge.removeParameter (param);
-			EditorGUILayout.EndHorizontal ();
+                ge.setParameter(param, ParamEditor.editorFor(param, ge.getParameter(param)));
+                //ge.setParameter (param, EditorGUILayout.ObjectField (param, (Object)ge.getParameter (param), typeof(Object), true));
+                if (GUILayout.Button("X"))
+                    ge.removeParameter(param);
+                EditorGUILayout.EndHorizontal();
+            }
 		}
 		EditorGUILayout.BeginHorizontal ();
 		newParameter = EditorGUILayout.TextField ("New Parameter", newParameter);
@@ -42,5 +47,6 @@ public class DefaultEventEditor : EventEditor {
 			ge.setParameter (newParameter, null);
 		EditorGUILayout.EndHorizontal ();
 	}
-	
+
+
 }
