@@ -8,11 +8,10 @@ public class Secuence : ScriptableObject {
 
     [SerializeField]
     private List<SecuenceNode> nodes;
-    [SerializeField]
-    private List<Rect> positions;
 
 	public void init(){
 		Debug.Log ("Root created");
+        this.nodes = new List<SecuenceNode>();
         root = this.createChild();
 		Debug.Log (root);
 		DontDestroyOnLoad(this);
@@ -32,7 +31,6 @@ public class Secuence : ScriptableObject {
         var node = ScriptableObject.CreateInstance<SecuenceNode>();
         node.init(this);
         this.nodes.Add(node);
-        this.positions.Add(new Rect(0, 0, 0, 0));
         return node;
     }
 
@@ -43,7 +41,7 @@ public class Secuence : ScriptableObject {
         if (pos != -1)
         {
             nodes.RemoveAt(pos);
-            positions.RemoveAt(pos);
+            SecuenceNode.DestroyImmediate(node);
         }
 
         return pos != -1;
@@ -78,7 +76,7 @@ public class Secuence : ScriptableObject {
         }
     }
 
-    public Rect getRectFor(SecuenceNode node)
+    /*public Rect getRectFor(SecuenceNode node)
     {
         int i = nodes.IndexOf(node);
         Rect r = positions[i];
@@ -96,5 +94,5 @@ public class Secuence : ScriptableObject {
     {
         int i = nodes.IndexOf(node);
         positions[i] = rect;
-    }
+    }*/
 }

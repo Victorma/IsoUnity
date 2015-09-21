@@ -9,6 +9,28 @@ public class SecuenceNode : ScriptableObject {
 	private Object content = null;
     [SerializeField]
     private Secuence secuence = null;
+    [SerializeField]
+    private Rect position = new Rect(0, 0, 300, 0);
+    [SerializeField]
+    private bool collapsed = false;
+
+    public Rect Position
+    {
+        get {
+            if (collapsed) return new Rect(position.x, position.y, 50, 30);
+            else           return position; 
+        }
+        set {
+            if (collapsed) position = new Rect(value.x, value.y, position.width, position.height);
+            else           position = value; 
+        }
+    }
+
+    public bool Collapsed
+    {
+        get { return collapsed; }
+        set { collapsed = value; }
+    }
 
 	public void init(Secuence s){
 		childs = new SecuenceNode[0];
