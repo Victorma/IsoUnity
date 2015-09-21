@@ -48,14 +48,7 @@ public class EventNodeEditor : NodeEditor {
         node.Content = currentEditor.Result;
 		
 		if (Event.current.type != EventType.layout){
-			int l = node.Childs.Length;
-			if (l != 1) {
-				if(l == 0) node.addNewChild();
-				else while(l > 1){
-					node.removeChild(l-1);
-					l--;
-				}
-			}
+            node.ChildSlots = 1;
 		}
 	}
 	

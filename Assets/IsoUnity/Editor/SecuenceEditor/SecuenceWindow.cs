@@ -10,13 +10,13 @@ public class SecuenceWindow: EditorWindow{
 		get { return secuence; }
 		set { this.secuence = value; }
 	}
-	private Dictionary<int, SecuenceNode> nodos = new Dictionary<int, SecuenceNode>();
-	private Dictionary<SecuenceNode, Rect> rects = new Dictionary<SecuenceNode, Rect>();
+
+    private Dictionary<int, SecuenceNode> nodes = new Dictionary<int, SecuenceNode>();
 	private Dictionary<SecuenceNode, NodeEditor> editors = new Dictionary<SecuenceNode, NodeEditor>();
 	
 	void nodeWindow(int id)
 	{
-		SecuenceNode myNode = nodos[id];
+		SecuenceNode myNode = nodes[id];
 
 		string[] editorNames = NodeEditorFactory.Intance.CurrentNodeEditors;
 
@@ -33,18 +33,34 @@ public class SecuenceWindow: EditorWindow{
 			if(!editors.ContainsKey(myNode))	   editors.Add (myNode, editor);
 			else    editors[myNode] = editor;
 		}
-			
-		
+
+        GUILayout.BeginHorizontal();
+        GUILayout.BeginVertical();
 		editor.draw ();
+        GUILayout.EndVertical();
+        GUILayout.BeginVertical();
+        GUILayout.FlexibleSpace();
+        int i = 1;
+        foreach (var c in myNode.Childs)
+        {
+            var n = i +""; 
+            if (c != null) n = c.Name;
+            GUILayout.Button(n);
+            i++;
+        }
+        GUILayout.FlexibleSpace();
+
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
 		
-		nodos[id] = editor.Result;	
+		nodes[id] = editor.Result;	
 		
 		
 		if (Event.current.type != EventType.layout) {
 			Rect lastRect = GUILayoutUtility.GetLastRect ();
-			Rect myRect = rects [myNode];
+			Rect myRect = secuence.getRectFor(myNode);
 			myRect.height = lastRect.y + lastRect.height;
-			rects [myNode] = myRect;
+            secuence.setRectFor(myNode, myRect);
 			this.Repaint();
 		}
 		GUI.DragWindow();
@@ -62,32 +78,46 @@ public class SecuenceWindow: EditorWindow{
 			new Vector2(wr2.x, wr2.y + wr2.height / 2),
 			new Vector2(wr2.x - Mathf.Abs(wr2.x - (wr.x + wr.width)) / 2, wr2.y + wr2.height / 2), color, 2, true,20);
 	}
+
+    /**
+     *  Rectangle backup code calculation
+     **
+     
+        if(!rects.ContainsKey(node.Childs[i]))
+			rects.Add(node.Childs[i], new Rect(rects[node].x + 315, rects[node].y + i*altura, 150, 0));
+		curveFromTo(rects[node], rects[node.Childs[i]], new Color(0.3f,0.7f,0.4f), s);
+     
+     */
 	
-	private int windowId;
-	void createWindows(SecuenceNode node){
-		rects[node] = GUILayout.Window(windowId, rects[node], nodeWindow, node.Name, GUILayout.MinWidth(300));
-		nodos.Add (windowId, node);
-		windowId++;
-		
+	void createWindows(Secuence secuence){
 		float altura = 100;
-		for(int i = 0; i< node.Childs.Length; i++){
-			if(!rects.ContainsKey(node.Childs[i]))
-				rects.Add(node.Childs[i], new Rect(rects[node].x + /*rects[node].width*/ + 315, rects[node].y + i*altura, 150, 0));
-			curveFromTo(rects[node], rects[node.Childs[i]], new Color(0.3f,0.7f,0.4f), s);
-			createWindows(node.Childs[i]);
+		foreach(var node in secuence.Nodes){
+            nodes.Add(node.GetInstanceID(), node);
+            secuence.setRectFor(node, GUILayout.Window(node.GetInstanceID(), secuence.getRectFor(node), nodeWindow, node.Name, GUILayout.MinWidth(300)));
 		}
 	}
 	
 	Color s = new Color(0.4f, 0.4f, 0.5f);
 	void OnGUI()
 	{
-		windowId = 0;
 		SecuenceNode nodoInicial = secuence.Root;
-		if(!rects.ContainsKey(nodoInicial))
-			rects.Add(nodoInicial, new Rect(10, 10, 300, 0));
+        GUILayout.BeginVertical(GUILayout.Height(20));
+        GUILayout.BeginHorizontal();
+
+        if(GUILayout.Button("New Node")){
+            secuence.createChild();
+        }
+
+        if(GUILayout.Button("Set Root")){
+
+        }
+
+        GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
+
 		BeginWindows();
-		nodos.Clear();
-		createWindows(nodoInicial);
+        nodes.Clear();
+		createWindows(secuence);
 		EndWindows();
 	}
 }
