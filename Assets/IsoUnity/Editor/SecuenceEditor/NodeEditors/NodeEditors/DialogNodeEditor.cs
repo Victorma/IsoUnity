@@ -93,7 +93,8 @@ public class DialogNodeEditor : NodeEditor {
 						i--;
 					}
 				}else{
-					myNode.Childs[i].Name = "Option "+(i+1);
+                    if(myNode.Childs[i] != null)
+                        myNode.Childs[i].Name = "Option "+(i+1);
 				}
 				EditorGUILayout.EndHorizontal();
 				i++;

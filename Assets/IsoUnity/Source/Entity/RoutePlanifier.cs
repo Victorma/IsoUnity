@@ -4,51 +4,56 @@ using System.Collections.Generic;
 public class RoutePlanifier
 {
 
-	private static Dictionary<Entity,Stack<Cell>> routes = new Dictionary<Entity, Stack<Cell>>();
+    private static Dictionary<Mover, Stack<Cell>> routes = new Dictionary<Mover, Stack<Cell>>();
 
-	public static bool planifyRoute(Entity entity, Cell destination) {
-		return planifyRoute(entity, destination, 0);
+    public static bool planifyRoute(Mover mover, Cell destination)
+    {
+        return planifyRoute(mover, destination, 0);
 	}
 
-	public static bool planifyRoute(Entity entity, Cell destination, int distance){
-		if(routes.ContainsKey(entity)){
+    public static bool planifyRoute(Mover mover, Cell destination, int distance)
+    {
+        if (routes.ContainsKey(mover))
+        {
 			//return false;
-			Stack<Cell> ruta = calculateRoute(routes[entity].Peek(), destination, entity, distance);
+            Stack<Cell> ruta = calculateRoute(routes[mover].Peek(), destination, mover, distance);
 			//Stack<Cell> ruta = new Stack<Cell>();
 			//ruta.Push (destination);
-			ruta.Push(routes[entity].Peek());
-			routes[entity] = ruta;
+            ruta.Push(routes[mover].Peek());
+            routes[mover] = ruta;
             return ruta != null;
 		}else{
 			/*Stack<Cell> ruta = new Stack<Cell>();
 			ruta.Push (destination);*/
-			Stack<Cell> ruta = calculateRoute(entity.Position, destination, entity, distance);
+            Stack<Cell> ruta = calculateRoute(mover.Entity.Position, destination, mover, distance);
 
 			if(ruta!=null){
-				ruta.Push(entity.Position);
+                ruta.Push(mover.Entity.Position);
 				//ruta.Pop(); //Quito en la que estoy
-				routes.Add(entity,ruta);
+                routes.Add(mover, ruta);
 			}
 
 			return ruta!=null;
 		}
 	}
 
-	public static Cell next(Entity entity){
+    public static Cell next(Mover mover)
+    {
 		Cell nextCell = null;
 
-		if(routes.ContainsKey(entity)){
-			if(routes[entity].Count == 0)
-				routes.Remove(entity);
+        if (routes.ContainsKey(mover))
+        {
+            if (routes[mover].Count == 0)
+                routes.Remove(mover);
 			else{
-				if(routes[entity].Peek() != entity.Position)
-					routes.Remove(entity);
+                if (routes[mover].Peek() != mover.Entity.Position)
+                    routes.Remove(mover);
 				else{
-					routes[entity].Pop();
-					if(routes[entity].Count == 0)
-						routes.Remove(entity);
+                    routes[mover].Pop();
+                    if (routes[mover].Count == 0)
+                        routes.Remove(mover);
 					else
-						nextCell = routes[entity].Peek();
+                        nextCell = routes[mover].Peek();
 				}
 
 			}
@@ -92,8 +97,9 @@ public class RoutePlanifier
 					GetSurroundCellsAtRadius(c, distance-1, cells);
 		}
 	}
-	
-	private static Stack<Cell> calculateRoute(Cell from, Cell to, Entity entity, int distance){
+
+    private static Stack<Cell> calculateRoute(Cell from, Cell to, Mover mover, int distance)
+    {
 			
 		Cell[] cells = from.Map.GetComponentsInChildren<Cell>();
 		Dictionary<Cell,int> cellToPos = new Dictionary<Cell, int>();
@@ -132,8 +138,8 @@ public class RoutePlanifier
 				reconstruyeCamino(ruta, candidata, anterior, cells, cellToPos);
 				return ruta;
 			}
-			
-			Cell[] accesibles = getCeldasAccesibles(celdaCandidata, entity);
+
+            Cell[] accesibles = getCeldasAccesibles(celdaCandidata, mover);
 			cerrada[candidata] = true;
 			foreach (Cell accesible in accesibles)
 			{
@@ -158,13 +164,14 @@ public class RoutePlanifier
 		return null;
 	}
 
-	private static Cell[] getCeldasAccesibles(Cell celda, Entity entity){
+    private static Cell[] getCeldasAccesibles(Cell celda, Mover mover)
+    {
 
 		Cell[] vecinas = celda.Map.getNeightbours(celda);
 		List<Cell> accesibles = new List<Cell>();
 		foreach(Cell c in vecinas){
 			if(c!=null){
-				if(entity.canMoveTo(celda, c))
+                if (mover.CanMoveTo(celda, c))
 					accesibles.Add(c);
 			}
 		}

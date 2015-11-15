@@ -96,7 +96,8 @@ public class Player : EntityScript {
 					Cell destination = Entity.Position.Map.getNeightbours(Entity.Position)[to];
                     // Can move to checks if the entity can DIRECT move to this cells.
                     // This should solve bug #29
-                    if (this.Entity.canMoveTo(destination)) {
+                    Mover em = this.Entity.GetComponent<Mover>();
+                    if (em != null && em.CanMoveTo(destination)) {
                         GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
                         ge.setParameter("entity", this.Entity);
                         ge.setParameter("cell", destination);

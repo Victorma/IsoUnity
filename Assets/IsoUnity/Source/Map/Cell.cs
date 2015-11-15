@@ -402,10 +402,35 @@ public class Cell : MonoBehaviour, ISerializationCallbackReceiver
 	 * */
 
 	public bool isAccesibleBy(Entity entity){
-		foreach(Entity e in getEntities()){
-			if(!e.letPass(entity))
-				return false;
-		}
+        if (!walkable)
+            return false;
+
+        SolidBody esb = entity.GetComponent<SolidBody>();
+
+        SolidBody[] toPass = GetComponentsInChildren<SolidBody>();
+
+        bool allLetMePass = true;
+        foreach (SolidBody sb in toPass)
+        {
+            allLetMePass = sb.LetsPass(esb);
+            if (!allLetMePass)
+                break;
+        }
+
+        if (allLetMePass)
+            return allLetMePass;
+        else
+        {
+            bool canGoThroughAll = true;
+            foreach (SolidBody sb in toPass)
+            {
+                canGoThroughAll = esb.CanGoThrough(sb);
+                if (!canGoThroughAll)
+                    break;
+            }
+            return canGoThroughAll;
+        }
+		
 		return walkable;
 	}
 	// TODO enhacement improve this like in the map

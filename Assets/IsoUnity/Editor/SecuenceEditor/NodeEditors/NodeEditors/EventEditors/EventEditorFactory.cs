@@ -45,13 +45,13 @@ public class EventEditorFactoryImp : EventEditorFactory {
 	public override EventEditor createEventEditorFor (string eventName)
 	{
 		if (eventName.ToLower () == "default")
-			return defaultEventEditor;
+			return defaultEventEditor.clone();
 
 		foreach (EventEditor eventEditor in eventEditors) {
 			if(eventEditor.EventName.ToLower() == eventName.ToLower()){
 				return eventEditor.clone();
 			}
 		}
-		return eventEditors[0];
+		return eventEditors[0].clone();
 	}
 }

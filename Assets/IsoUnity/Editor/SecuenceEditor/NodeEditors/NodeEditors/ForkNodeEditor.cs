@@ -23,7 +23,8 @@ public class ForkNodeEditor : NodeEditor {
 		myNode.Content = editor.Result;
 		
 		if(Event.current.type != EventType.Layout){
-			int l = myNode.Childs.Length;
+            myNode.ChildSlots = 2;
+			/*int l = myNode.Childs.Length;
 			if (l != 2) {
 				while(l < 2){
 					myNode.addNewChild ();
@@ -36,7 +37,7 @@ public class ForkNodeEditor : NodeEditor {
 				myNode.Childs[0].Name = "Case fork True";
 				myNode.Childs[1].Name = "Case fork False";
 				//this.Repaint ();
-			}
+			}*/
 		}
 	}
 	

@@ -23,6 +23,8 @@ public class EmptyNodeEditor : NodeEditor {
 	public void useNode(SecuenceNode c) {
 		if(c.Content != null)	
 			c.Content = null;
+
+        c.ChildSlots = 0;
 		
 		node = c;
 	}

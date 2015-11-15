@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Mover : EntityScript {
+public class Mover : EntityScript, SolidBody {
 
     /***************************
     * Directions Enum & Utils
     **************************/
     public enum Direction
     {
-        North, East, West, South
+		North, East, South, West
     }
     private static int getDirectionIndex(Direction d)
     {
@@ -29,6 +29,19 @@ public class Mover : EntityScript {
     /****************
      * Begin Attributes
      * ****************/
+
+    /// <summary>
+    /// Used to know if you can be blocked in paths
+    /// </summary>
+    public bool canBlockMe = true;
+    /// <summary>
+    /// Used to know if this blocks
+    /// </summary>
+    public bool blocks = true;
+    /// <summary>
+    /// Max cell difference jump
+    /// </summary>
+    public float maxJumpSize = 1.5f;
 	public IsoDecoration normalSprite;
 	public IsoDecoration jumpingSprite;
     public Direction direction;
@@ -53,9 +66,38 @@ public class Mover : EntityScript {
     //Stop
     private bool stop = false;
 
+
     /****************
      * End Attributes
      * ***************/
+
+    /******************
+     * MOVEMENT CONTROL
+     * *****************/
+
+    public bool CanMoveTo(Cell c) { return CanMoveTo(this.Entity.Position, c); }
+    public bool CanMoveTo(Cell from, Cell to)
+    {
+        bool canMove = false;
+
+        // Destination not null and jumpsize
+        // TODO si retorno el tipo de movimiento puedo meter teletransportes entre medias
+        if (to != null && Mathf.Abs(from.WalkingHeight - to.WalkingHeight) <= maxJumpSize)
+            canMove = canBlockMe ? to.isAccesibleBy(this.Entity) : true;
+
+        return canMove;
+    }
+
+
+    public bool LetsPass(SolidBody sb)
+    {
+        return !blocks;
+    }
+
+    public bool CanGoThrough(SolidBody sb)
+    {
+        return !canBlockMe;
+    }
 
     /*******************
      * PUBLIC OPERATIONS
@@ -63,7 +105,7 @@ public class Mover : EntityScript {
 
     public void moveTo(Cell c)
     {
-        RoutePlanifier.planifyRoute(this.Entity, c, distanceToMove);
+        RoutePlanifier.planifyRoute(this, c, distanceToMove);
     }
     public void teleportTo(Cell c)
     {
@@ -234,7 +276,7 @@ public class Mover : EntityScript {
         // If we're not moving right now
 		if(!IsMoving){
             // Let's see if we have something to do...
-			next = RoutePlanifier.next(this.Entity);
+			next = RoutePlanifier.next(this);
             //Then, let's move :D
 			if(next != null){
 				Vector3 myPosition = this.Entity.Position.transform.localPosition,

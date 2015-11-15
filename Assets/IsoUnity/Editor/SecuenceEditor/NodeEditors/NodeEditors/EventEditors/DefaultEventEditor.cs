@@ -15,7 +15,7 @@ public class DefaultEventEditor : EventEditor {
 		get{ return ""; }
 	}
 	public EventEditor clone(){
-		return new MoveEventEditor();
+        return new DefaultEventEditor();
 	}
 
 	public void useEvent(GameEvent ge){

@@ -3,14 +3,34 @@ using System.Collections.Generic;
 
 [ExecuteInEditMode]
 public class Entity : MonoBehaviour {
-
+	/// <summary>
+	/// Used to know if you can be blocked in paths
+	/// </summary>
 	public bool canBlockMe = true;
-	public bool isBlackList = true;
+	/// <summary>
+	/// Used to know if this blocks
+	/// </summary>
+	public bool blocks = true;
+	/// <summary>
+	/// Max cell difference jump
+	/// </summary>
 	public float maxJumpSize = 1.5f;
+	/// <summary>
+	/// The direction.
+	/// </summary>
+	public Mover.Direction direction;
+    /// <summary>
+    /// Normal sprite used for standard animations
+    /// </summary>
 	public IsoDecoration normalSprite;
+    /// <summary>
+    /// Sprite used for jump animations
+    /// </summary>
 	public IsoDecoration jumpingSprite;
+    /// <summary>
+    /// Face used for dialogs
+    /// </summary>
 	public Texture2D face;
-	public List<EntityScript> list;
 
 	[SerializeField]
 	private Cell position;
@@ -23,42 +43,6 @@ public class Entity : MonoBehaviour {
 			this.transform.parent = position.transform;
 			my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
 		}
-	}
-
-    public bool canMoveTo(Cell from, Cell to)
-    {
-        //canAccedTo(c);
-
-        bool canMove = false;
-
-        if (to != null && Mathf.Abs(from.WalkingHeight - to.WalkingHeight) <= maxJumpSize)
-        {
-            if (canBlockMe)
-                canMove = to.isAccesibleBy(this);
-            else
-                canMove = true;
-        }
-
-        //canGoThroughEntities(c);
-        return canMove;
-    }
-
-	public bool canMoveTo(Cell c){
-		return canMoveTo(position,c);
-	}
-
-	public bool letPass(Entity e){
-		/*foreach(EntityScript en in list){
-			foreach(EntityScript hisEn in e.GetComponents<EntityScript>()){
-				if(hisEn == en)
-					return !isBlackList;
-			}
-		}*/
-		return isBlackList;
-	}
-
-	public bool canGoThrough(Entity e){
-		return false;
 	}
 
 	public void tick(){
@@ -89,6 +73,10 @@ public class Entity : MonoBehaviour {
 	void Start () {
 		if(Application.isPlaying){
 			Mover mover = this.gameObject.AddComponent<Mover>();
+			mover.canBlockMe = canBlockMe;
+			mover.blocks = blocks;
+			mover.maxJumpSize = maxJumpSize;
+			mover.direction = direction;
 			mover.normalSprite = normalSprite;
 			mover.jumpingSprite = jumpingSprite;
 		}
@@ -114,6 +102,8 @@ public class Entity : MonoBehaviour {
 			my_transform = this.transform;
 
 		if(!Application.isPlaying && Application.isEditor){
+
+			this.decoration.Tile = ((int)direction)*this.decoration.IsoDec.nCols;
 
 			Transform parent = my_transform.parent;
 			Transform actual = null;

@@ -4,17 +4,42 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SecuenceNode : ScriptableObject {
 	[SerializeField]
-	private List<SecuenceNode> childs;
+	private SecuenceNode[] childs;
 	[SerializeField]
 	private Object content = null;
+    [SerializeField]
+    private Secuence secuence = null;
+    [SerializeField]
+    private Rect position = new Rect(0, 0, 300, 0);
+    [SerializeField]
+    private bool collapsed = false;
 
-	public void init(){
-		childs = new List<SecuenceNode> ();
+    public Rect Position
+    {
+        get {
+            if (collapsed) return new Rect(position.x, position.y, 50, 30);
+            else           return position; 
+        }
+        set {
+            if (collapsed) position = new Rect(value.x, value.y, position.width, position.height);
+            else           position = value; 
+        }
+    }
+
+    public bool Collapsed
+    {
+        get { return collapsed; }
+        set { collapsed = value; }
+    }
+
+	public void init(Secuence s){
+		childs = new SecuenceNode[0];
+        this.secuence = s;
 		DontDestroyOnLoad (this);
 	}
 	
 	public SecuenceNode[] Childs {
-		get{ return childs.ToArray() as SecuenceNode[]; }
+		get{ return childs; }
 	}
 	
 	public string Name{
@@ -28,39 +53,55 @@ public class SecuenceNode : ScriptableObject {
 	}
 	
 	public void clearChilds(){
-		foreach (ScriptableObject node in childs)
-			if(Application.isEditor)
-				ScriptableObject.DestroyImmediate (node);
-			else
-				ScriptableObject.Destroy (node);
-		childs.Clear();
+        var aux = ChildSlots;
+        ChildSlots = 0;
+        ChildSlots = aux;
 	}
+
+    private int move<T>(T[] from, T[] to, T empty)
+    {
+        int l = Mathf.Min(from.Length, to.Length);
+        for (int i = 0; i < l; i++)          to[i] = from[i];
+        for (int i = l; i < to.Length; i++)  to[i] = empty;
+        return l;
+    }
+
+    public int ChildSlots
+    {
+        set
+        {
+            if (this.childs.Length != value)
+            {
+                var newChilds = new SecuenceNode[value];
+                var max = move<SecuenceNode>(this.childs, newChilds, null);
+                //for (int i = max; i < newChilds.Length; i++)
+                //    newChilds[i] = secuence.createChild();
+
+                this.childs = newChilds;
+            }
+        }
+        get
+        {
+            return this.childs.Length;
+        }
+    }
 	
 	public SecuenceNode addNewChild(){
-		SecuenceNode node = ScriptableObject.CreateInstance<SecuenceNode>();
-		node.init ();
-		this.childs.Add(node);
-		return node;
+        this.ChildSlots++;
+		return this.childs[this.ChildSlots-1];
 	}
 	
 	public void removeChild(int i){
-		SecuenceNode node = this.childs [i];
-		if (node != null) {
-			this.childs.RemoveAt(i);
-			if(Application.isEditor)
-				ScriptableObject.DestroyImmediate (node);
-			else
-				ScriptableObject.Destroy (node);;
-		}
-
+        this.childs[i] = null;
 	}
 	
 	public void removeChild(SecuenceNode child){
-		this.childs.Remove(child);
-		if(Application.isEditor)
-			ScriptableObject.DestroyImmediate (child);
-		else
-			ScriptableObject.Destroy (child);
+        for (int i = 0; i < childs.Length; i++)
+            if (child == childs[i])
+            {
+                this.removeChild(i);
+                break;
+            }
 	}
 
 }
