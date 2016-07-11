@@ -430,8 +430,6 @@ public class Cell : MonoBehaviour, ISerializationCallbackReceiver
             }
             return canGoThroughAll;
         }
-		
-		return walkable;
 	}
 	// TODO enhacement improve this like in the map
 	public Entity[] getEntities(){

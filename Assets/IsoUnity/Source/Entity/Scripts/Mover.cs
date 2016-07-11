@@ -10,7 +10,7 @@ public class Mover : EntityScript, SolidBody {
     {
 		North, East, South, West
     }
-    private static int getDirectionIndex(Direction d)
+    public static int getDirectionIndex(Direction d)
     {
         switch (d)
         {
@@ -21,6 +21,36 @@ public class Mover : EntityScript, SolidBody {
         }
 
         return -1;
+    }
+
+    public static Direction getDirectionFromTo(Transform from, Transform to)
+    {
+        Vector3 fromTo = to.position - from.position;
+        //fromTo = new Vector3(fromTo.x, 0, fromTo.z);
+
+        float angle = Vector3.Angle(fromTo, Vector3.right)*Mathf.Deg2Rad;
+
+        if (fromTo.z < 0) angle = -angle;
+        if(angle < 0) angle += Mathf.PI*2f;
+
+        float Pi4 = Mathf.PI / 4f;
+
+        if (angle < Pi4 || angle > 7*Pi4)
+        {
+            return Direction.East;
+        }
+        else if (angle < 3 * Pi4)
+        {
+            return Direction.North;
+        }
+        else if (angle < 5 * Pi4)
+        {
+            return Direction.West;
+        }
+        else
+        {
+            return Direction.South;
+        }
     }
     /****************
     * End Directions

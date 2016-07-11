@@ -16,6 +16,7 @@ public class Player : EntityScript {
 	}
 
 	private GameEvent movement;
+    private Cell actionCell;
 	private GameEvent toLaunch;
 
     [SerializeField]
@@ -48,6 +49,9 @@ public class Player : EntityScript {
                     // so in order to know who's launching, we put a mark
 					if(args.options[0].Action!=null)
 						args.options[0].Action.setParameter("Executer", this.Entity);
+
+                    if (args.cell != null)
+                        actionCell = args.cell;
 
                     // If we've to move to perform the action
 					if(args.options[0].HasToMove){
@@ -140,6 +144,12 @@ public class Player : EntityScript {
                 // That means that, we're in the right position so...
 				Game.main.enqueueEvent(toLaunch);
 				toLaunch = null;
+
+                // Look to the action
+                Mover.Direction toLook = Mover.getDirectionFromTo(this.Entity.Position.transform, actionCell.transform);
+                this.GetComponent<Mover>().switchDirection(toLook);
+
+                actionCell = null;
 			}
 		}
 
