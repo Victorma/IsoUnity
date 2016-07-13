@@ -86,68 +86,83 @@ public class Dialog : ScriptableObject
 			this.text = "";
 		}
 	}
-		[SerializeField]
-		public string id;
-		[SerializeField]
-		private Fragment[] fragments;
-		[SerializeField]
-		private DialogOption[] options;
+	[SerializeField]
+	public string id;
+	[SerializeField]
+	private Fragment[] fragments = new Fragment[0];
+	[SerializeField]
+	private DialogOption[] options = new DialogOption[0];
 
-		public Fragment[] getFragments(){
-				return this.fragments;
-		}
+	public Fragment[] getFragments(){
+        if (fragments == null)
+            fragments = new Fragment[0];
+		return this.fragments;
+	}
+
+    public void setFragments(Fragment[] fragments)
+    {
+        this.fragments = fragments;
+    }
 		
-		public void addFragment(){
-			if (fragments != null) {
-				Fragment[] tmp = new Fragment [fragments.Length + 1];
-				for (int i=0; i<fragments.Length; i++) {
-						tmp [i] = fragments [i];
-				}
-				tmp [fragments.Length] = new Fragment ();
-				this.fragments = tmp;
-			} else {
-				fragments = new Fragment[1];
-				fragments[0] = new Fragment();
+	public void addFragment(){
+		if (fragments != null) {
+			Fragment[] tmp = new Fragment [fragments.Length + 1];
+			for (int i=0; i<fragments.Length; i++) {
+					tmp [i] = fragments [i];
 			}
+			tmp [fragments.Length] = new Fragment ();
+			this.fragments = tmp;
+		} else {
+			fragments = new Fragment[1];
+			fragments[0] = new Fragment();
 		}
+	}
 
-		public void removeFragment(Fragment frg){
-			int k = 0;
-			Fragment[] tmp = new Fragment [fragments.Length - 1];
-			for (int i=0; i<fragments.Length-1; i++) {
-				if(frg == fragments[i]) k = 1;
-				tmp[i] = fragments[i+k];
+	public void removeFragment(Fragment frg){
+		int k = 0;
+		Fragment[] tmp = new Fragment [fragments.Length - 1];
+		for (int i=0; i<fragments.Length-1; i++) {
+			if(frg == fragments[i]) k = 1;
+			tmp[i] = fragments[i+k];
+		}
+		fragments = tmp;
+	}
+
+    public DialogOption[] getOptions()
+    {
+        if (options == null)
+            options = new DialogOption[0];
+		return this.options;
+	}
+
+    public void setOptions(DialogOption[] options)
+    {
+        this.options = options;
+    }
+
+	public void addOption(){
+		if (options != null) {
+			DialogOption[] tmp = new DialogOption [options.Length + 1];
+			for (int i=0; i<options.Length; i++) {
+				tmp [i] = options [i];
 			}
-			fragments = tmp;
+			tmp [options.Length] = new DialogOption ();
+			this.options = tmp;
+		} else {
+			options = new DialogOption[1];
+			options[0] = new DialogOption();
 		}
+	}
 
-		public DialogOption[] getOptions(){
-			return this.options;
+	public void removeOption(DialogOption dlo){
+		int k = 0;
+		DialogOption[] tmp = new DialogOption [options.Length - 1];
+		for (int i=0; i<options.Length-1; i++) {
+			if(dlo == options[i]) k = 1;
+			tmp[i] = options[i+k];
 		}
-
-		public void addOption(){
-			if (options != null) {
-				DialogOption[] tmp = new DialogOption [options.Length + 1];
-				for (int i=0; i<options.Length; i++) {
-					tmp [i] = options [i];
-				}
-				tmp [options.Length] = new DialogOption ();
-				this.options = tmp;
-			} else {
-				options = new DialogOption[1];
-				options[0] = new DialogOption();
-			}
-		}
-
-		public void removeOption(DialogOption dlo){
-			int k = 0;
-			DialogOption[] tmp = new DialogOption [options.Length - 1];
-			for (int i=0; i<options.Length-1; i++) {
-				if(dlo == options[i]) k = 1;
-				tmp[i] = options[i+k];
-			}
-			options = tmp;
-		}
+		options = tmp;
+	}
 	
 }
 

@@ -91,8 +91,13 @@ public class SecuenceNode : ScriptableObject {
 		return this.childs[this.ChildSlots-1];
 	}
 	
-	public void removeChild(int i){
-        this.childs[i] = null;
+	public void removeChild(int index){
+        for (int i = index; i < this.childs.Length - 1; i++)
+        {
+            this.childs[i] = this.childs[i + 1];
+        }
+        this.ChildSlots--;
+
 	}
 	
 	public void removeChild(SecuenceNode child){
