@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 [ExecuteInEditMode]
+[DisallowMultipleComponent]
 public class Decoration : MonoBehaviour{
 	/*******************************
 	 * BEGIN ATRIBS
@@ -64,6 +65,16 @@ public class Decoration : MonoBehaviour{
 
 	public Decoration (){
 	}
+
+    void OnValidate()
+    {
+		if (isoDec == null)
+			return;
+
+
+        adaptate();
+        tile = Mathf.Clamp(tile, 0, isoDec.nCols * isoDec.nRows);
+    }
 
 	public void setParameters(Vector3 center, int angle, bool parallel, bool centered){
 		this.center = center;
@@ -132,7 +143,10 @@ public class Decoration : MonoBehaviour{
 		myMat.SetTexture("_MainTex",isoDec.getTexture());
 		this.GetComponent<Renderer>().sharedMaterial = myMat;
 
+        int x = tile % (isoDec.nCols);
+        int y = Mathf.FloorToInt(tile / isoDec.nCols);
 
+		this.GetComponent<Renderer>().sharedMaterial.mainTextureOffset = new Vector2((x / ((float)isoDec.nCols)), (y / ((float)isoDec.nRows)));
 	}
 
 	public void colocate(){
@@ -229,10 +243,7 @@ public class Decoration : MonoBehaviour{
 		}
 		set{
 			tile = value;
-			int x = tile % (isoDec.nCols);
-			int y = Mathf.FloorToInt(tile/isoDec.nCols);
-			
-			this.GetComponent<Renderer>().material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
+			this.updateTextures ();
 		}
 	}
 

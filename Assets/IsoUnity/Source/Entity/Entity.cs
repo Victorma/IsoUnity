@@ -2,31 +2,10 @@
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
+[DisallowMultipleComponent]
+[RequireComponent(typeof(Mover))]
 public class Entity : MonoBehaviour {
-	/// <summary>
-	/// Used to know if you can be blocked in paths
-	/// </summary>
-	public bool canBlockMe = true;
-	/// <summary>
-	/// Used to know if this blocks
-	/// </summary>
-	public bool blocks = true;
-	/// <summary>
-	/// Max cell difference jump
-	/// </summary>
-	public float maxJumpSize = 1.5f;
-	/// <summary>
-	/// The direction.
-	/// </summary>
-	public Mover.Direction direction;
-    /// <summary>
-    /// Normal sprite used for standard animations
-    /// </summary>
-	public IsoDecoration normalSprite;
-    /// <summary>
-    /// Sprite used for jump animations
-    /// </summary>
-	public IsoDecoration jumpingSprite;
+
     /// <summary>
     /// Face used for dialogs
     /// </summary>
@@ -71,15 +50,7 @@ public class Entity : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if(Application.isPlaying){
-			Mover mover = this.gameObject.AddComponent<Mover>();
-			mover.canBlockMe = canBlockMe;
-			mover.blocks = blocks;
-			mover.maxJumpSize = maxJumpSize;
-			mover.direction = direction;
-			mover.normalSprite = normalSprite;
-			mover.jumpingSprite = jumpingSprite;
-		}
+
 	}
 
 
@@ -102,8 +73,6 @@ public class Entity : MonoBehaviour {
 			my_transform = this.transform;
 
 		if(!Application.isPlaying && Application.isEditor){
-
-			this.decoration.Tile = ((int)direction)*this.decoration.IsoDec.nCols;
 
 			Transform parent = my_transform.parent;
 			Transform actual = null;

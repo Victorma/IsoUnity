@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[ExecuteInEditMode]
+[RequireComponent(typeof(Decoration))]
 public class Mover : EntityScript, SolidBody {
 
     /***************************
@@ -289,17 +291,32 @@ public class Mover : EntityScript, SolidBody {
 	private bool paso = false;
 	private Decoration dec;
 
+    void Awake()
+    {
+        if (Application.isEditor)
+        {
+            this.normalSprite = this.GetComponent<Decoration>().IsoDec;
+            this.jumpingSprite = this.GetComponent<Decoration>().IsoDec;
+        }
+    }
+
+    void OnValidate()
+    {
+        tick();
+		this.Update ();
+		this.dec.adaptate ();
+    }
 
 	public override void Update () {
         if (this.dec == null)
-            this.dec = Entity.decoration;
+            this.dec = GetComponent<Decoration>();
 
         // Force initial direction update
         if (this.movement == null)
         {
             movement = createTurnMovement(direction);
             movement.addProgress(1f); // Move to End
-            movement.Update(); // Assure finalization
+			movement.Update(Time.deltaTime); // Assure finalization
             movement.UpdateTextures();
         }
 
@@ -339,7 +356,10 @@ public class Mover : EntityScript, SolidBody {
 		
 		if(IsMoving){
             // Update the progress
-            this.movement.Update();
+			if (!Application.isPlaying) {
+				this.movement.Update (1f);
+			}
+			this.movement.Update(Time.deltaTime);
             this.movement.UpdateTextures();
             // If the movement has ended
 			if(this.movement.Ended){
@@ -411,9 +431,9 @@ public class Mover : EntityScript, SolidBody {
         /*************************
          * GENERIC UPDATES
          * ************************/
-        public virtual void Update()
+		public virtual void Update(float progress)
         {
-            this.addProgress(Time.deltaTime);
+			this.addProgress(progress);
 
             Vector3 myPosition = getPosition(),
                     otherPosition = To;
@@ -542,9 +562,9 @@ public class Mover : EntityScript, SolidBody {
                 else return to;
             }
 
-            public override void Update()
+			public override void Update(float progress)
             {
-                this.addProgress(Time.deltaTime);
+                this.addProgress(progress);
 
                 if (entity.Position.Map == destination.Map)
                 {
@@ -585,9 +605,9 @@ public class Mover : EntityScript, SolidBody {
                 if (dir != null && dir is Direction) direction = (Direction) dir;
             }
 
-            public override void Update()
+			public override void Update(float progress)
             {
-                base.Update();
+                base.Update(progress);
                 mover.lastDirection = direction;
                 mover.direction = direction;
             }

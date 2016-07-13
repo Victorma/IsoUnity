@@ -6,9 +6,10 @@ public abstract class EntityScript : MonoBehaviour {
 		get { return this.GetComponent<Entity> ();}
 	}
 	// Use this for initialization
-	void Start () {
-		
-	}
+    /*public virtual void Start()
+    {
+
+    }*/
 
 	//Abstract Methods
 	public abstract void eventHappened(GameEvent ge);
