@@ -14,7 +14,7 @@ public class SecuenceInterpreter  {
 		get { return currentNode == null || currentNode.Content == null; }
 	}
 
-	public void EventHappened(GameEvent ge){
+	public void EventHappened(IGameEvent ge){
 		if(currentInterpreter!=null)
 			currentInterpreter.EventHappened(ge);
 	}

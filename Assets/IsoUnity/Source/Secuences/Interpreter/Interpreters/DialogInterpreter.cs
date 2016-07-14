@@ -32,7 +32,7 @@ public class DialogInterpreter : ScriptableObject, ISecuenceInterpreter {
 		return nextNode;
 	}
 	
-	public void EventHappened(GameEvent ge)
+	public void EventHappened(IGameEvent ge)
 	{
 		if(ge.getParameter("Launcher") == this)
 		{

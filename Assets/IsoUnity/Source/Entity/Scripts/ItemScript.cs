@@ -8,9 +8,9 @@ public class ItemScript : EntityScript {
 	private bool picked = false;
 	private bool destroy = false;
 	private Inventory by;
-	private GameEvent addItemEvent;
+	private IGameEvent addItemEvent;
 
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
 		switch(ge.Name.ToLower()){
 		case "pick":
@@ -31,7 +31,7 @@ public class ItemScript : EntityScript {
 
 	public override Option[] getOptions ()
 	{
-		GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+		GameEvent ge = new GameEvent();
 		ge.Name = "Pick";
 		ge.setParameter ("Item", this);
 
@@ -42,7 +42,7 @@ public class ItemScript : EntityScript {
 	public override void tick ()
 	{
 		if (picked) {
-			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+			GameEvent ge = new GameEvent();
 			ge.name = "add item";
 			ge.setParameter("item", this.item);
 			ge.setParameter("inventory", by);

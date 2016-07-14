@@ -49,11 +49,11 @@ public class InventoryGUI : IsoGUI {
 			foreach(Item i in cantidades.Keys){
 			//Cada item
 			if(GUI.Button(new Rect(0,itemYPos, anchoScroll, itemHeight), "", GUIStyle.none) && optionsGUI == null){
-				GameEvent use = ScriptableObject.CreateInstance<GameEvent>();
+				GameEvent use = new GameEvent();
 				use.Name = "use item";
 				use.setParameter("inventory", this.inventory);
 				use.setParameter("item", i);
-				GameEvent remove = ScriptableObject.CreateInstance<GameEvent>();
+				GameEvent remove = new GameEvent();
 				remove.Name = "remove item";
 				remove.setParameter("inventory", this.inventory);
 				remove.setParameter("item", i);

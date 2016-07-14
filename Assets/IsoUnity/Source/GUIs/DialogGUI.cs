@@ -79,7 +79,7 @@ public class DialogGUI : IsoGUI {
 			float height = Screen.height/opt.Length;
 			for(int i=0; i<opt.Length; i++){
 				if (GUI.Button (new Rect (0, i*height, Screen.width, height), this.opt[i].text)){
-					GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+					GameEvent ge = new GameEvent();
 					ge.Name = "chosen option"; 
 					ge.setParameter ("launcher", launcher);
 					ge.setParameter("option", i);
@@ -97,7 +97,7 @@ public class DialogGUI : IsoGUI {
 	{
 		if(this.mode == 0)
 		if (args.isLeftDown) {
-			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+			GameEvent ge = new GameEvent();
 			ge.Name = "ended fragment"; ge.setParameter ("Launcher", launcher);
 			Game.main.enqueueEvent (ge);
 			GUIManager.removeGUI (this);

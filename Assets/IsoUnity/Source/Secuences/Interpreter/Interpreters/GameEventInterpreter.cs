@@ -10,7 +10,7 @@ public class GameEventInterpreter : ISecuenceInterpreter {
 
 	public bool CanHandle(SecuenceNode node)
 	{
-		return node!= null && node.Content != null && node.Content is GameEvent;
+		return node!= null && node.Content != null && node.Content is SerializableGameEvent;
 	}
 
 	public void UseNode(SecuenceNode node){
@@ -27,17 +27,18 @@ public class GameEventInterpreter : ISecuenceInterpreter {
 		return (this.node.Childs.Length>0)?this.node.Childs[0]:null;
 	}
 
-	public void EventHappened(GameEvent ge)
+	public void EventHappened(IGameEvent ge)
 	{
 		Debug.Log ("Something happened: " + ge.Name);
 		if(waitTillEventFinished)
 			if(ge.Name.ToLower() == "event finished")
-				waitTillEventFinished = ge.getParameter("event") != node.Content;
+			waitTillEventFinished =  GameEvent.CompareEvents(ge, ge.getParameter("event") as IGameEvent);
 	}
 
+	private IGameEvent ge;
 	public void Tick()
 	{
-		GameEvent ge = (node.Content as GameEvent);
+		ge = (node.Content as SerializableGameEvent);
 		if(!launched){
 			Game.main.enqueueEvent(ge);
 			if(ge.getParameter("synchronous")!=null && (bool)ge.getParameter("synchronous") == true)

@@ -6,7 +6,7 @@ public class SecuenceManager : EventManager {
 	private ControllerManager.ControllerDelegate de;
 	private SecuenceInterpreter secuenceInterpreter;
 
-	public override void ReceiveEvent (GameEvent ev)
+	public override void ReceiveEvent (IGameEvent ev)
 	{
 		if(secuenceInterpreter == null){
 			if(ev.Name.ToLower() == "start secuence"){

@@ -19,7 +19,7 @@ public class TeleporterEditor : Editor {
 
 		SerializedProperty cell = serializedObject.FindProperty("destination");
 		SerializedProperty modep = serializedObject.FindProperty("mode");
-		SerializedProperty gep = serializedObject.FindProperty("ge");
+		SerializedProperty gep = serializedObject.FindProperty("sge");
 		SerializedProperty checkablep = serializedObject.FindProperty("checkable");
 
 		EditorGUILayout.PropertyField(cell);
@@ -29,9 +29,11 @@ public class TeleporterEditor : Editor {
 		switch(modep.intValue){
 		
 		case 1:{
-			GameEvent ge = gep.objectReferenceValue as GameEvent;
-			if(ge == null)
-				ge = ScriptableObject.CreateInstance<GameEvent>();
+			SerializableGameEvent ge = gep.objectReferenceValue as SerializableGameEvent;
+			
+			if (ge == null) {
+				ge = ScriptableObject.CreateInstance<SerializableGameEvent> ();
+			}
 
 			string[] editors = EventEditorFactory.Intance.CurrentEventEditors;
 			int editorSelected = 0;
@@ -49,8 +51,9 @@ public class TeleporterEditor : Editor {
 			editor.useEvent (ge);		
 			
 			editor.draw ();
+			ge = editor.Result;
 
-			gep.objectReferenceValue = editor.Result;
+			gep.objectReferenceValue = ge;
 
 			}
 		break;

@@ -6,7 +6,7 @@ public class Teleporter : EntityScript {
 	public bool enabled = false;
 	public Cell destination;
 	public int mode = 0;
-	public GameEvent ge;
+	public SerializableGameEvent sge;
 	public Checkable checkable;
 
 	private bool start = true;
@@ -28,7 +28,7 @@ public class Teleporter : EntityScript {
 		Entity[] entities = Entity.Position.getEntities();
 		foreach(Entity e in entities){
 			if(e!=this.Entity){
-				GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+				GameEvent ge = new GameEvent();
 				ge.Name = "Teleport";
 				ge.setParameter("Entity", e);
 				ge.setParameter("Cell", destination);
@@ -37,9 +37,9 @@ public class Teleporter : EntityScript {
 		}
 	}
 
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
-		if(mode == 1 && this.ge == ge)
+		if(mode == 1 && this.sge == ge)
 			enabled = true;
 	}
 

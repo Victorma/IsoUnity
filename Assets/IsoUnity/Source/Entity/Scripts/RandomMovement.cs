@@ -17,7 +17,7 @@ public class RandomMovement : EntityScript {
 
 			Cell c = Entity.Position.Map.getNeightbours(Entity.Position)[Random.Range(0,4)];
 			if(c != null){
-				GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+				GameEvent ge = new GameEvent();
 				ge.Name = "move";
 				ge.setParameter("entity", this.Entity);
 				ge.setParameter("cell", c);
@@ -26,7 +26,7 @@ public class RandomMovement : EntityScript {
 		}
 	}
 	
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
 	}
 	

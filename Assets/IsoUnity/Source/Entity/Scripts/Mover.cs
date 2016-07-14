@@ -83,8 +83,8 @@ public class Mover : EntityScript, SolidBody {
     private bool move = false;
     private bool movementFinished = false;
     private int distanceToMove = 0;
-    private GameEvent bcEvent;
-    private GameEvent movementEvent;
+    private IGameEvent bcEvent;
+    private IGameEvent movementEvent;
 
     //Teleport
 	private Cell teleportToCell;
@@ -166,7 +166,7 @@ public class Mover : EntityScript, SolidBody {
     /**************
      * Event Control
      * *************/
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
         if (!ge.belongsTo(this))
             return;
@@ -304,7 +304,6 @@ public class Mover : EntityScript, SolidBody {
     {
         tick();
 		this.Update ();
-		this.dec.adaptate ();
     }
 
 	public override void Update () {

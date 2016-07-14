@@ -11,7 +11,7 @@ public abstract class EventManager : MonoBehaviour{
 		Game.main.DeRegisterEventManager (this);
 	}
 
-	public abstract void ReceiveEvent (GameEvent ev);
+	public abstract void ReceiveEvent (IGameEvent ev);
 	public abstract void Tick ();
 
 }

@@ -3,7 +3,14 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 
-	Queue<GameEvent> events;
+	/**
+	 * This var allows new Game instances load destroy the previous one and replace it.
+	 * This can have unexpected behaviours, we recommend to use only one Game class along
+	 * all the game execution.
+	 */
+	public bool shouldReplacePreviousGame = false;
+
+	Queue<IGameEvent> events;
 	
     /*
      *  Looking things (Recommended to use CameraManager.lookTo(<<Target>>) to manage camera).
@@ -53,8 +60,23 @@ public class Game : MonoBehaviour {
 			return;
 		awakened = true;
 
+		if (Game.main != this) {
+			if (shouldReplacePreviousGame) {
+				GameObject.DestroyImmediate (Game.main.gameObject);
+			} else {
+				if (Game.main != null) {
+					GameObject.DestroyImmediate (this.gameObject);
+					return;
+				}
+			}
+		}
+
+		Game.m = this;
+		if(Application.isPlaying)
+			GameObject.DontDestroyOnLoad (this.gameObject);
+
         // Event Queue
-		events = new Queue<GameEvent>();
+		events = new Queue<IGameEvent>();
 
         // Main Managers initialization
         // TODO Make they event managers as the rest
@@ -95,16 +117,16 @@ public class Game : MonoBehaviour {
      * Event methods
      */
 
-	public void enqueueEvent(GameEvent ge){
+	public void enqueueEvent(IGameEvent ge){
 		if(ge == null)
 			return;
 		this.events.Enqueue(ge);
 	}
     
-	public void eventFinished(GameEvent ge){
+	public void eventFinished(IGameEvent ge){
 		object sync = ge.getParameter("synchronous");
 		if(sync!=null && ((bool)sync)){
-			GameEvent f = ScriptableObject.CreateInstance<GameEvent>();
+			GameEvent f = new GameEvent();
 			f.Name = "Event Finished";
 			f.setParameter("event", ge);
 			this.enqueueEvent(f);
@@ -112,7 +134,7 @@ public class Game : MonoBehaviour {
 	}
 
     // Private method used to broadcast the events in main tick
-    private void broadcastEvent(GameEvent ge){
+    private void broadcastEvent(IGameEvent ge){
         foreach (EventManager manager in eventManagers)
             manager.ReceiveEvent(ge);
 
@@ -147,7 +169,7 @@ public class Game : MonoBehaviour {
         // Events launch
 		while(events.Count > 0)
 		{
-			GameEvent ge = events.Dequeue();
+			IGameEvent ge = events.Dequeue();
 			broadcastEvent(ge);
 		}
 

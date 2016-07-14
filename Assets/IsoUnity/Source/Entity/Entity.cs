@@ -29,7 +29,7 @@ public class Entity : MonoBehaviour {
 			es.tick();
 	}
 
-	public void eventHappened(GameEvent ge){
+	public void eventHappened(IGameEvent ge){
 		EntityScript[] scripts = this.GetComponents<EntityScript>();
 
 		//TODO Preference system

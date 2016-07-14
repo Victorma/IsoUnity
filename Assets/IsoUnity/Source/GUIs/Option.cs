@@ -2,11 +2,11 @@
 
 public class Option {
 
-	public Option(string name, GameEvent action, int distance){ init(name, null, action, true, distance); }
-	public Option(Texture2D image, GameEvent action, int distance){ init(null, image, action, true, distance); }
-	public Option(string name, GameEvent action, bool hasToMove, int distance){ init(name, null, action, hasToMove, distance); }
-	public Option(Texture2D image, GameEvent action, bool hasToMove, int distance){ init(null, image, action, hasToMove, distance); }
-	public Option(string name, Texture2D image, GameEvent action, bool hasToMove, int distance) { init(name, image, action, hasToMove, distance); }
+	public Option(string name, IGameEvent action, int distance){ init(name, null, action, true, distance); }
+	public Option(Texture2D image, IGameEvent action, int distance){ init(null, image, action, true, distance); }
+	public Option(string name, IGameEvent action, bool hasToMove, int distance){ init(name, null, action, hasToMove, distance); }
+	public Option(Texture2D image, IGameEvent action, bool hasToMove, int distance){ init(null, image, action, hasToMove, distance); }
+	public Option(string name, Texture2D image, IGameEvent action, bool hasToMove, int distance) { init(name, image, action, hasToMove, distance); }
 
 
 	private string name;
@@ -19,8 +19,8 @@ public class Option {
 		get{return image;}
 	}
 
-	private GameEvent action;
-	public GameEvent Action{
+	private IGameEvent action;
+	public IGameEvent Action{
 		get{return action;}
 	}
 
@@ -34,7 +34,7 @@ public class Option {
 		get{return hasToMove;}
 	}
 
-	private void init(string name, Texture2D image, GameEvent action, bool hasToMove, int distance){
+	private void init(string name, Texture2D image, IGameEvent action, bool hasToMove, int distance){
 		this.name = name;
 		this.image = image;
 		this.action = action;
@@ -42,7 +42,7 @@ public class Option {
 		this.distance = distance;
 	}
 
-	private void init(string name, Texture2D image, GameEvent action, bool hasToMove){
+	private void init(string name, Texture2D image, IGameEvent action, bool hasToMove){
 		this.init(name,image,action,hasToMove,0);
 	}
 }

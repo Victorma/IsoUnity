@@ -509,7 +509,7 @@ public class Map : MonoBehaviour, ISerializationCallbackReceiver
 			r.enabled = visible;
 	}
 
-	public void broadcastEvent(GameEvent ge){
+	public void broadcastEvent(IGameEvent ge){
 		foreach(Cell c in this.transform.GetComponentsInChildren<Cell>()){
 			foreach(Entity e in c.getEntities()){
 				e.eventHappened(ge);

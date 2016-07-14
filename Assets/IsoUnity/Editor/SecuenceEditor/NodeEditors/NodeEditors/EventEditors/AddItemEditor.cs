@@ -4,15 +4,15 @@ using System.Collections;
 
 public class AddItemEditor : EventEditor {
 
-	private GameEvent ge;
+	private SerializableGameEvent ge;
 	public AddItemEditor() {
-		this.ge = ScriptableObject.CreateInstance<GameEvent> ();
+		this.ge = ScriptableObject.CreateInstance<SerializableGameEvent> ();
 		ge.Name = this.EventName;
 		ge.setParameter ("item", null);
 		ge.setParameter ("inventory", null);
 	}
 	
-	public GameEvent Result { 
+	public SerializableGameEvent Result { 
 		get{ return ge; }
 	}
 	public string EventName {
@@ -22,7 +22,7 @@ public class AddItemEditor : EventEditor {
 		return new AddItemEditor();
 	}
 	
-	public void useEvent(GameEvent ge){
+	public void useEvent(SerializableGameEvent ge){
 		this.ge = ge;
 		this.ge.Name = this.EventName;
 	}
@@ -33,7 +33,7 @@ public class AddItemEditor : EventEditor {
 		ge.setParameter("inventory", EditorGUILayout.ObjectField("Inventory", (Object)ge.getParameter("inventory"), typeof(Inventory), true));
 	}
 
-    public void detachEvent(GameEvent ge)
+	public void detachEvent(SerializableGameEvent ge)
     {
         if (ge.getParameter("item") == null)       ge.removeParameter("item");
         if (ge.getParameter("inventory") == null)  ge.removeParameter("inventory");

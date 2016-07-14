@@ -16,7 +16,7 @@ public class AutoAnimator : MonoBehaviour {
 
 	private Decoration dec;
 
-	private GameEvent ev;
+	private IGameEvent ev;
 
 	// Use this for initialization
 	void Start () {
@@ -60,7 +60,7 @@ public class AutoAnimator : MonoBehaviour {
 		}
 	}
 
-	public void registerEvent(GameEvent ev){
+	public void registerEvent(IGameEvent ev){
 		this.ev = ev;
 	}
 }

@@ -23,7 +23,7 @@ public class Talker : EntityScript {
 		set{ secuence = value; }
 	}
 	
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
 		if(ge.getParameter("Talker") == this){
 			switch (ge.Name.ToLower()) {
@@ -37,7 +37,7 @@ public class Talker : EntityScript {
 	
 	public override Option[] getOptions ()
 	{
-		GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
+		GameEvent ge = new GameEvent();
 		ge.Name = "talk";
 		ge.setParameter ("Talker", this);
 		Option option = new Option ("Talk", ge, true, 1); 
@@ -47,7 +47,7 @@ public class Talker : EntityScript {
 	public override void tick ()
 	{
 		if (start){
-			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+			GameEvent ge = new GameEvent();
 			ge.Name = "start secuence";
 			ge.setParameter("secuence", secuence);
 			Game.main.enqueueEvent(ge);

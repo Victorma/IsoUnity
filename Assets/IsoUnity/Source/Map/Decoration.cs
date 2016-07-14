@@ -66,15 +66,36 @@ public class Decoration : MonoBehaviour{
 	public Decoration (){
 	}
 
-    void OnValidate()
-    {
+	private int previousTile = -1;
+	private bool previousParallel = false;
+	private bool previousCentered = false;
+
+	void Awake(){
+		previousTile = tile;
+		previousParallel = parallel;
+		previousCentered = centered;
+	}
+
+	void Update(){
 		if (isoDec == null)
 			return;
 
+		if (tile != previousTile) {
+			tile = Mathf.Clamp (tile, 0, isoDec.nCols * isoDec.nRows);
+			updateTextures ();
+			previousTile = tile;
+		}
 
-        adaptate();
-        tile = Mathf.Clamp(tile, 0, isoDec.nCols * isoDec.nRows);
-    }
+		if (parallel != previousParallel) {
+			adaptate ();
+			previousParallel = parallel;
+		}
+
+		if (centered != previousCentered) {
+			adaptate ();
+			previousCentered = centered;
+		}
+	}
 
 	public void setParameters(Vector3 center, int angle, bool parallel, bool centered){
 		this.center = center;
@@ -137,7 +158,7 @@ public class Decoration : MonoBehaviour{
 			}
 		}
 
-		Material myMat = new Material(this.GetComponent<Renderer>().sharedMaterial);
+		Material myMat = this.GetComponent<Renderer>().sharedMaterial;
 		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
 		myMat.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
 		myMat.SetTexture("_MainTex",isoDec.getTexture());

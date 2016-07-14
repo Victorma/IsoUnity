@@ -8,7 +8,7 @@ public class EventNodeEditor : NodeEditor {
     private EventEditor currentEditor;
 
 	public void draw(){
-		GameEvent ge = (GameEvent)node.Content;
+		SerializableGameEvent ge = (SerializableGameEvent)node.Content;
 		string[] editors = EventEditorFactory.Intance.CurrentEventEditors;
 		int editorSelected = 0;
 
@@ -45,7 +45,7 @@ public class EventNodeEditor : NodeEditor {
          * Synchronization end
          * */
 
-        node.Content = currentEditor.Result;
+		node.Content = currentEditor.Result;
 		
 		if (Event.current.type != EventType.layout){
             node.ChildSlots = 1;
@@ -56,13 +56,13 @@ public class EventNodeEditor : NodeEditor {
 	public string NodeName{ get { return "GameEvent"; } }
 	public NodeEditor clone(){ return new EventNodeEditor(); }
 	
-	public bool manages(SecuenceNode c) { return c.Content != null && c.Content is GameEvent; }
+	public bool manages(SecuenceNode c) { return c.Content != null && c.Content is SerializableGameEvent; }
 	public void useNode(SecuenceNode c) {
-		if(c.Content == null || !(c.Content is GameEvent))	
-			c.Content = ScriptableObject.CreateInstance<GameEvent>();
-
-        var ge = c.Content as GameEvent;
-        if(ge.Name == null) ge.Name = "";
+		if (c.Content == null || !(c.Content is SerializableGameEvent)) {
+			c.Content = ScriptableObject.CreateInstance<SerializableGameEvent> ();
+		}
+		var sge = c.Content as SerializableGameEvent;
+		if(sge.Name == null) sge.Name = "";
 
 		this.node = c;
 	}

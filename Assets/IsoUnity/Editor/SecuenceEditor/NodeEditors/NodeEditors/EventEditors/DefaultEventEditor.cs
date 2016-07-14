@@ -4,11 +4,11 @@ using System.Collections;
 
 public class DefaultEventEditor : EventEditor {
 	
-	private GameEvent ge;
+	private SerializableGameEvent ge;
 	public DefaultEventEditor() {
-		this.ge = ScriptableObject.CreateInstance<GameEvent> ();
+		this.ge = ScriptableObject.CreateInstance<SerializableGameEvent>();
 	}
-	public GameEvent Result { 
+	public SerializableGameEvent Result { 
 		get{ return ge; }
 	}
 	public string EventName {
@@ -18,11 +18,11 @@ public class DefaultEventEditor : EventEditor {
         return new DefaultEventEditor();
 	}
 
-	public void useEvent(GameEvent ge){
+	public void useEvent(SerializableGameEvent ge){
 		this.ge = ge;
 	}
 
-    public void detachEvent(GameEvent ge){}
+	public void detachEvent(SerializableGameEvent ge){}
 	
 	private string newParameter;
 	public void draw(){

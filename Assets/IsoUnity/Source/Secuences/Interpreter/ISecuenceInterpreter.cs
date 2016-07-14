@@ -6,7 +6,7 @@ public interface ISecuenceInterpreter {
 	bool CanHandle(SecuenceNode node);
 	bool HasFinishedInterpretation();
 	SecuenceNode NextNode();
-	void EventHappened(GameEvent ge);
+	void EventHappened(IGameEvent ge);
 	void UseNode(SecuenceNode node);
 	void Tick();
 	ISecuenceInterpreter Clone();
