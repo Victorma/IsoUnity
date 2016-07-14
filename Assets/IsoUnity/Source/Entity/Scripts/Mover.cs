@@ -331,13 +331,14 @@ public class Mover : EntityScript, SolidBody {
 				
                 // Define the movement type and set the tilesheet
                 MovementType type = getMovementTypeTo(next);
+				Vector3 offset = this.transform.localPosition - new Vector3 (0, this.Entity.Position.WalkingHeight+transform.localScale.y / 2, 0);
 				this.movement = Movement.createMovement(type, // type
                     this.Entity,                              // Entity
                     this,                                     // Mover
                     dec,                                      // Decoration 
                     getSpritesheetForMovementType(type),      // Sheet
                     transform.position,                       // Origin
-                    next.transform.position + new Vector3(0,next.WalkingHeight+transform.localScale.y / 2,0), // Destination
+					next.transform.position + new Vector3(0,next.WalkingHeight+transform.localScale.y / 2,0) + offset, // Destination
                     Entity.Position,                          // Cell Origin
                     next,                                     // Cell Destination
                     null);                                    // Extra Params
@@ -413,13 +414,13 @@ public class Mover : EntityScript, SolidBody {
         protected IsoDecoration sheet;
 		protected Vector3 from,to;
         protected Cell origin, destination;
-        protected MovementType type;
+        //protected MovementType type;
         protected float progress;
 
         //Property Readers
         public Vector3 From { get { return from; } }
         public Vector3 To { get { return to; } }
-        public MovementType MovementType { get { return type; } }
+        //public MovementType MovementType { get { return type; } }
         public float Progress { get { return progress; } }
         public void addProgress(float time){ this.progress += time; }
         public bool Ended { get { return Progress >= Duration; } }

@@ -20,7 +20,7 @@ public class Entity : MonoBehaviour {
 		set {
 			position = value;
 			this.transform.parent = position.transform;
-			my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
+			//my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class Entity : MonoBehaviour {
 			}
 
 			if(this.position != null){
-				my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
+				//my_transform.position = position.transform.position + new Vector3(0, position.WalkingHeight + my_transform.localScale.y/2f, 0);
 			}
 		}
 

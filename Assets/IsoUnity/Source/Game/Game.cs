@@ -22,7 +22,6 @@ public class Game : MonoBehaviour {
      * Use this list to create the managers at the start of the game.
      * (By default Animation, Secuence and IsoSwitches Managers are created).
      */
-	public List<string> managers = new List<string>(new string[]{"AnimationManager", "SecuenceManager", "IsoSwitchesEventManager"});
 	private List<EventManager> eventManagers;
 
 
@@ -34,20 +33,40 @@ public class Game : MonoBehaviour {
     /*
      * Static main game instance
      */
-	public static Game main;
+	private static Game m;
+	public static Game main {
+		get{
+			if (m == null) {
+				m = FindObjectOfType<Game> ();
+				m.Awake ();
+			}
+			return m;
+		}
+	}
 
     /*
      * Game initialization
      */
-	void Start () {
-		main  = this;
+	private bool awakened = false;
+	void Awake () {
+		if (awakened)
+			return;
+		awakened = true;
 
         // Event Queue
 		events = new Queue<GameEvent>();
 
-
         // Main Managers initialization
         // TODO Make they event managers as the rest
+
+		if (this.look == null) {
+			Player player = FindObjectOfType<Player> ();
+			if (player != null) {
+				this.look = player.gameObject;
+				this.map = player.Entity.Position.Map;
+			}
+		}
+
 		CameraManager.initialize();
 		CameraManager.lookTo (look);
 		MapManager.getInstance().hideAllMaps();
@@ -57,9 +76,6 @@ public class Game : MonoBehaviour {
 
         // Event Managers Creation
 		eventManagers = new List<EventManager> ();
-		foreach(string manager in managers){
-			eventManagers.Add (ScriptableObject.CreateInstance(manager) as EventManager);
-		}
 
         // On Screen Controlls creation
         // TODO move this to GUI Manager as it becomes a regular EventManager
@@ -144,6 +160,20 @@ public class Game : MonoBehaviour {
 		{
             eachMap.tick();
 		}
+	}
+
+	/**
+	 * EventManager management
+	 **/
+
+	public void RegisterEventManager(EventManager em){
+		if(!this.eventManagers.Contains(em))
+			this.eventManagers.Add (em);
+	}
+
+	public void DeRegisterEventManager(EventManager em){
+		if(this.eventManagers.Contains(em))
+			this.eventManagers.Remove (em);
 	}
 
 }
