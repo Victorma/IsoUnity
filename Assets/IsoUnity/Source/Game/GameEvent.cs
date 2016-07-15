@@ -49,7 +49,10 @@ public class GameEvent : IGameEvent {
 
 	public override bool Equals (object o)
 	{
-		return this == o;
+		if (o is IGameEvent)
+			return GameEvent.CompareEvents (this, o as IGameEvent);
+		else
+			return false;
 	}
 
 	public override int GetHashCode ()
@@ -122,21 +125,14 @@ public class GameEvent : IGameEvent {
     /*
      * Operators 
      **/
-
+		
 	public static bool operator ==(GameEvent ge1, IGameEvent ge2){
+		//Debug.Log ("Comparing with operator of GameEvent");
 		return CompareEvents (ge1, ge2);
 	}
 
 	public static bool operator !=(GameEvent ge1, IGameEvent ge2){
-		return !CompareEvents (ge1, ge2);
-	}
-
-	public static bool operator ==(GameEvent ge1, SerializableGameEvent ge2){
-		return CompareEvents (ge1, ge2);
-	}
-
-	public static bool operator !=(GameEvent ge1, SerializableGameEvent ge2){
-		return !CompareEvents (ge1, ge2);
+		return !(ge1 == ge2);
 	}
 
 	public static bool CompareEvents(IGameEvent ge1, IGameEvent ge2)
@@ -149,7 +145,7 @@ public class GameEvent : IGameEvent {
 		}
 		
 		// If one is null, but not both, return false.
-		if (((object)ge1 == null) || ((object)ge2 == null))
+		if ((ge1 == null) || (ge2 == null))
 		{
 			return false;
 		}
@@ -157,11 +153,32 @@ public class GameEvent : IGameEvent {
 
 		bool result = ge1.Name.ToLower().Equals(ge2.Name.ToLower()) && ge1.Params.Length == ge2.Params.Length;
 
-		if(result)
-			foreach(string arg in ge1.Params){
-				result = ge2.getParameter(arg) != null && (ge2.getParameter(arg) == ge1.getParameter(arg));
-				if(!result)break;
+		if (result) {
+			foreach (string arg in ge1.Params) { // From a to b
+				var p1 = ge1.getParameter(arg);
+				var p2 = ge2.getParameter(arg);
+
+				result = (p1 == null && p2 == null) || p1.Equals(p2);
+				if(!result)
+					Debug.Log ("p1: " + p1 + " type( " + p1.GetType () + " ) == p2 : " + p2 + " type( " + p2.GetType () + " ) => " + (result));
+
+				if (!result)
+					break;
 			}
+
+			foreach(string arg in ge2.Params){ // From b to a
+				var p1 = ge1.getParameter(arg);
+				var p2 = ge2.getParameter(arg);
+
+				result = (p1 == null && p2 == null) || p1.Equals(p2);
+				if(!result)
+					Debug.Log ("p1: " + p1 + " type( " + p1.GetType () + " ) == p2 : " + p2 + " type( " + p2.GetType () + " ) => " + (result));
+
+				if (!result)
+					break;
+			}
+		}
+
 		
 		return result;
 	}

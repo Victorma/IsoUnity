@@ -6,6 +6,7 @@ public class IsoUnityBasicType : IsoUnityType {
 
 	public int i;
 	public float f;
+	public double d;
 	public string s;
 	public Vector2 v2;
 	public Vector3 v3;
@@ -33,7 +34,8 @@ public class IsoUnityBasicType : IsoUnityType {
             typeof(Vector4).ToString(),
             typeof(Quaternion).ToString(),
             typeof(int).ToString(),
-            typeof(float).ToString(),
+			typeof(float).ToString(),
+			typeof(double).ToString(),
             typeof(bool).ToString(),
             typeof(char).ToString()
         };
@@ -53,6 +55,7 @@ public class IsoUnityBasicType : IsoUnityType {
 
 			if 	   (whatIs == typeof(int).ToString())		{vt = i;}
 			else if(whatIs == typeof(float).ToString())		{vt = f;}
+			else if(whatIs == typeof(double).ToString())	{vt = d;}
 			else if(whatIs == typeof(string).ToString())	{vt = s;}
 			else if(whatIs == typeof(Vector2).ToString())	{vt = v2;}
 			else if(whatIs == typeof(Vector3).ToString())	{vt = v3;}
@@ -70,6 +73,7 @@ public class IsoUnityBasicType : IsoUnityType {
 
 				if 	   (vt.GetType() == typeof(int))		{i = (int)vt;}
 				else if(vt.GetType() == typeof(float))		{f = (float)vt;}
+				else if(vt.GetType() == typeof(double))		{d = (double)vt;}
 				else if(vt.GetType() == typeof(string))		{s = (string)vt;}
 				else if(vt.GetType() == typeof(Vector2))	{v2 = (Vector2)vt;}
 				else if(vt.GetType() == typeof(Vector3))	{v3 = (Vector3)vt;}
@@ -88,7 +92,8 @@ public class IsoUnityBasicType : IsoUnityType {
 
         JSONObject o = null;
         if (whatIs == typeof(int).ToString()) { o = new JSONObject(i); }
-        else if (whatIs == typeof(float).ToString()) { o = new JSONObject(f); }
+		else if (whatIs == typeof(float).ToString()) { o = new JSONObject(f); }
+		else if (whatIs == typeof(double).ToString()) { o = new JSONObject((float)d); }
         else if (whatIs == typeof(string).ToString()) { o = JSONObject.CreateStringObject(s); }
         else if (whatIs == typeof(Vector2).ToString()) { o = JSONObject.CreateStringObject(v2.ToString()); }
         else if (whatIs == typeof(Vector3).ToString()) { o = JSONObject.CreateStringObject(v3.ToString()); }

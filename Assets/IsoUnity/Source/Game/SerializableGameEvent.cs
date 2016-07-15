@@ -33,12 +33,24 @@ public class SerializableGameEvent : ScriptableObject, IGameEvent {
 
 	public void setParameter(string param, object content){
 		param = param.ToLower();
-		object c = IsoUnityTypeFactory.Instance.getIsoUnityType(content);
-		if (c == null)
-			c = content;
 
-		if(args.ContainsKey(param))	args[param] = (Object)c;
-		else						args.Add(param, (Object)c);
+		if (content == null) {
+
+			if(args.ContainsKey(param))	args[param] = null;
+			else						args.Add(param, null);
+
+		} else {
+			
+			object c = IsoUnityTypeFactory.Instance.getIsoUnityType(content);
+			if (c == null)
+				c = content;
+
+			if(args.ContainsKey(param))	args[param] = (Object)c;
+			else						args.Add(param, (Object)c);
+
+		}
+
+
 
 		this.keys = new List<string> (args.Keys);
 		this.values = new List<Object> (args.Values);
@@ -72,7 +84,10 @@ public class SerializableGameEvent : ScriptableObject, IGameEvent {
 
 	public override bool Equals (object o)
 	{
-		return this == o;
+		if (o is IGameEvent)
+			return GameEvent.CompareEvents (this, o as IGameEvent);
+		else
+			return false;
 	}
 
 	public override int GetHashCode ()
@@ -146,35 +161,12 @@ public class SerializableGameEvent : ScriptableObject, IGameEvent {
      * Operators 
      **/
 
-	public static bool operator ==(SerializableGameEvent ge1, IGameEvent ge2)
-	{
-		// http://msdn.microsoft.com/en-us/library/ms173147(v=vs.80).aspx
-		// If both are null, or both are same instance, return true.
-		if (System.Object.ReferenceEquals(ge1, ge2))
-		{
-			return true;
-		}
-
-		// If one is null, but not both, return false.
-		if (((object)ge1 == null) || ((object)ge2 == null))
-		{
-			return false;
-		}
-
-
-		bool result = ge1.Name.ToLower().Equals(ge2.Name.ToLower()) && ge1.Params.Length == ge2.Params.Length;
-
-		if(result)
-			foreach(string arg in ge1.Params){
-				result = ge2.getParameter(arg) != null && (ge2.getParameter(arg) == ge1.getParameter(arg));
-				if(!result)break;
-			}
-
-		return result;
+	public static bool operator ==(SerializableGameEvent ge1, IGameEvent ge2){
+		//Debug.Log ("Comparing with operator of SerializableGameEvent");
+		return GameEvent.CompareEvents (ge1, ge2);
 	}
 
-	public static bool operator !=(SerializableGameEvent ge1, IGameEvent ge2)
-	{
+	public static bool operator !=(SerializableGameEvent ge1, IGameEvent ge2){
 		return !(ge1 == ge2);
 	}
 
