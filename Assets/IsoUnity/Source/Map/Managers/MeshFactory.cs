@@ -112,11 +112,16 @@ public abstract class MeshFactory {
             float halfWidth = (cellWidth / 2.0f);
             Vector3 vectorHeight = new Vector3(0, cellWidth, 0);
 
+			float extraHeight = height;
+			while (extraHeight > cellWidth && cellWidth > 0) 
+				extraHeight -= cellWidth;
+			
+
             // BASE VERTICES
             vertices[0] = new Vector3(-halfWidth, 0, -halfWidth); vertices[1] = new Vector3(halfWidth, 0, -halfWidth);
             vertices[2] = new Vector3(halfWidth, 0, halfWidth); vertices[3] = new Vector3(-halfWidth, 0, halfWidth);
             if (height >= 1) vertices[4] = vertices[0] + vectorHeight;
-            else if (hasMediumTop) vertices[4] = vertices[0] + vectorHeight * 0.5f;
+			else if (hasMediumTop) vertices[4] = vertices[0] + vectorHeight * extraHeight;
 
             FaceNoSC last = null;
 
@@ -125,7 +130,7 @@ public abstract class MeshFactory {
             {
                 int cutted = (i % 4 == 3) ? 1 : 0;
                 if (i + 1 < numVert)
-                    vertices[i + 1] = vertices[i - 3] + vectorHeight * ((hasMediumTop && (i + 1) >= numVert - 4) ? 0.5f : 1f);
+					vertices[i + 1] = vertices[i - 3] + vectorHeight * ((hasMediumTop && (i + 1) >= numVert - 4) ? extraHeight : 1f);
 
                 last = selectFaceFor(faces, tmpFaces);
                 tmpFaces.Add(createFace(new int[4] { i - 4, i - 3 - (4 * cutted), i + 1 - (4 * cutted), i }, last, finalVertexList, vertices));

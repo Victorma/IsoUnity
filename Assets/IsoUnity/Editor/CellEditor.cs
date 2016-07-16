@@ -167,7 +167,7 @@ public class CellEditor : Editor {
                         justCreated = false;
                     }
 
-                    diference = newPosition - origin;
+					diference = (newPosition - origin) * 2;
                     break;
                 case MyHandles.DragHandleResult.LMBRelease:
                     diference = ident;
