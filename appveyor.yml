@@ -1,0 +1,12 @@
+#---------------------------------# 
+#      environment configuration  # 
+#---------------------------------# 
+version: 1.0.{build}
+
+install:
+  - ps: . .\scripts\install.ps1
+#---------------------------------# 
+#      build configuration        # 
+#---------------------------------# 
+build_script: 
+  - ps: . .\scripts\build.ps1
