@@ -3,7 +3,7 @@
 # Example build script for Unity3D project. See the entire example: https://github.com/JonathanPorta/ci-build
 $project="IsoUnity"
 $p = (Get-Location).tostring()
-$unity = "C:\\Program Files\\Unity\\Unity.exe"
+$unity = "C:\\Program Files\\Unity\\Editor\\Unity.exe"
 $arguments = "-batchmode -nographics -silent-crashes -logFile $p\\unity.log -projectPath $p -exportPackage Assets/IsoUnity $p\\Build\\$project.unitypackage -quit"
 
 Write-Output "Creating Build dir"
