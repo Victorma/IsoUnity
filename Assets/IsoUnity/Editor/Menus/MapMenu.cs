@@ -3,9 +3,16 @@ using UnityEditor;
 
 public class MapMenu {
 
-	[MenuItem("GameObject/Create Other/IsoUnity Map")]
-	public static void createMap(){
-		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultMapPrefab) as GameObject;
+	[MenuItem("GameObject/IsoUnity/IsoUnity Map", false, 10)]
+	public static void createMap(MenuCommand menuCommand){
+
+		#if UNITY_EDITOR
+		GameObject go = UnityEditor.PrefabUtility.InstantiatePrefab(IsoSettingsManager.getInstance().getIsoSettings().defaultMapPrefab) as GameObject;
+		#else
+		GameObject go = GameObject.Instantiate(IsoSettingsManager.getInstance().getIsoSettings().defaultMapPrefab);
+		#endif
+
 		Selection.activeObject = go;    
 	}
+
 }

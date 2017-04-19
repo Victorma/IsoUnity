@@ -36,5 +36,5 @@ public class CheckableInterpreter : ISecuenceInterpreter {
 		return new CheckableInterpreter();
 	}
 		
-	public void EventHappened(GameEvent ge){}
+	public void EventHappened(IGameEvent ge){}
 }

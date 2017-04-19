@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Player : EntityScript {
 	
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
         // If we're waiting for the event finished
 		if(movement!=null)
@@ -16,7 +16,8 @@ public class Player : EntityScript {
 	}
 
 	private GameEvent movement;
-	private GameEvent toLaunch;
+    private Cell actionCell;
+	private IGameEvent toLaunch;
 
     [SerializeField]
     private bool active = true;
@@ -49,9 +50,12 @@ public class Player : EntityScript {
 					if(args.options[0].Action!=null)
 						args.options[0].Action.setParameter("Executer", this.Entity);
 
+                    if (args.cell != null)
+                        actionCell = args.cell;
+
                     // If we've to move to perform the action
 					if(args.options[0].HasToMove){
-						GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+						GameEvent ge = new GameEvent();
 						ge.setParameter("entity", this.Entity);
 						ge.setParameter("cell", args.cell);
 						ge.setParameter("synchronous", true);
@@ -75,7 +79,7 @@ public class Player : EntityScript {
 			}
             // If the argument doesn't contain options but it has a cell, we'll try to move over there
             else if(args.cell != null){
-				GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+				GameEvent ge = new GameEvent();
 				ge.setParameter("entity", this.Entity);
 				ge.setParameter("cell", args.cell);
 				ge.Name = "move";
@@ -98,7 +102,7 @@ public class Player : EntityScript {
                     // This should solve bug #29
                     Mover em = this.Entity.GetComponent<Mover>();
                     if (em != null && em.CanMoveTo(destination)) {
-                        GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+                        GameEvent ge = new GameEvent();
                         ge.setParameter("entity", this.Entity);
                         ge.setParameter("cell", destination);
                         ge.Name = "move";
@@ -106,7 +110,7 @@ public class Player : EntityScript {
                     }
                     else
                     {
-                        GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+						GameEvent ge = new GameEvent();
                         ge.setParameter("entity", this.Entity);
                         ge.setParameter("direction", fromIndex(to));
                         ge.Name = "turn";
@@ -140,6 +144,12 @@ public class Player : EntityScript {
                 // That means that, we're in the right position so...
 				Game.main.enqueueEvent(toLaunch);
 				toLaunch = null;
+
+                // Look to the action
+                Mover.Direction toLook = Mover.getDirectionFromTo(this.Entity.Position.transform, actionCell.transform);
+                this.GetComponent<Mover>().switchDirection(toLook);
+
+                actionCell = null;
 			}
 		}
 

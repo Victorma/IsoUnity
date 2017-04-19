@@ -7,9 +7,9 @@ public class Inventory : EntityScript {
 	private List<Item> itemsToRemove = new List<Item>();
 	private bool openInventory = false;
 	private List<Item> itemsToUse = new List<Item>();
-	private List<GameEvent> events = new List<GameEvent>();
+	private List<IGameEvent> events = new List<IGameEvent>();
 
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
 		if(ge.getParameter("Inventory") == this || ge.getParameter("Inventory") == this.Entity.gameObject)
 		{
@@ -39,7 +39,7 @@ public class Inventory : EntityScript {
 	public override Option[] getOptions ()
 	{
 		if (this.Entity.GetComponent<Player> () != null) {
-			GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
+			GameEvent ge = new GameEvent ();
 			ge.Name = "Open Inventory";
 			ge.setParameter ("Inventory", this);
 			Option option = new Option ("Inventory", ge, false, 0); 

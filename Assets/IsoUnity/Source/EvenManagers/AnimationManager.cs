@@ -3,7 +3,7 @@ using System.Collections;
 
 public class AnimationManager : EventManager {
 
-	public override void ReceiveEvent (GameEvent ev)
+	public override void ReceiveEvent (IGameEvent ev)
 	{
 		if(ev.Name == "ShowAnimation"){
 			Decoration dec = (ev.getParameter("Objetive") as GameObject).GetComponent<Decoration>();

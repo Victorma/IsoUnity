@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[ExecuteInEditMode]
+[RequireComponent(typeof(Decoration))]
 public class Mover : EntityScript, SolidBody {
 
     /***************************
@@ -10,7 +12,7 @@ public class Mover : EntityScript, SolidBody {
     {
 		North, East, South, West
     }
-    private static int getDirectionIndex(Direction d)
+    public static int getDirectionIndex(Direction d)
     {
         switch (d)
         {
@@ -21,6 +23,36 @@ public class Mover : EntityScript, SolidBody {
         }
 
         return -1;
+    }
+
+    public static Direction getDirectionFromTo(Transform from, Transform to)
+    {
+        Vector3 fromTo = to.position - from.position;
+        //fromTo = new Vector3(fromTo.x, 0, fromTo.z);
+
+        float angle = Vector3.Angle(fromTo, Vector3.right)*Mathf.Deg2Rad;
+
+        if (fromTo.z < 0) angle = -angle;
+        if(angle < 0) angle += Mathf.PI*2f;
+
+        float Pi4 = Mathf.PI / 4f;
+
+        if (angle < Pi4 || angle > 7*Pi4)
+        {
+            return Direction.East;
+        }
+        else if (angle < 3 * Pi4)
+        {
+            return Direction.North;
+        }
+        else if (angle < 5 * Pi4)
+        {
+            return Direction.West;
+        }
+        else
+        {
+            return Direction.South;
+        }
     }
     /****************
     * End Directions
@@ -51,8 +83,8 @@ public class Mover : EntityScript, SolidBody {
     private bool move = false;
     private bool movementFinished = false;
     private int distanceToMove = 0;
-    private GameEvent bcEvent;
-    private GameEvent movementEvent;
+    private IGameEvent bcEvent;
+    private IGameEvent movementEvent;
 
     //Teleport
 	private Cell teleportToCell;
@@ -134,7 +166,7 @@ public class Mover : EntityScript, SolidBody {
     /**************
      * Event Control
      * *************/
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
         if (!ge.belongsTo(this))
             return;
@@ -259,17 +291,31 @@ public class Mover : EntityScript, SolidBody {
 	private bool paso = false;
 	private Decoration dec;
 
+    void Awake()
+    {
+        if (Application.isEditor)
+        {
+            this.normalSprite = this.GetComponent<Decoration>().IsoDec;
+            this.jumpingSprite = this.GetComponent<Decoration>().IsoDec;
+        }
+    }
+
+    void OnValidate()
+    {
+        tick();
+		this.Update ();
+    }
 
 	public override void Update () {
         if (this.dec == null)
-            this.dec = Entity.decoration;
+            this.dec = GetComponent<Decoration>();
 
         // Force initial direction update
         if (this.movement == null)
         {
             movement = createTurnMovement(direction);
             movement.addProgress(1f); // Move to End
-            movement.Update(); // Assure finalization
+			movement.Update(Time.deltaTime); // Assure finalization
             movement.UpdateTextures();
         }
 
@@ -284,13 +330,14 @@ public class Mover : EntityScript, SolidBody {
 				
                 // Define the movement type and set the tilesheet
                 MovementType type = getMovementTypeTo(next);
+				Vector3 offset = this.transform.localPosition - new Vector3 (0, this.Entity.Position.WalkingHeight+transform.localScale.y / 2, 0);
 				this.movement = Movement.createMovement(type, // type
                     this.Entity,                              // Entity
                     this,                                     // Mover
                     dec,                                      // Decoration 
                     getSpritesheetForMovementType(type),      // Sheet
                     transform.position,                       // Origin
-                    next.transform.position + new Vector3(0,next.WalkingHeight+transform.localScale.y / 2,0), // Destination
+					next.transform.position + new Vector3(0,next.WalkingHeight+transform.localScale.y / 2,0) + offset, // Destination
                     Entity.Position,                          // Cell Origin
                     next,                                     // Cell Destination
                     null);                                    // Extra Params
@@ -309,7 +356,10 @@ public class Mover : EntityScript, SolidBody {
 		
 		if(IsMoving){
             // Update the progress
-            this.movement.Update();
+			if (!Application.isPlaying) {
+				this.movement.Update (1f);
+			}
+			this.movement.Update(Time.deltaTime);
             this.movement.UpdateTextures();
             // If the movement has ended
 			if(this.movement.Ended){
@@ -363,13 +413,13 @@ public class Mover : EntityScript, SolidBody {
         protected IsoDecoration sheet;
 		protected Vector3 from,to;
         protected Cell origin, destination;
-        protected MovementType type;
+        //protected MovementType type;
         protected float progress;
 
         //Property Readers
         public Vector3 From { get { return from; } }
         public Vector3 To { get { return to; } }
-        public MovementType MovementType { get { return type; } }
+        //public MovementType MovementType { get { return type; } }
         public float Progress { get { return progress; } }
         public void addProgress(float time){ this.progress += time; }
         public bool Ended { get { return Progress >= Duration; } }
@@ -381,9 +431,9 @@ public class Mover : EntityScript, SolidBody {
         /*************************
          * GENERIC UPDATES
          * ************************/
-        public virtual void Update()
+		public virtual void Update(float progress)
         {
-            this.addProgress(Time.deltaTime);
+			this.addProgress(progress);
 
             Vector3 myPosition = getPosition(),
                     otherPosition = To;
@@ -512,9 +562,9 @@ public class Mover : EntityScript, SolidBody {
                 else return to;
             }
 
-            public override void Update()
+			public override void Update(float progress)
             {
-                this.addProgress(Time.deltaTime);
+                this.addProgress(progress);
 
                 if (entity.Position.Map == destination.Map)
                 {
@@ -555,9 +605,9 @@ public class Mover : EntityScript, SolidBody {
                 if (dir != null && dir is Direction) direction = (Direction) dir;
             }
 
-            public override void Update()
+			public override void Update(float progress)
             {
-                base.Update();
+                base.Update(progress);
                 mover.lastDirection = direction;
                 mover.direction = direction;
             }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Talker : EntityScript {
 
 	private bool start = false;
+    private Mover.Direction talkerDirection;
 
 	void OnEnable (){
 		if (secuence == null) {
@@ -22,12 +23,13 @@ public class Talker : EntityScript {
 		set{ secuence = value; }
 	}
 	
-	public override void eventHappened (GameEvent ge)
+	public override void eventHappened (IGameEvent ge)
 	{
 		if(ge.getParameter("Talker") == this){
 			switch (ge.Name.ToLower()) {
 			case "talk": 
 				start = true;
+                talkerDirection = ((Entity)ge.getParameter("Executer")).GetComponent<Mover>().direction;
 				break;
 			}
 		}
@@ -35,7 +37,7 @@ public class Talker : EntityScript {
 	
 	public override Option[] getOptions ()
 	{
-		GameEvent ge = ScriptableObject.CreateInstance<GameEvent> ();
+		GameEvent ge = new GameEvent();
 		ge.Name = "talk";
 		ge.setParameter ("Talker", this);
 		Option option = new Option ("Talk", ge, true, 1); 
@@ -45,11 +47,13 @@ public class Talker : EntityScript {
 	public override void tick ()
 	{
 		if (start){
-			GameEvent ge = ScriptableObject.CreateInstance<GameEvent>();
+			GameEvent ge = new GameEvent();
 			ge.Name = "start secuence";
 			ge.setParameter("secuence", secuence);
 			Game.main.enqueueEvent(ge);
 			start = false;
+            int dir = (((int) talkerDirection) + 2) % 4;
+            this.GetComponent<Mover>().switchDirection((Mover.Direction)dir);
 		}	
 	}
 	

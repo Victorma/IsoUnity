@@ -113,6 +113,9 @@ public class FaceNoSC : IComparable<FaceNoSC>
 		this.uvs = new Vector2[vertexIndex.Length];
 		
 		if(vertexIndex.Length == 4){
+			float heightLeft = Vector3.Magnitude(SharedVertex [vertexIndex [3]] - SharedVertex [vertexIndex [0]]),
+				heightRight = Vector3.Magnitude(SharedVertex [vertexIndex [2]] - SharedVertex [vertexIndex [1]]);
+
 			Vector2 topLeft = new Vector2(textureRect.x, textureRect.y + textureRect.height);
 			Vector2 topRight = new Vector2(textureRect.x + textureRect.width, textureRect.y + textureRect.height);
 			Vector2 botLeft = new Vector2(textureRect.x, textureRect.y);
@@ -134,6 +137,7 @@ public class FaceNoSC : IComparable<FaceNoSC>
 			uvs[cornerBotRight] = botRight;
 			uvs[cornerTopRight] = topRight;
 			uvs[cornerTopLeft] = topLeft;
+
 			
 			if(textureMapping != null){
 				uvs[cornerBotLeft] += new Vector2(0,textureRect.height * (1f - (textureMapping.getYCorner() / (textureMapping.getTexture().height*1.0f))));
@@ -141,6 +145,10 @@ public class FaceNoSC : IComparable<FaceNoSC>
 				uvs[cornerTopRight] -= new Vector2(0, textureRect.height * (textureMapping.getOppositeYCorner() / (textureMapping.getTexture().height*1.0f)));
 				uvs[cornerTopLeft] += new Vector2(textureRect.width * (textureMapping.getXCorner() / (textureMapping.getTexture().width*1.0f)),0); 
 			}
+			// 0,1,2,3 are setted according to original values
+			uvs [2] = (uvs [2] - uvs [1]) * heightRight + uvs [1];
+			uvs [3] = (uvs [3] - uvs [0]) * heightLeft + uvs [0];
+
 		}else if(vertexIndex.Length == 3) {
 			Vector2 topRight = new Vector2(textureRect.x + textureRect.width, textureRect.y + textureRect.height);
 			Vector2 botLeft = new Vector2(textureRect.x, textureRect.y);

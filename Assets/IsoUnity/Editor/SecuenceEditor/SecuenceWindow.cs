@@ -223,6 +223,9 @@ public class SecuenceWindow: EditorWindow{
         r = new Color(0.8f, 0.2f, 0.2f);
 	void OnGUI()
 	{
+		if (secuence == null)
+			this.Close ();
+
         this.wantsMouseMove = true;
 
         if (closeStyle == null)

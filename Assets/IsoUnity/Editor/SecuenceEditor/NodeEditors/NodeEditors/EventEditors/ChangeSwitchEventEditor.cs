@@ -4,15 +4,15 @@ using System.Collections;
 
 public class ChangeSwitchEventEditor : EventEditor {
 
-	private GameEvent ge;
+	private SerializableGameEvent ge;
 	public ChangeSwitchEventEditor() {
-		this.ge = ScriptableObject.CreateInstance<GameEvent> ();
+		this.ge =  ScriptableObject.CreateInstance<SerializableGameEvent>();
 		ge.Name = this.EventName;
 		ge.setParameter ("switch", "");
 		ge.setParameter ("value", true);
 	}
 	
-	public GameEvent Result { 
+	public SerializableGameEvent Result { 
 		get{ return ge; }
 	}
 	public string EventName {
@@ -22,7 +22,7 @@ public class ChangeSwitchEventEditor : EventEditor {
 		return new ChangeSwitchEventEditor();
 	}
 	
-	public void useEvent(GameEvent ge){
+	public void useEvent(SerializableGameEvent ge){
 		this.ge = ge;
 		this.ge.Name = this.EventName;
 		if (ge.getParameter ("switch") == null)
@@ -37,7 +37,7 @@ public class ChangeSwitchEventEditor : EventEditor {
 		ge.setParameter("value", ParamEditor.editorFor("Value", ge.getParameter("value")));
 	}
 
-    public void detachEvent(GameEvent ge)
+	public void detachEvent(SerializableGameEvent ge)
     {
         if (ge.getParameter("switch") == "")
         {

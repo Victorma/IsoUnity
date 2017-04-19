@@ -265,7 +265,7 @@ public class Cell : MonoBehaviour, ISerializationCallbackReceiver
             return properties.height;
 		}
 		set {
-            properties.height = Mathf.RoundToInt(value * 2.0f) / 2.0f;
+			properties.height = value; //Mathf.RoundToInt(value * 2.0f) / 2.0f;
             if (properties.height < 0)
                 properties.height = 0;
 		}
@@ -430,8 +430,6 @@ public class Cell : MonoBehaviour, ISerializationCallbackReceiver
             }
             return canGoThroughAll;
         }
-		
-		return walkable;
 	}
 	// TODO enhacement improve this like in the map
 	public Entity[] getEntities(){

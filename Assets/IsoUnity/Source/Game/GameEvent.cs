@@ -2,62 +2,38 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-[System.Serializable]
-public class GameEvent : ScriptableObject, JSONAble{
+public class GameEvent : IGameEvent {
 
-	void Awake(){
-		if (args == null || args.Count != keys.Count) {
-			args = new Dictionary<string, Object>();
-			for(int i = 0; i< keys.Count; i++)
-				args.Add (keys[i], values[i]);
-		}
+	public GameEvent(){
+
 	}
 
-	[SerializeField]
+	public string name;
 	public string Name {
 		get{ return name; }
 		set{ this.name = value; }
 	}
-	[SerializeField]
-	private List<string> keys = new List<string> ();
-	[SerializeField]
-	private List<Object> values = new List<Object>();
 
-	private Dictionary<string, Object> args = new Dictionary<string, Object>();
+
+	private Dictionary<string, object> args = new Dictionary<string, object>();
 	public object getParameter(string param){
 		param = param.ToLower();
 		if (args.ContainsKey (param)) 
-			return (args[param] is IsoUnityType)? ((IsoUnityType)args [param]).Value: args[param];
+			return args[param];
 		else 
 			return null;
 	}
 
 	public void setParameter(string param, object content){
-		param = param.ToLower();
-		object c = IsoUnityTypeFactory.Instance.getIsoUnityType(content);
-        if (c == null)
-            c = content;
-		
-		if(args.ContainsKey(param))	args[param] = (Object)c;
-		else						args.Add(param, (Object)c);
-
-		this.keys = new List<string> (args.Keys);
-		this.values = new List<Object> (args.Values);
+		param = param.ToLower();		
+		if(args.ContainsKey(param))	args[param] = content;
+		else						args.Add(param, content);
 	}
 
 	public void removeParameter(string param){
 		param = param.ToLower();
         if (args.ContainsKey(param))
-        {
-            UnityEngine.Object v = args[param];
-            if (v is IsoUnityBasicType)
-                IsoUnityTypeFactory.Instance.Destroy(v as IsoUnityBasicType);
-
-            args.Remove(param);
-        }
-
-		this.keys = new List<string> (args.Keys);
-		this.values = new List<Object> (args.Values);
+			args.Remove(param);
 	}
 
 	public string[] Params{
@@ -73,7 +49,10 @@ public class GameEvent : ScriptableObject, JSONAble{
 
 	public override bool Equals (object o)
 	{
-		return this == o;
+		if (o is IGameEvent)
+			return GameEvent.CompareEvents (this, o as IGameEvent);
+		else
+			return false;
 	}
 
 	public override int GetHashCode ()
@@ -146,8 +125,17 @@ public class GameEvent : ScriptableObject, JSONAble{
     /*
      * Operators 
      **/
+		
+	public static bool operator ==(GameEvent ge1, IGameEvent ge2){
+		//Debug.Log ("Comparing with operator of GameEvent");
+		return CompareEvents (ge1, ge2);
+	}
 
-	public static bool operator ==(GameEvent ge1, GameEvent ge2)
+	public static bool operator !=(GameEvent ge1, IGameEvent ge2){
+		return !(ge1 == ge2);
+	}
+
+	public static bool CompareEvents(IGameEvent ge1, IGameEvent ge2)
 	{
 		// http://msdn.microsoft.com/en-us/library/ms173147(v=vs.80).aspx
 		// If both are null, or both are same instance, return true.
@@ -157,27 +145,43 @@ public class GameEvent : ScriptableObject, JSONAble{
 		}
 		
 		// If one is null, but not both, return false.
-		if (((object)ge1 == null) || ((object)ge2 == null))
+		if ((ge1 == null) || (ge2 == null))
 		{
 			return false;
 		}
 
 
-		bool result = ge1.Name.ToLower().Equals(ge2.Name.ToLower()) && ge1.args.Count == ge2.args.Count;
+		bool result = ge1.Name.ToLower().Equals(ge2.Name.ToLower()) && ge1.Params.Length == ge2.Params.Length;
 
-		if(result)
-			foreach(string arg in ge1.args.Keys){
-				result = ge2.args.ContainsKey(arg) && (ge2.args[arg] == ge1.args[arg]);
-				if(!result)break;
+		if (result) {
+			foreach (string arg in ge1.Params) { // From a to b
+				var p1 = ge1.getParameter(arg);
+				var p2 = ge2.getParameter(arg);
+
+				result = (p1 == null && p2 == null) || p1.Equals(p2);
+				if(!result)
+					Debug.Log ("p1: " + p1 + " type( " + p1.GetType () + " ) == p2 : " + p2 + " type( " + p2.GetType () + " ) => " + (result));
+
+				if (!result)
+					break;
 			}
+
+			foreach(string arg in ge2.Params){ // From b to a
+				var p1 = ge1.getParameter(arg);
+				var p2 = ge2.getParameter(arg);
+
+				result = (p1 == null && p2 == null) || p1.Equals(p2);
+				if(!result)
+					Debug.Log ("p1: " + p1 + " type( " + p1.GetType () + " ) == p2 : " + p2 + " type( " + p2.GetType () + " ) => " + (result));
+
+				if (!result)
+					break;
+			}
+		}
+
 		
 		return result;
 	}
-
-    public static bool operator !=(GameEvent ge1, GameEvent ge2)
-    {
-        return !(ge1 == ge2);
-    }
 
     /// <summary>
     /// JSon serialization things
@@ -188,17 +192,23 @@ public class GameEvent : ScriptableObject, JSONAble{
         JSONObject json = new JSONObject();
         json.AddField("name", name);
         JSONObject parameters = new JSONObject();
-        foreach (KeyValuePair<string, Object> entry in args)
+        foreach (KeyValuePair<string, object> entry in args)
         {
-            if (entry.Value is JSONAble)
-            {
-                var jsonAble = entry.Value as JSONAble;
-                parameters.AddField(entry.Key, JSONSerializer.Serialize(jsonAble));
-            }
-            else
-            {
-                parameters.AddField(entry.Key, entry.Value.GetInstanceID());
-            }
+			
+
+			if (entry.Value is JSONAble) {
+				var jsonAble = entry.Value as JSONAble;
+				parameters.AddField (entry.Key, JSONSerializer.Serialize (jsonAble));
+			} else if (entry.Value is Object) {
+				var o = entry.Value as Object;
+				parameters.AddField (entry.Key, o.GetInstanceID ());
+			} else {
+				var val = IsoUnityTypeFactory.Instance.getIsoUnityType (entry.Value);
+				if (val != null && val is JSONAble)
+					parameters.AddField (entry.Key, JSONSerializer.Serialize (val));
+				else
+					parameters.AddField (entry.Key, entry.Value.ToString ());
+			}
         }
 
 
@@ -206,14 +216,14 @@ public class GameEvent : ScriptableObject, JSONAble{
         return json;
     }
 
-    private static void destroyBasic(Dictionary<string, Object> args)
+    private static void destroyBasic(Dictionary<string, object> args)
     {
         if (args == null || args.Count == 0)
             return;
 
-        foreach (KeyValuePair<string, Object> entry in args)
+		foreach (KeyValuePair<string, object> entry in args)
             if (entry.Value is IsoUnityBasicType)
-                IsoUnityBasicType.DestroyImmediate(entry.Value);
+				IsoUnityBasicType.DestroyImmediate(entry.Value as IsoUnityBasicType);
     }
 
     public void fromJSONObject(JSONObject json)
@@ -223,7 +233,7 @@ public class GameEvent : ScriptableObject, JSONAble{
         //Clean basic types
         destroyBasic(this.args);
 
-        this.args = new Dictionary<string, Object>();
+        this.args = new Dictionary<string, object>();
 
         JSONObject parameters = json["parameters"];
         foreach (string key in parameters.keys)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 [ExecuteInEditMode]
+[DisallowMultipleComponent]
 public class Decoration : MonoBehaviour{
 	/*******************************
 	 * BEGIN ATRIBS
@@ -63,6 +64,37 @@ public class Decoration : MonoBehaviour{
 	 * *********************/
 
 	public Decoration (){
+	}
+
+	private int previousTile = -1;
+	private bool previousParallel = false;
+	private bool previousCentered = false;
+
+	void Awake(){
+		previousTile = tile;
+		previousParallel = parallel;
+		previousCentered = centered;
+	}
+
+	void Update(){
+		if (isoDec == null)
+			return;
+
+		if (tile != previousTile) {
+			tile = Mathf.Clamp (tile, 0, isoDec.nCols * isoDec.nRows);
+			updateTextures ();
+			previousTile = tile;
+		}
+
+		if (parallel != previousParallel) {
+			adaptate ();
+			previousParallel = parallel;
+		}
+
+		if (centered != previousCentered) {
+			adaptate ();
+			previousCentered = centered;
+		}
 	}
 
 	public void setParameters(Vector3 center, int angle, bool parallel, bool centered){
@@ -126,13 +158,16 @@ public class Decoration : MonoBehaviour{
 			}
 		}
 
-		Material myMat = new Material(this.GetComponent<Renderer>().sharedMaterial);
+		Material myMat = this.GetComponent<Renderer>().sharedMaterial;
 		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
 		myMat.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
 		myMat.SetTexture("_MainTex",isoDec.getTexture());
 		this.GetComponent<Renderer>().sharedMaterial = myMat;
 
+        int x = tile % (isoDec.nCols);
+        int y = Mathf.FloorToInt(tile / isoDec.nCols);
 
+		this.GetComponent<Renderer>().sharedMaterial.mainTextureOffset = new Vector2((x / ((float)isoDec.nCols)), (y / ((float)isoDec.nRows)));
 	}
 
 	public void colocate(){
@@ -229,10 +264,7 @@ public class Decoration : MonoBehaviour{
 		}
 		set{
 			tile = value;
-			int x = tile % (isoDec.nCols);
-			int y = Mathf.FloorToInt(tile/isoDec.nCols);
-			
-			this.GetComponent<Renderer>().material.mainTextureOffset = new Vector2 ( (x/((float)isoDec.nCols)),  (y/((float)isoDec.nRows)));
+			this.updateTextures ();
 		}
 	}
 
