@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using IsoUnity.Sequences;
 
-public class GameMenu {
+namespace IsoUnity {
+	public class GameMenu {
 
-	[MenuItem("GameObject/IsoUnity/IsoUnity Game", false, 10)]
-	public static void createGame(MenuCommand menuCommand){
+		[MenuItem("GameObject/IsoUnity/IsoUnity Game", false, 10)]
+		public static void createGame(MenuCommand menuCommand){
 
-		GameObject go = new GameObject ("Game");
+			GameObject go = new GameObject ("Game");
 
-		go.AddComponent<Game> ();
-		go.AddComponent<AnimationManager> ();
-		go.AddComponent<SecuenceManager> ();
-		go.AddComponent<IsoSwitchesEventManager> ();
+			go.AddComponent<Game> ();
+			go.AddComponent<SequenceManager> ();
+			go.AddComponent<IsoSwitchesEventManager> ();
 
-		Selection.activeObject = go;    
+			Selection.activeObject = go;    
+		}
+
 	}
-
 }

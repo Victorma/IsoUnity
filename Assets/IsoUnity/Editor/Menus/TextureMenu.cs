@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class TextureMenu {
+namespace IsoUnity {
+	public class TextureMenu {
 
-	[MenuItem("Assets/Create/IsoTexture")]
-	public static void createIsoTextureAsset(){
-		IsoAssetsManager.CreateAssetInCurrentPathOf ("IsoTexture");
+		[MenuItem("Assets/Create/IsoTexture")]
+		public static void createIsoTextureAsset(){
+			IsoAssetsManager.CreateAssetInCurrentPathOf ("IsoTexture");
+		}
 	}
 }

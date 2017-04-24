@@ -1,38 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RandomMovement : EntityScript {
+using IsoUnity;
+using IsoUnity.Sequences;
 
-	public float probability;
+namespace IsoUnity.Entities
+{
+    public class RandomMovement : EntityScript
+    {
 
-	public override Option[] getOptions ()
-	{
-		return new Option[]{};
-	}
-	
-	public override void tick ()
-	{
-		float t = probability * Time.deltaTime;
-		if(Random.Range(0f,1f) < t){
+        public float probability;
 
-			Cell c = Entity.Position.Map.getNeightbours(Entity.Position)[Random.Range(0,4)];
-			if(c != null){
-				GameEvent ge = new GameEvent();
-				ge.Name = "move";
-				ge.setParameter("entity", this.Entity);
-				ge.setParameter("cell", c);
-				Game.main.enqueueEvent(ge);
-			}
-		}
-	}
-	
-	public override void eventHappened (IGameEvent ge)
-	{
-	}
-	
-	public override void Update ()
-	{
-	}
+        public override Option[] getOptions()
+        {
+            return new Option[] { };
+        }
+
+        public override void tick()
+        {
+            float t = probability * Time.deltaTime;
+            if (Random.Range(0f, 1f) < t)
+            {
+                if(Game.main.GetComponent<SequenceManager>().Executing != GetComponent<Talker>().Sequence)
+                {
+                    Cell c = Entity.Position.Map.getNeightbours(Entity.Position)[Random.Range(0, 4)];
+                    if (c != null)
+                    {
+                        GameEvent ge = new GameEvent();
+                        ge.Name = "move";
+                        ge.setParameter("entity", this.Entity);
+                        ge.setParameter("cell", c);
+                        Game.main.enqueueEvent(ge);
+                    }
+                }
+            }
+        }
+
+        public override void eventHappened(IGameEvent ge)
+        {
+        }
+
+        public override void Update()
+        {
+        }
 
 
+    }
 }

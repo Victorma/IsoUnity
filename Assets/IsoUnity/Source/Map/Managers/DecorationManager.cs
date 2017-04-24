@@ -1,79 +1,96 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+namespace IsoUnity
+{
+    public abstract class DecorationManager
+    {
 
-public abstract class DecorationManager {
-	
-	private static DecorationManager instance;
-	public static DecorationManager getInstance(){
-		if(instance == null){
-			instance = new DecorationManagerInstance();
-		}
-		return instance;
-	}
-	
-	public abstract IsoDecoration newTexture();
-	public abstract IsoDecoration[] textureList();
-	public abstract IsoDecoration[] textureList (Texture match);
-	public abstract void deleteTexture(IsoDecoration Decoration);
-	public abstract void update (IsoDecoration Decoration);
-	
-}
+        private static DecorationManager instance;
+        public static DecorationManager getInstance()
+        {
+            if (instance == null)
+            {
+                instance = new DecorationManagerInstance();
+            }
+            return instance;
+        }
 
-public class DecorationManagerInstance : DecorationManager {
+        public abstract IsoDecoration newTexture();
+        public abstract IsoDecoration[] textureList();
+        public abstract IsoDecoration[] textureList(Texture match);
+        public abstract void deleteTexture(IsoDecoration Decoration);
+        public abstract void update(IsoDecoration Decoration);
 
-	private Dictionary<Texture, List<IsoDecoration>> lists;
-	
-	public DecorationManagerInstance(){
+    }
 
-		regenerate (null);
-	}
+    public class DecorationManagerInstance : DecorationManager
+    {
 
-	public override void update(IsoDecoration it){
-		regenerate (it.getTexture ());
-	}
+        private Dictionary<Texture, List<IsoDecoration>> lists;
 
-	private void regenerate(Texture referenced){
+        public DecorationManagerInstance()
+        {
 
-		if (referenced == null) {
+            regenerate(null);
+        }
 
-			lists = new Dictionary<Texture, List<IsoDecoration>> ();
-			foreach (IsoDecoration it in textureList()){
-				if(!lists.ContainsKey(it.getTexture()))
-					lists.Add(it.getTexture(), new List<IsoDecoration>());
+        public override void update(IsoDecoration it)
+        {
+            regenerate(it.getTexture());
+        }
 
-				lists[it.getTexture()].Add(it);
-			}
+        private void regenerate(Texture referenced)
+        {
 
-		} else {
+            if (referenced == null)
+            {
 
-			List<IsoDecoration> n = new List<IsoDecoration> ();
+                lists = new Dictionary<Texture, List<IsoDecoration>>();
+                foreach (IsoDecoration it in textureList())
+                {
+                    if (!lists.ContainsKey(it.getTexture()))
+                        lists.Add(it.getTexture(), new List<IsoDecoration>());
 
-			foreach (IsoDecoration it in textureList())
-					if (it.getTexture () == referenced)
-							n.Add (it);
+                    lists[it.getTexture()].Add(it);
+                }
 
-			lists [referenced] = n;
-		}
-	}
-	
-	public override IsoDecoration newTexture(){
-		//createIsoTextureAsset();
-		return null;
-	}
-	public override IsoDecoration[] textureList(){
-		return Resources.FindObjectsOfTypeAll(typeof(IsoDecoration)) as IsoDecoration[];
-	}
+            }
+            else
+            {
 
-	public override IsoDecoration[] textureList(Texture match){
+                List<IsoDecoration> n = new List<IsoDecoration>();
 
-		if (!lists.ContainsKey (match))
-			regenerate (match);
+                foreach (IsoDecoration it in textureList())
+                    if (it.getTexture() == referenced)
+                        n.Add(it);
 
-		return lists [match].ToArray ();
-	}
+                lists[referenced] = n;
+            }
+        }
 
-	public override void deleteTexture(IsoDecoration texture){
-		//AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(texture));
-	}
+        public override IsoDecoration newTexture()
+        {
+            //createIsoTextureAsset();
+            return null;
+        }
+        public override IsoDecoration[] textureList()
+        {
+            return Resources.FindObjectsOfTypeAll(typeof(IsoDecoration)) as IsoDecoration[];
+        }
+
+        public override IsoDecoration[] textureList(Texture match)
+        {
+
+            if (!lists.ContainsKey(match))
+                regenerate(match);
+
+            return lists[match].ToArray();
+        }
+
+        public override void deleteTexture(IsoDecoration texture)
+        {
+            //AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(texture));
+        }
+    }
 }

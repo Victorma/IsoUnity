@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using IsoUnity;
 
-public interface SolidBody {
+namespace IsoUnity.Entities
+{
+    public interface SolidBody
+    {
 
-    GameObject gameObject {get;}
+        GameObject gameObject { get; }
 
-    bool LetsPass(SolidBody e);
+        bool LetsPass(SolidBody e);
 
-    bool CanGoThrough(SolidBody e);
+        bool CanGoThrough(SolidBody e);
 
+    }
 }
