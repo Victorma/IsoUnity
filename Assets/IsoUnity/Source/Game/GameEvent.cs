@@ -4,6 +4,8 @@ using IsoUnity.Entities;
 using IsoUnity.Sequences;
 
 namespace IsoUnity {
+    
+    
 	public class GameEvent : IGameEvent, NodeContent {
 
 		public GameEvent(){
@@ -108,7 +110,7 @@ namespace IsoUnity {
                 return false;
 
             // Compare If is entity, if is gameobject or if is tag
-            return entityParam == e || entityParam == e.gameObject || entityParam == e.tag;
+            return e.Equals(entityParam) || e.gameObject.Equals(entityParam) || e.tag.Equals(entityParam) || e.name.Equals(entityParam);
         }
 
         public bool belongsTo(EntityScript es, string parameter)
@@ -118,7 +120,7 @@ namespace IsoUnity {
                 return false;
 
             // Same as in entity but entity script comparition also.
-            return entityParam == es || entityParam == es.Entity || entityParam == es.gameObject || entityParam == es.tag;
+            return es.Equals(entityParam) || es.Entity.Equals(entityParam) || es.gameObject.Equals(entityParam) || es.tag.Equals(entityParam) || es.name.Equals(entityParam);
         }
 
         public bool belongsTo(GameObject g, string parameter)
@@ -127,7 +129,7 @@ namespace IsoUnity {
 	        if (entityParam == null || g == null)
 	            return false;
 
-			return entityParam == g || ( entityParam is string && ((string)entityParam) == g.tag);
+            return g.Equals(entityParam) || g.tag.Equals(entityParam) || g.name.Equals(entityParam);
 	    }
 
 	    public bool belongsTo(ScriptableObject so, string parameter)
@@ -136,9 +138,10 @@ namespace IsoUnity {
 	        if (entityParam == null || so == null)
 	            return false;
 
-	        // Compare normal and name
-			return entityParam == so || ( entityParam is string && ((string) entityParam) == so.name);
-	    }
+            // Compare normal and name
+            return so.Equals(entityParam) || so.name.Equals(entityParam);
+
+        }
 
 	    public bool belongsTo(string tag, string parameter)
 	    {

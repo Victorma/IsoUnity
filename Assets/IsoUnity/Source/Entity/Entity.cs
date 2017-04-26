@@ -53,7 +53,7 @@ namespace IsoUnity.Entities
             List<Option> options = new List<Option>();
 
             foreach (EntityScript es in scripts)
-                options.AddRange(es.getOptions());
+                options.AddRange(es.getOptions() ?? new Option[0]);
 
             return options.ToArray() as Option[];
         }
@@ -115,9 +115,12 @@ namespace IsoUnity.Entities
 
         }
 
-        public void onDestroy()
+        public void OnDestroy()
         {
-
+            if (this.Position != null)
+            {
+                this.Position.Map.unRegisterEntity(this);
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ namespace IsoUnity.Entities
     public class RandomMovement : EntityScript
     {
 
+       
+
         public float probability;
 
         public override Option[] getOptions()
@@ -21,7 +23,8 @@ namespace IsoUnity.Entities
             float t = probability * Time.deltaTime;
             if (Random.Range(0f, 1f) < t)
             {
-                if(Game.main.GetComponent<SequenceManager>().Executing != GetComponent<Talker>().Sequence)
+                var talker = this.GetComponent<Talker>();
+                if(talker && Game.main.GetComponent<SequenceManager>().Executing != talker.Sequence)
                 {
                     Cell c = Entity.Position.Map.getNeightbours(Entity.Position)[Random.Range(0, 4)];
                     if (c != null)

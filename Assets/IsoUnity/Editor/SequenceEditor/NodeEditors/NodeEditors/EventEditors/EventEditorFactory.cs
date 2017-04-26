@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using IsoUnity.Entities;
 
 namespace IsoUnity.Sequences {
 	public abstract class EventEditorFactory {
@@ -25,11 +26,19 @@ namespace IsoUnity.Sequences {
 
 		public EventEditorFactoryImp(){
 			this.eventEditors = new List<EventEditor> ();
-			this.eventEditors.Add (new ChangeSwitchEventEditor ());
+
+            var methods = AttributesUtil.GetMethodsWith<GameEventAttribute>(typeof(EventedEntityScript), true);
+            foreach(var m in methods)
+            {
+                this.eventEditors.Add(new AttributeEventEditor(new GameEventConfig(m.Key, m.Value)));
+            }
+
+			/*this.eventEditors.Add (new ChangeSwitchEventEditor ());
 			this.eventEditors.Add (new AddItemEditor ());
+            this.eventEditors.Add(new MoveEventEditor());
+            */
 
-
-			this.defaultEventEditor = new DefaultEventEditor ();
+            this.defaultEventEditor = new DefaultEventEditor ();
 		}
 
 		public override string[] CurrentEventEditors {

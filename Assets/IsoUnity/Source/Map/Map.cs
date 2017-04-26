@@ -623,7 +623,9 @@ namespace IsoUnity
                 UpdateEntities();
 
             foreach (Entity e in this.entities)
+            {
                 e.tick();
+            }
 
         }
 

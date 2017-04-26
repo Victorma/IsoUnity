@@ -143,7 +143,7 @@ namespace IsoUnity.Entities
         /*******************
          * PUBLIC OPERATIONS
          * ******************/
-
+        
         public void moveTo(Cell c)
         {
             RoutePlanifier.planifyRoute(this, c, distanceToMove);
@@ -732,11 +732,32 @@ namespace IsoUnity.Entities
 
                 public override void Update(float progress)
                 {
+                    var prevPos = entity.Position;
+
                     base.Update(progress);
                     Renderer renderer = mover.GetComponent<Renderer>();
                     Color c = mover.GetComponent<Renderer>().material.color;
                        
                     renderer.material.color = new Color(Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f));
+
+                    if (Progress / Duration > .5f && prevPos.Map != destination.Map) {
+                        //TODO Dont like the register calls made here...
+                        prevPos.Map.unRegisterEntity(entity);
+                        entity.Position.Map.registerEntity(entity);
+
+                        //TODO maybe this should be checked in player script
+                        if (entity.GetComponent<Player>() != null)
+                        {
+                            entity.GetComponent<Renderer>().enabled = true;
+                            foreach (Renderer r in entity.GetComponentsInChildren<Renderer>()) r.enabled = true;
+                            MapManager.getInstance().setActiveMap(destination.Map);
+                        }
+                        else
+                        {
+                            entity.GetComponent<Renderer>().enabled = false;
+                            foreach (Renderer r in entity.GetComponentsInChildren<Renderer>()) r.enabled = false;
+                        }
+                    }
                 }
 
                 protected override Direction getDirectionAt(float moment)
@@ -761,6 +782,12 @@ namespace IsoUnity.Entities
             }
 
             return Vector3.zero;
+        }
+
+        private void OnDestroy()
+        {
+            if (this.Entity.Position)
+                this.Entity.Position.Influences.Remove(this.Entity);
         }
     }
 }

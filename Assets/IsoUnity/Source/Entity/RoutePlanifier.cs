@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using IsoUnity;
+using C5;
+using System;
 
 namespace IsoUnity.Entities
 {
@@ -35,7 +37,7 @@ namespace IsoUnity.Entities
 
                     if (ruta != null)
                     {
-                        ruta.Push(routes[mover].Peek());
+                        //ruta.Push(routes[mover].Peek());
                         routes[mover] = ruta;
                     }
                 }
@@ -48,7 +50,7 @@ namespace IsoUnity.Entities
 
                 if (ruta != null)
                 {
-                    ruta.Push(mover.Entity.Position);
+                    //ruta.Push(mover.Entity.Position);
                     //ruta.Pop(); //Quito en la que estoy
                     routes.Add(mover, ruta);
                 }
@@ -86,21 +88,16 @@ namespace IsoUnity.Entities
         public static void cancelRoute(Mover mover)
         {
             if(routes.ContainsKey(mover)){
-                routes[mover].Pop();
+                routes.Remove(mover);
             }
         }
 
-        private static void reconstruyeCamino(Stack<Cell> route, int celda, Cell[] anterior, Cell[] celdas, Dictionary<Cell, int> cellToPos)
+        private static void reconstruyeCamino(Stack<Cell> route, Cell celda, Dictionary<Cell, Cell> anterior)
         {
-            int posAnterior = -1;
-            if (anterior[celda] != null)
-                posAnterior = cellToPos[anterior[celda]];
-
-            if (posAnterior != -1)
-            {
-                route.Push(celdas[celda]);
-                reconstruyeCamino(route, posAnterior, anterior, celdas, cellToPos);
-            }
+            route.Push(celda);
+            Cell posAnterior = anterior[celda];
+            if (posAnterior != null)
+                reconstruyeCamino(route, posAnterior, anterior);
         }
 
         private static List<Cell> GetSurroundCellsAtRadius(Cell to, int distance)
@@ -124,67 +121,92 @@ namespace IsoUnity.Entities
             }
         }
 
+        private class CellDistance : System.IComparable
+        {
+            public Cell cell;
+            public float distance;
+
+            public CellDistance(Cell cell, float distance)
+            {
+                this.cell = cell;
+                this.distance = distance;
+            }
+
+            public int CompareTo(object obj)
+            {
+                if(obj is CellDistance)
+                {
+                    var cd = obj as CellDistance;
+                    return distance.CompareTo(cd.distance);
+                }
+                return 0;
+            }
+        }
+
         private static Stack<Cell> calculateRoute(Cell from, Cell to, Mover mover, int distance)
         {
 
-            Cell[] cells = from.Map.GetComponentsInChildren<Cell>();
             Dictionary<Cell, int> cellToPos = new Dictionary<Cell, int>();
-            for (int i = 0; i < cells.Length; i++)
-                cellToPos[cells[i]] = i;
 
-            Heap<float> abierta = new Heap<float>(cells.Length);
+            IPriorityQueueHandle<CellDistance> handle = null;
+            IPriorityQueue<CellDistance> abierta = new IntervalHeap<CellDistance>();
 
-            bool[] cerrada = new bool[cells.Length];
-            for (int i = 0; i < cells.Length; i++)
-                cerrada[i] = false;
+            Dictionary<Cell, bool> cerrada = new Dictionary<Cell, bool>();
+            Dictionary<Cell, float> f = new Dictionary<Cell, float>();
+            Dictionary<Cell, float> g = new Dictionary<Cell, float>();
+            Dictionary<Cell, Cell> anterior = new Dictionary<Cell, Cell>();
+            Dictionary<Cell, IPriorityQueueHandle<CellDistance>> handles = new Dictionary<Cell, IPriorityQueueHandle<CellDistance>>();
 
-            float[] f = new float[cells.Length];
-            float[] g = new float[cells.Length];
-            Cell[] anterior = new Cell[cells.Length];
-            for (int i = 0; i < cells.Length; i++)
-                anterior[i] = null;
-
-            int posInicial = cellToPos[from];
+            Cell posInicial = from;
 
             g[posInicial] = 0;
-            f[posInicial] = estimaMeta(from, to);
+            f[posInicial]= estimaMeta(from, to);
             anterior[posInicial] = null;
-            abierta.push(posInicial + 1, f[posInicial]);
-
+            abierta.Add(ref handle, new CellDistance(posInicial, f[posInicial]));
+            handles.Add(posInicial, handle);
+            
             List<Cell> ends = GetSurroundCellsAtRadius(to, distance);
 
-            while (!abierta.isEmpty())
+            while (!abierta.IsEmpty)
             {
-
-                int candidata = abierta.top().elem - 1;
-                abierta.pop();
-                Cell celdaCandidata = cells[candidata];
+                CellDistance candidata = abierta.DeleteMin();
+                Cell celdaCandidata = candidata.cell;
+                handles.Remove(celdaCandidata);
 
                 if (ends.Contains(celdaCandidata))
                 {
                     Stack<Cell> ruta = new Stack<Cell>();
-                    reconstruyeCamino(ruta, candidata, anterior, cells, cellToPos);
+                    reconstruyeCamino(ruta, celdaCandidata, anterior);
+                    Debug.Log("Tengo camino!");
                     return ruta;
                 }
 
                 Cell[] accesibles = getCeldasAccesibles(celdaCandidata, mover);
-                cerrada[candidata] = true;
+                cerrada[celdaCandidata] = true;
                 foreach (Cell accesible in accesibles)
                 {
-                    int posAccesible = cellToPos[accesible];
-
-                    float posibleG = g[candidata] + estimaAvance(celdaCandidata, accesible);
+                    float posibleG = g[celdaCandidata] + estimaAvance(celdaCandidata, accesible);
                     float posibleF = posibleG + estimaMeta(accesible, to);
 
-                    if (cerrada[posAccesible] && posibleF >= f[posAccesible])
+                    if (cerrada.ContainsKey(accesible) && cerrada[accesible] && posibleF >= f[accesible])
                         continue;
 
-                    if (!abierta.contains(posAccesible + 1) || posibleF < f[posAccesible])
+                    if (!handles.ContainsKey(accesible) || posibleF < f[accesible])
                     {
-                        anterior[posAccesible] = celdaCandidata;
-                        g[posAccesible] = posibleG;
-                        f[posAccesible] = posibleF;
-                        abierta.modify(posAccesible + 1, f[posAccesible]); // Modifica inserta si no esta dentro
+                        anterior[accesible] = celdaCandidata;
+                        g[accesible] = posibleG;
+                        f[accesible] = posibleF;
+
+                        // Modifica inserta si no esta dentro
+                        var cd = new CellDistance(accesible, f[accesible]);
+                        if (handles.ContainsKey(accesible))
+                            abierta[handles[accesible]] = cd;
+                        else
+                        {
+                            handle = null;
+                            abierta.Add(ref handle, cd);
+                            handles.Add(accesible, handle);
+                        }
                     }
                 }
             }

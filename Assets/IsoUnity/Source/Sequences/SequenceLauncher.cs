@@ -73,7 +73,7 @@ namespace IsoUnity.Sequences {
 		}
 
 
-		private void Launch(){
+		public void Launch(){
 			if (interpreter != null || localSequence == null)
 				return;
 

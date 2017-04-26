@@ -16,7 +16,9 @@ namespace IsoUnity.Entities
 
         public override void eventHappened(IGameEvent ge)
         {
-            if (ge.getParameter("Inventory") == this || ge.getParameter("Inventory") == this.Entity.gameObject)
+            var i = ge.getParameter("Inventory");
+
+            if (ge.belongsTo(this, "Inventory"))
             {
                 Item item = (Item)ge.getParameter("Item");
                 switch (ge.Name.ToLower())

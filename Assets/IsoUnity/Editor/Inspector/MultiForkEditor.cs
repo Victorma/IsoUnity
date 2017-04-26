@@ -14,7 +14,8 @@ namespace IsoUnity.Sequences {
 	        base.OnEnable();
 
 	        multifork = target as MultiFork;
-	        editor = CreateEditor(multifork.ForkGroup);
+            if(target != null)
+                editor = CreateEditor(multifork.ForkGroup);
 	    }
 
 	    private Editor editor;

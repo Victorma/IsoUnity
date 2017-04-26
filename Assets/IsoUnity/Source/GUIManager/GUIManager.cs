@@ -111,7 +111,7 @@ namespace IsoUnity
 
         public static IsoGUI getGUICapturing(ControllerEventArgs args)
         {
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (EventSystem.current && EventSystem.current.IsPointerOverGameObject())
             {
                 return legacy == null ? legacy = new LegacyGUI() : legacy;
             }

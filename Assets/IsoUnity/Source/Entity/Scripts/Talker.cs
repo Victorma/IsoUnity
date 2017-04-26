@@ -28,7 +28,7 @@ namespace IsoUnity.Entities
 
         public override void eventHappened(IGameEvent ge)
         {
-            if (ge.getParameter("Talker") == this)
+            if (ge.belongsTo(this, "Talker"))
             {
                 switch (ge.Name.ToLower())
                 {

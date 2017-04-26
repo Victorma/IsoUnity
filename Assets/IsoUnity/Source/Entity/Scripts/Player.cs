@@ -22,6 +22,7 @@ namespace IsoUnity.Entities
 
         private GameEvent movement;
         private Cell actionCell;
+        private Entity actionEntity;
         private IGameEvent toLaunch;
 
         [SerializeField]
@@ -59,8 +60,8 @@ namespace IsoUnity.Entities
                         if (args.options[0].Action != null)
                             args.options[0].Action.setParameter("Executer", this.Entity);
 
-                        if (args.cell != null)
-                            actionCell = args.cell;
+                        actionCell = args.cell;
+                        actionEntity = args.entity;
 
                         // If we've to move to perform the action
                         if (args.options[0].HasToMove)
@@ -164,10 +165,14 @@ namespace IsoUnity.Entities
                     toLaunch = null;
 
                     // Look to the action
-                    Mover.Direction toLook = Mover.getDirectionFromTo(this.Entity.Position.transform, actionCell.transform);
-                    this.GetComponent<Mover>().switchDirection(toLook);
+                    if(actionCell || actionEntity)
+                    {
+                        Mover.Direction toLook = Mover.getDirectionFromTo(this.Entity.Position.transform, actionEntity ? actionEntity.transform : actionCell.transform);
+                        this.GetComponent<Mover>().switchDirection(toLook);
+                    }
 
                     actionCell = null;
+                    actionEntity = null;
                 }
             }
 

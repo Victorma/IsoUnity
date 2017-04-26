@@ -8,13 +8,13 @@ namespace IsoUnity.Sequences {
 	    [SerializeField]
 	    private bool assetinited = false;
 
-	    void OnEnable()
+	    /*void OnEnable()
 	    {
 	        if (!assetinited)
 	        {
 	            InitAsset();
 	        }
-	    }
+	    }*/
 
 	    public void InitAsset()
 	    {

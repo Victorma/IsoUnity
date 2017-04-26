@@ -26,7 +26,8 @@ namespace IsoUnity {
 		public static ScriptableObject CreateAssetInCurrentPathOf(string name){
 			
 			ScriptableObject so = ScriptableObject.CreateInstance (name);
-			ProjectWindowUtil.CreateAsset(so, name+".asset");
+            AssetDatabase.CreateAsset(so,"Assets/" + name+".asset");
+            AssetDatabase.SaveAssets();
 			Selection.activeObject = so;  
 			
 			return so;

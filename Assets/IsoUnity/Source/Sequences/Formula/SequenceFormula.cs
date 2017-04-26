@@ -64,7 +64,7 @@ namespace IsoUnity.Sequences {
 	    {
 	        get
 	        {
-	            return !string.IsNullOrEmpty(formula.Trim()) && string.IsNullOrEmpty(paramError) && string.IsNullOrEmpty(functionError) && !expression.HasErrors() && (desiredReturnType == null || expresionResult != null && expresionResult.GetType().Equals(desiredReturnType));
+	            return !string.IsNullOrEmpty(formula) && string.IsNullOrEmpty(paramError) && string.IsNullOrEmpty(functionError) && !expression.HasErrors() && (desiredReturnType == null || expresionResult != null && expresionResult.GetType().Equals(desiredReturnType));
 	        }
 	    }
 
@@ -74,7 +74,7 @@ namespace IsoUnity.Sequences {
 	        get
 	        {
 	            return
-	                string.IsNullOrEmpty(formula.Trim())
+	                string.IsNullOrEmpty(formula)
 	                    ? "The formula can't be empty"
 	                    : !string.IsNullOrEmpty(paramError)
 	                        ? paramError
