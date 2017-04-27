@@ -558,7 +558,19 @@ namespace IsoUnity.Entities
 
                     return from + (to - from) * moment;
                 }
+                bool sonido = false;
+                public override void Update(float progress)
+                {
+                    base.Update(progress);
+
+                    if(progress > 0.5 && !sonido)
+                    {
+                        sonido = true;
+                        entity.gameObject.GetComponent<AudioSource>().Play();
+                    }
+                }
             }
+            
 
             /****************************
              * PARABOLIC (JUMP) MOVEMENT

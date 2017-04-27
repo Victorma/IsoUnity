@@ -275,11 +275,11 @@ namespace IsoUnity
             else if (this.father is Decoration)
             {
                 Decoration decorationpadre = this.father as Decoration;
-                this.transform.parent = decorationpadre.transform;
+                this.transform.parent = decorationpadre.transform.parent;
 
                 Vector3 position = new Vector3();
 
-                position = new Vector3(0f, this.transform.localScale.y, 0f);
+                position = new Vector3(0f, (decorationpadre.transform.localScale.y/2f) + decorationpadre.transform.localPosition.y, 0f);
 
                 this.transform.localPosition = position;
             }

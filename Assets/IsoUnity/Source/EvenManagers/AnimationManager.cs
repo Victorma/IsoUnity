@@ -11,7 +11,7 @@ namespace IsoUnity.Entities
         {
             if (ev.Name == "ShowAnimation")
             {
-                Decoration dec = (ev.getParameter("Objetive") as GameObject).GetComponent<Decoration>();
+                Decoration dec = (ev.getParameter("Objective") as GameObject).GetComponent<Decoration>();
                 GameObject animation = (GameObject)ev.getParameter("Animation");
 
                 GameObject go = (GameObject)GameObject.Instantiate(animation);

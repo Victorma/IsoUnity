@@ -37,6 +37,7 @@ namespace IsoUnity
             {
                 currenttime -= this.FrameRate;
 
+                Debug.Log(dec.Tile);
                 if (this.FrameSecuence.Length == 0)
                     if ((dec.Tile + 1) < (dec.IsoDec.nCols * dec.IsoDec.nRows))
                         dec.Tile++;
@@ -59,6 +60,7 @@ namespace IsoUnity
 
                     dec.Tile = this.FrameSecuence[currentpos];
                 }
+                //dec.adaptate();
 
                 if (this.AutoDestroy)
                     if (this.currentloop >= this.Repeat)
