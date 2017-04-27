@@ -2,16 +2,13 @@ using UnityEngine;
 using System.Collections.Generic;
 using IsoUnity;
 using IsoUnity.Sequences;
+using System.Collections;
 
 namespace IsoUnity.Entities
 {
     [ExecuteInEditMode]
-    public class Talker : EntityScript
+    public class Talker : EventedEntityScript
     {
-
-        private bool start = false;
-        private Mover.Direction talkerDirection;
-
         private void Awake()
         {
             if (sequence == null)
@@ -26,41 +23,39 @@ namespace IsoUnity.Entities
             set { sequence = value; }
         }
 
-        public override void eventHappened(IGameEvent ge)
-        {
-            if (ge.belongsTo(this, "Talker"))
-            {
-                switch (ge.Name.ToLower())
-                {
-                    case "talk":
-                        start = true;
-                        talkerDirection = ((Entity)ge.getParameter("Executer")).GetComponent<Mover>().direction;
-                        break;
-                }
-            }
-        }
 
         public override Option[] getOptions()
         {
             GameEvent ge = new GameEvent();
             ge.Name = "talk";
-            ge.setParameter("Talker", this);
+            ge.setParameter("talker", this);
             Option option = new Option("Talk", ge, true, 1);
             return new Option[] { option };
         }
 
-        public override void tick()
+        [GameEvent]
+        public IEnumerator Talk(Entity executer = null)
         {
-            if (start)
+            Entity.mover.PushDestination();
+
+            if (executer)
             {
-                GameEvent ge = new GameEvent();
-                ge.Name = "start sequence";
-                ge.setParameter("sequence", sequence);
-                Game.main.enqueueEvent(ge);
-                start = false;
-                int dir = (((int)talkerDirection) + 2) % 4;
-                this.GetComponent<Mover>().switchDirection((Mover.Direction)dir);
+                GameEvent turn = new GameEvent("turn");
+                turn.setParameter("mover", Entity.mover);
+                turn.setParameter("direction", Mover.getDirectionFromTo(transform, executer.transform));
+                Game.main.enqueueEvent(turn);
+
             }
+
+            GameEvent ge = new GameEvent();
+            ge.Name = "start sequence";
+            ge.setParameter("sequence", sequence);
+            ge.setParameter("synchronous", true);
+            Game.main.enqueueEvent(ge);
+
+            yield return new WaitForEventFinished(ge);
+
+            Entity.mover.PopDestination();
         }
 
         public override void Update()

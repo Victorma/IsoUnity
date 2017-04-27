@@ -33,7 +33,7 @@ namespace IsoUnity
          * Use this list to create the managers at the start of the game.
          * (By default Animation, Secuence and IsoSwitches Managers are created).
          */
-        private List<EventManager> eventManagers;
+        private List<IEventManager> eventManagers;
 
 
         /*
@@ -112,7 +112,7 @@ namespace IsoUnity
             IsoSwitchesManager.getInstance().getIsoSwitches();
 
             // Event Managers Creation
-            eventManagers = new List<EventManager>();
+            eventManagers = new List<IEventManager>();
 
             // On Screen Controlls creation
             // TODO move this to GUI Manager as it becomes a regular EventManager
@@ -158,7 +158,7 @@ namespace IsoUnity
         // Private method used to broadcast the events in main tick
         private void broadcastEvent(IGameEvent ge)
         {
-            foreach (EventManager manager in eventManagers)
+            foreach (IEventManager manager in eventManagers)
                 manager.ReceiveEvent(ge);
 
             foreach (Map map in MapManager.getInstance().getMapList())
@@ -184,12 +184,12 @@ namespace IsoUnity
             CameraManager.Update();
 
             // Controller management
-            currentTimeToController += Time.deltaTime;
+            /*currentTimeToController += Time.deltaTime;
             if (currentTimeToController > timeToController)
-            {
+            {*/
                 ControllerManager.tick();
-                currentTimeToController -= timeToController;
-            }
+              //  currentTimeToController -= timeToController;
+            //}
 
             // Events launch
             while (events.Count > 0)
@@ -199,7 +199,7 @@ namespace IsoUnity
             }
 
             // EventManagers ticks
-            foreach (EventManager manager in eventManagers)
+            foreach (var manager in eventManagers)
                 manager.Tick();
 
             // Entities ticks
@@ -207,22 +207,38 @@ namespace IsoUnity
             {
                 eachMap.tick();
             }
+
+            FlushRegistrations();
         }
 
         /**
          * EventManager management
          **/
-
-        public void RegisterEventManager(EventManager em)
+        List<IEventManager> toRegister = new List<IEventManager>();
+        public void RegisterEventManager(IEventManager em)
         {
             if (!this.eventManagers.Contains(em))
-                this.eventManagers.Add(em);
+            {
+                toRegister.Add(em);
+            }
         }
 
-        public void DeRegisterEventManager(EventManager em)
+        List<IEventManager> toDeregister = new List<IEventManager>();
+        public void DeRegisterEventManager(IEventManager em)
         {
             if (this.eventManagers.Contains(em))
-                this.eventManagers.Remove(em);
+                toDeregister.Add(em);
+        }
+
+        void FlushRegistrations()
+        {
+            foreach (var em in toRegister)
+                eventManagers.Add(em);
+            toRegister.Clear();
+
+            foreach (var em in toDeregister)
+                eventManagers.Remove(em);
+            toDeregister.Clear();
         }
 
     }

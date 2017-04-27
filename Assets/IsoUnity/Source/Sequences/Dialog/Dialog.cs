@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
+using IsoUnity.Entities;
 
 namespace IsoUnity.Sequences {
 	[NodeContent("Dialog", new string[] { "next" })]
@@ -34,9 +35,9 @@ namespace IsoUnity.Sequences {
 	        set { this.fragments = value; }
 	    }
 
-	    public void AddFragment(string name = "", string msg = "", string character = "", string parameter = "")
+	    public void AddFragment(string name = "", string msg = "", bool isEntityFragment = false, Entity entity = null)
 	    {
-	        Fragments.Add(new Fragment(name, msg, character, parameter));
+	        Fragments.Add(new Fragment(name, msg, isEntityFragment, entity));
 		}
 
 		public void RemoveFragment(Fragment frg){
@@ -48,46 +49,84 @@ namespace IsoUnity.Sequences {
 	[StructLayout(LayoutKind.Sequential)]
 	public class Fragment : ICloneable
 	{
-	    [SerializeField]
-	    private string name = string.Empty;
-	    [SerializeField]
-	    private string msg = string.Empty;
-	    [SerializeField]
-	    private string character = string.Empty;
-	    [SerializeField]
-	    private string parameter = string.Empty;
+        [SerializeField]
+        private Texture2D face;
+        [SerializeField]
+        private string name;
+        [SerializeField]
+        private string msg;
+        [SerializeField]
+        private Entity entity;
+        [SerializeField]
+        private bool isEntityFragment;
 
-	    public string Name
-	    {
-	        get { return name; }
-	        set { this.name = value; }
-	    }
+        public Texture2D Face
+        {
+            get
+            {
+                if (this.face == null && this.Entity != null)
+                {
+                    return Entity.face;
+                }
+                return face;
+            }
+            set
+            {
+                if (this.Entity == null)
+                    this.face = value;
+                else if (this.Entity != null && this.Entity.face != value)
+                    this.face = value;
+                else
+                    this.face = null;
+            }
+        }
 
-	    public string Msg
-	    {
-	        get { return msg; }
-	        set { msg = value; }
-	    }
+        public string Name
+        {
+            get
+            {
+                if (this.name == "" && this.Entity != null)
+                {
+                    return Entity.name;
+                }
+                return name;
+            }
+            set
+            {
+                if (this.Entity == null)
+                    this.name = value;
+                else if (this.Entity != null && this.Entity.name != value)
+                    this.name = value;
+                else
+                    this.name = "";
+            }
+        }
 
-	    public string Character
-	    {
-	        get { return character; }
-	        set { character = value; }
-	    }
+        public Entity Entity
+        {
+            get { return (isEntityFragment) ? entity : null; }
+            set { this.entity = value; }
+        }
 
-	    public string Parameter
-	    {
-	        get { return parameter; }
-	        set { parameter = value; }
-	    }
+        public bool IsEntityFragment
+        {
+            get { return isEntityFragment; }
+            set { isEntityFragment = value; }
+        }
 
-	    public Fragment(string name = "", string msg = "", string character = "", string parameter = "")
+        public string Msg
+        {
+            get { return msg; }
+            set { msg = value; }
+        }
+
+        public Fragment(string name = "", string msg = "", bool isEntityFragment = false, Entity entity = null)
 	    {
-	        this.name = name;
-	        this.msg = msg;
-	        this.character = character;
-	        this.parameter = parameter;
-	    }
+            this.isEntityFragment = false;
+            this.name = name;
+            this.msg = msg;
+            this.entity = entity;
+        }
 
 	    object ICloneable.Clone()
 	    {

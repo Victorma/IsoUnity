@@ -32,7 +32,7 @@ namespace IsoUnity
 
             public override void Destroy(IsoUnityType i)
             {
-                IsoUnityType.DestroyImmediate(i);
+                IsoUnityType.DestroyImmediate(i, true);
             }
 
             public override IsoUnityType getIsoUnityType(object c)

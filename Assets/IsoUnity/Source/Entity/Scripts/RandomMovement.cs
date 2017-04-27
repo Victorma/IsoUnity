@@ -31,7 +31,7 @@ namespace IsoUnity.Entities
                     {
                         GameEvent ge = new GameEvent();
                         ge.Name = "move";
-                        ge.setParameter("entity", this.Entity);
+                        ge.setParameter("mover", this.Entity.mover);
                         ge.setParameter("cell", c);
                         Game.main.enqueueEvent(ge);
                     }

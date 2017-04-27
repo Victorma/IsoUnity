@@ -48,7 +48,7 @@ namespace IsoUnity
 
         }
 
-        private static bool isSmoothMoving = false;
+        private static bool isSmoothMoving = true;
         private static float speed;
 
         private static GameObject looking = null;

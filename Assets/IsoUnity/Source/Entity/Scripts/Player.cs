@@ -24,6 +24,7 @@ namespace IsoUnity.Entities
         private Cell actionCell;
         private Entity actionEntity;
         private IGameEvent toLaunch;
+        private bool movingArrow;
 
         [SerializeField]
         private bool active = true;
@@ -67,12 +68,13 @@ namespace IsoUnity.Entities
                         if (args.options[0].HasToMove)
                         {
                             GameEvent ge = new GameEvent();
-                            ge.setParameter("entity", this.Entity);
+                            ge.setParameter("mover", this.Entity.mover);
                             ge.setParameter("follow", args.entity);
-                            ge.setParameter("synchronous", true);
                             ge.setParameter("distance", args.options[0].Distance);
-                            ge.Name = "move";
+                            ge.setParameter("synchronous", true);
+                            ge.Name = "follow";
                             movement = ge;
+                            movingArrow = false;
                             Game.main.enqueueEvent(ge);
 
                             // Here we've launched the movement. As it's synchronous, we'll receive 
@@ -92,9 +94,15 @@ namespace IsoUnity.Entities
                 // If the argument doesn't contain options but it has a cell, we'll try to move over there
                 else if (args.cell != null)
                 {
+                    var cell = args.cell;
+                    if(args.cell.VirtualNeighbors.Count > 0)
+                    {
+                        cell = args.cell.VirtualNeighbors[0].Destination;
+                    }
+
                     GameEvent ge = new GameEvent();
-                    ge.setParameter("entity", this.Entity);
-                    ge.setParameter("cell", args.cell);
+                    ge.setParameter("mover", this.Entity.mover);
+                    ge.setParameter("cell", cell);
                     ge.Name = "move";
                     Game.main.enqueueEvent(ge);
                 }
@@ -110,27 +118,35 @@ namespace IsoUnity.Entities
 
                     if (to > -1)
                     {
-                        if (Entity == null)
-                            Debug.Log("Null!");
-                        Cell destination = Entity.Position.Map.getNeightbours(Entity.Position)[to];
-                        // Can move to checks if the entity can DIRECT move to this cells.
-                        // This should solve bug #29
-                        Mover em = this.Entity.GetComponent<Mover>();
-                        if (em != null && em.CanMoveTo(destination))
+                        if (movement == null || !movingArrow)
                         {
-                            GameEvent ge = new GameEvent();
-                            ge.setParameter("entity", this.Entity);
-                            ge.setParameter("cell", destination);
-                            ge.Name = "move";
-                            Game.main.enqueueEvent(ge);
-                        }
-                        else
-                        {
-                            GameEvent ge = new GameEvent();
-                            ge.setParameter("entity", this.Entity);
-                            ge.setParameter("direction", fromIndex(to));
-                            ge.Name = "turn";
-                            Game.main.enqueueEvent(ge);
+                            if (Entity == null)
+                                Debug.Log("Null!");
+                            Cell destination = Entity.Position.Map.getNeightbours(Entity.Position)[to];
+                            // Can move to checks if the entity can DIRECT move to this cells.
+                            // This should solve bug #29
+                            Mover em = this.Entity.GetComponent<Mover>();
+                            if (em != null && em.CanMoveTo(destination))
+                            {
+                                GameEvent ge = new GameEvent();
+                                ge.setParameter("mover", this.Entity.mover);
+                                ge.setParameter("cell", destination);
+                                ge.setParameter("synchronous", true);
+                                ge.Name = "move";
+                                Game.main.enqueueEvent(ge);
+                                movement = ge;
+                            }
+                            else
+                            {
+                                GameEvent ge = new GameEvent();
+                                ge.setParameter("mover", this.Entity.mover);
+                                ge.setParameter("direction", fromIndex(to));
+                                ge.setParameter("synchronous", true);
+                                ge.Name = "turn";
+                                Game.main.enqueueEvent(ge);
+                                movement = ge;
+                            }
+                            movingArrow = true;
                         }
                     }
                 }
@@ -167,8 +183,11 @@ namespace IsoUnity.Entities
                     // Look to the action
                     if(actionCell || actionEntity)
                     {
-                        Mover.Direction toLook = Mover.getDirectionFromTo(this.Entity.Position.transform, actionEntity ? actionEntity.transform : actionCell.transform);
-                        this.GetComponent<Mover>().switchDirection(toLook);
+                        Mover.Direction toLook = Mover.getDirectionFromTo(Entity.transform, actionEntity ? actionEntity.transform : actionCell.transform);
+                        GameEvent ge = new GameEvent("turn");
+                        ge.setParameter("mover", Entity.mover);
+                        ge.setParameter("direction", toLook);
+                        Game.main.enqueueEvent(ge);
                     }
 
                     actionCell = null;

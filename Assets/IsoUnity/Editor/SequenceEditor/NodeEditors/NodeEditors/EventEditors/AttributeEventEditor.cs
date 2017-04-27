@@ -49,7 +49,7 @@ namespace IsoUnity.Sequences
                 if (parameterConfig.Value == typeof(Color)) ge.setParameter(parameterConfig.Key, EditorGUILayout.ColorField(parameterConfig.Key, (Color)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(Bounds)) ge.setParameter(parameterConfig.Key, EditorGUILayout.BoundsField(parameterConfig.Key, (Bounds)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(AnimationCurve)) ge.setParameter(parameterConfig.Key, EditorGUILayout.CurveField(parameterConfig.Key, (AnimationCurve)ge.getParameter(parameterConfig.Key)));
-                if (parameterConfig.Value == typeof(Enum)) ge.setParameter(parameterConfig.Key, EditorGUILayout.EnumPopup(parameterConfig.Key, (Enum)ge.getParameter(parameterConfig.Key)));
+                if (typeof(Enum).IsAssignableFrom(parameterConfig.Value)) ge.setParameter(parameterConfig.Key, EditorGUILayout.EnumPopup(parameterConfig.Key, (Enum)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(string)) ge.setParameter(parameterConfig.Key, EditorGUILayout.TextField(parameterConfig.Key, (string)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(long)) ge.setParameter(parameterConfig.Key, EditorGUILayout.LongField(parameterConfig.Key, (long)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(double)) ge.setParameter(parameterConfig.Key, (double) EditorGUILayout.FloatField(parameterConfig.Key, (float)ge.getParameter(parameterConfig.Key)));
@@ -62,7 +62,7 @@ namespace IsoUnity.Sequences
             this.ge.Name = config.Name;
             foreach (var parameterConfig in config.ParameterConfig)
             {
-                if (ge.getParameter(parameterConfig.Key) == null)
+                if (ge.getParameter(parameterConfig.Key) == null || ge.getParameter(parameterConfig.Key).GetType() != parameterConfig.Value)
                 {
                     object value = config.ParameterHasDefault[parameterConfig.Key] ? config.DefaultValue[parameterConfig.Key] : GetDefault(parameterConfig.Value);
                     ge.setParameter(parameterConfig.Key, value);

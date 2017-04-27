@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using IsoUnity;
 using System;
+using System.Collections;
 
 namespace IsoUnity.Entities
 {
 
     [ExecuteInEditMode]
     [RequireComponent(typeof(Decoration))]
-    public class Mover : EntityScript, SolidBody
+    public class Mover : EventedEntityScript, SolidBody
     {
         [SerializeField]
         private bool useAnimator = false;
@@ -62,6 +63,30 @@ namespace IsoUnity.Entities
                 return Direction.South;
             }
         }
+
+        private Stack<IGameEvent> movementStack = new Stack<IGameEvent>();
+
+        internal void PopDestination()
+        {
+            if(movementStack.Count > 0)
+            {
+                var toRestore = movementStack.Pop();
+                Move(toRestore.getParameter("cell") as Cell, (int)toRestore.getParameter("distance"));
+                movementEvent = toRestore;
+            }
+            
+        }
+
+        internal void PushDestination()
+        {
+            if(movementEvent != null)
+            {
+                movementStack.Push(movementEvent);
+                RoutePlanifier.cancelRoute(this);
+                movementEvent = null;
+            }
+        }
+
         /****************
         * End Directions
         *****************/
@@ -87,26 +112,7 @@ namespace IsoUnity.Entities
         public Direction direction;
 
         // Move
-        private Cell moveToCell;
-        private Entity follow;
-        private bool move = false;
-        private bool movementFinished = false;
-        private int distanceToMove = 0;
-        private IGameEvent bcEvent;
         private IGameEvent movementEvent;
-
-        //Teleport
-        private Cell teleportToCell;
-        private bool teleport = false;
-
-        //Turn
-        private Direction turnDirection;
-        private bool turnAfterMove = false;
-        private bool turn = false;
-
-        //Stop
-        private bool stop = false;
-
 
         /****************
          * End Attributes
@@ -144,7 +150,7 @@ namespace IsoUnity.Entities
          * PUBLIC OPERATIONS
          * ******************/
         
-        public void moveTo(Cell c)
+        public void moveTo(Cell c, int distanceToMove = 0)
         {
             RoutePlanifier.planifyRoute(this, c, distanceToMove);
         }
@@ -156,12 +162,6 @@ namespace IsoUnity.Entities
                 c.transform.position, this.Entity.Position, c, null);
         }
 
-        public void switchDirection(Direction direction)
-        {
-            RoutePlanifier.cancelRoute(this);
-            this.movement = createTurnMovement(direction);
-        }
-
         private Movement createTurnMovement(Direction dir)
         {
             Dictionary<string, object> mParams = new Dictionary<string, object>();
@@ -171,128 +171,83 @@ namespace IsoUnity.Entities
                 this.Entity, this, dec, normalSprite, this.transform.position,
                 this.transform.position, this.Entity.Position, this.Entity.Position, mParams);
         }
+         
+        [GameEvent(false)]
+        public void Move(Cell cell, int distance = 0, Direction direction = Direction.West)
+        {
+            FinalizeMove();
+            var current = movementEvent = Current;
+            RoutePlanifier.planifyRoute(this, cell, distance);
+        }
+
+        [GameEvent]
+        public IEnumerator Follow(Entity follow, int distance = 1, bool stopOnArrive = true)
+        {
+            FinalizeMove();
+            var current = movementEvent = Current;
+            var followPosition = Entity.Position; // My position to force enter the while
+
+            while (current == movementEvent && (!stopOnArrive || followPosition != follow.Position))
+            {
+                if(followPosition != follow.Position)
+                {
+                    followPosition = follow.Position;
+                    RoutePlanifier.planifyRoute(this, followPosition, distance);
+                }
+                yield return new WaitWhile(() => (IsMoving || RoutePlanifier.hasRoute(this)) && followPosition == follow.Position && current == movementEvent);
+            }
+        }
+
+        [GameEvent]
+        public IEnumerator Turn(Direction direction)
+        {
+            // Cancel the current movement
+            RoutePlanifier.cancelRoute(this);
+            yield return new WaitWhile(() => IsMoving);
+            // Do the turn
+            FinalizeMove();
+            var current = movementEvent = Current;
+            movement = createTurnMovement(direction);
+            yield return new WaitWhile(() => IsMoving);
+        }
+
+        [GameEvent]
+        public IEnumerator Teleport(Cell cell)
+        {
+            // Cancel the current movement
+            RoutePlanifier.cancelRoute(this);
+            yield return new WaitWhile(() => IsMoving);
+            // Do the teleport
+            FinalizeMove();
+            var current = movementEvent = Current;
+            teleportTo(cell);
+            yield return new WaitWhile(() => IsMoving && current == movementEvent);
+        }
+
+        [GameEvent]
+        public IEnumerator Stop()
+        {
+            RoutePlanifier.cancelRoute(this);
+            yield return new WaitWhile(() => IsMoving);
+        }
 
         /**************
          * Event Control
          * *************/
-        public override void eventHappened(IGameEvent ge)
-        {
-            if (!ge.belongsTo(this))
-                return;
-
-            switch (ge.Name.ToLower())
-            {
-                case "turn":
-                    {
-                        if (!this.IsMoving) // If it's moving, just ignore the turn
-                        {
-                            object dir = ge.getParameter("direction");
-                            if (dir != null && dir is Direction)
-                                this.turnDirection = (Direction)dir;
-
-                            this.turn = true;
-                        }
-                    }
-                    break;
-                case "move":
-                    {
-                        this.follow = (Entity)ge.getParameter("follow");
-                        if(follow)
-                            this.moveToCell = follow.Position;
-                        else
-                            this.moveToCell = (Cell)ge.getParameter("cell");
-
-                        this.move = moveToCell || follow;
-
-                        distanceToMove = (ge.getParameter("distance") != null) ? (int)ge.getParameter("distance") : 0;
-                        object dir = ge.getParameter("direction");
-                        if (dir != null && dir is Direction)
-                        {
-                            this.turnDirection = (Direction)dir;
-                            this.turnAfterMove = true;
-                        }
-
-                        this.bcEvent = ge;
-                    }
-                    break;
-
-                case "teleport":
-                    {
-                        teleport = true;
-                        teleportToCell = ge.getParameter("Cell") as Cell;
-                    }
-                    break;
-
-                case "stop":
-                    {
-                        stop = true;
-                    }
-                    break;
-            }
-        }
 
         private Direction lastDirection = Direction.West;
 
-        private void finalizeMovementEvent()
-        {
-            if (movementEvent != null)
-            {
-                Game.main.eventFinished(movementEvent);
-                movementFinished = false;
-                movementEvent = null;
-            }
-        }
-
         public override void tick()
         {
+            base.tick();
+
             if (this.dec == null)
                 this.dec = Entity.decoration;
-
-            if (movementFinished)
-                finalizeMovementEvent();
-
-            if (stop)
-            {
-                if (IsMoving)
-                    finalizeMovementEvent();
-
-                // Cancel all pending operations
-                this.move = false;
-                this.teleport = false;
-                this.turn = false;
-            }
-            else if (teleport)
-            {
-                if (IsMoving)
-                    finalizeMovementEvent();
-
-                teleportTo(teleportToCell);
-                teleportToCell = null;
-                teleport = false;
-            }
-            else if (move)
-            {
-                if (IsMoving)
-                    finalizeMovementEvent();
-
-                movementEvent = bcEvent;
-                moveTo(moveToCell);
-
-                this.move = false;
-            }
-            else if (turn)
-            {
-                if (IsMoving)
-                    finalizeMovementEvent();
-
-                switchDirection(turnDirection);
-                turn = false;
-            }
 
             // Direction change responsive update
             if (!IsMoving && movementEvent == null)
                 if (lastDirection != direction)
-                    switchDirection(direction);
+                    movement = createTurnMovement(direction);
 
             // Direction change ignore
             lastDirection = direction;
@@ -307,7 +262,7 @@ namespace IsoUnity.Entities
         {
             get
             {
-                return movement != null && !movement.Ended;
+                return (movement != null && !movement.Ended);
             }
         }
         private Cell next;
@@ -346,11 +301,8 @@ namespace IsoUnity.Entities
             }
 
             // If we're not moving right now
-            if (!IsMoving && RoutePlanifier.hasRoute(this))
+            if (!IsMoving)
             {
-                if(follow)
-                    RoutePlanifier.planifyRoute(this, follow.Position, distanceToMove);
-
                 // Let's see if we have something to do...
                 next = RoutePlanifier.next(this);
                 //Then, let's move :D
@@ -380,16 +332,8 @@ namespace IsoUnity.Entities
                     {
                         RoutePlanifier.cancelRoute(this);
                     }
-                }
-                else if (movementEvent != null)
-                {
-                    movementFinished = true;
-                    if (turnAfterMove)
-                    {
-                        switchDirection(turnDirection);
-                        turnAfterMove = false;
-                    }
-                }
+                }else
+                    FinalizeMove();
             }
 
             if (IsMoving)
@@ -406,6 +350,16 @@ namespace IsoUnity.Entities
                 {
                     paso = !paso;
                 }
+            }
+        }
+
+        private void FinalizeMove()
+        {
+            if (movementEvent != null && movementEvent.Name == "move")
+            {
+                Debug.Log("finalized");
+                Game.main.eventFinished(movementEvent);
+                movementEvent = null;
             }
         }
 

@@ -369,7 +369,9 @@ namespace IsoUnity
         public void refresh()
         {
             if (this.properties.Changed)
+            {
                 this.regenerateMesh();
+            }
         }
 
         public void forceRefresh()
@@ -379,7 +381,6 @@ namespace IsoUnity
 
         private void regenerateMesh()
         {
-
             MeshFactory.Instance.Generate(properties);
             this.GetComponent<MeshFilter>().mesh = MeshFactory.Instance.getMesh();
             this.properties.faces = MeshFactory.Instance.getFaces();
@@ -568,8 +569,7 @@ namespace IsoUnity
 
         void Update()
         {
-            if (this.properties.Changed)
-                this.regenerateMesh();
+            refresh();
         }
 
     }

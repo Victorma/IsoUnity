@@ -8,16 +8,24 @@ using IsoUnity;
 
 public class TestingEntityScript : EventedEntityScript
 {
-    [GameEvent]
-    public IEnumerator Test(Cell cell)
+
+    IGameEvent ge;
+
+    [GameEvent(false)]
+    public void Test(Cell cell, string mensaje)
     {
         Debug.Log("WHOHOOOOO");
-        yield return new WaitForSeconds(2);
-        Debug.Log("Whojiii");
+        Debug.Log(mensaje);
+
+        ge = Current;
     }
 
     public override void Update()
     {
-
+        if(ge != null)
+        {
+            Game.main.eventFinished(ge);
+            ge = null;
+        }
     }
 }

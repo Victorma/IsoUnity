@@ -26,7 +26,9 @@ namespace IsoUnity.Entities
                     List<object> parameters = new List<object>();
                     var call = calls[config];
                     foreach (var p in call.GetParameters())
-                        parameters.Add(ge.getParameter(p.Name));
+                        if (ge.Params.Contains(p.Name.ToLower()))
+                            parameters.Add(ge.getParameter(p.Name));
+                        else parameters.Add(p.DefaultValue);
                     
                     var output = call.Invoke(this, parameters.ToArray());
 
@@ -131,7 +133,8 @@ namespace IsoUnity.Entities
             Name = gameEvent.Name;
             ParameterConfig = new Dictionary<string, Type>();
             foreach (var p in gameEvent.Params)
-                ParameterConfig.Add(p, gameEvent.getParameter(p) != null ? gameEvent.getParameter(p).GetType() : typeof(object));
+                if(p != "synchronous")
+                    ParameterConfig.Add(p, gameEvent.getParameter(p) != null ? gameEvent.getParameter(p).GetType() : typeof(object));
         }
 
         public override bool Equals(object other)

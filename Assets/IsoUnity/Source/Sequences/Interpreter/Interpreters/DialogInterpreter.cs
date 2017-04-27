@@ -11,7 +11,8 @@ namespace IsoUnity.Sequences {
 		private SequenceNode node;
 		private SequenceNode nextNode;
 		private Queue<Fragment> fragments;
-	    private List<Option> optionsList, launchedOptionsList;
+        private GameObject wasLooking;
+        private List<Option> optionsList, launchedOptionsList;
 		private int chosen;
 		private bool next;
 	    
@@ -61,8 +62,9 @@ namespace IsoUnity.Sequences {
 	        {
 	            Dialog dialog = node.Content as Dialog;
 	            if (!launched)
-	            {
-	                fragments = new Queue<Fragment>(dialog.Fragments);
+                {
+                    wasLooking = CameraManager.Target;
+                    fragments = new Queue<Fragment>(dialog.Fragments);
 	                launched = true;
 	                next = true;
 	                chosen = -1;
@@ -70,14 +72,15 @@ namespace IsoUnity.Sequences {
 	            if (next)
 	            {
 	                if (fragments.Count > 0)
-	                {
-	                    // Launch next fragment event
-	                    var nextFragment = fragments.Dequeue().Clone();
+                    {
+                        if (fragments.Peek().Entity != null)
+                            CameraManager.smoothLookTo(fragments.Peek().Entity.gameObject);
+
+                        // Launch next fragment event
+                        var nextFragment = fragments.Dequeue().Clone();
 
 	                    // Parse the formulas
 	                    nextFragment.Name = ParseFormulas(nextFragment.Name);
-	                    nextFragment.Parameter = ParseFormulas(nextFragment.Parameter);
-	                    nextFragment.Character = ParseFormulas(nextFragment.Character);
 	                    nextFragment.Msg = ParseFormulas(nextFragment.Msg);
 
 	                    var ge = new GameEvent();
@@ -123,7 +126,8 @@ namespace IsoUnity.Sequences {
 
 			if(chosen != -1){
 				finished = true;
-	            if (node.Childs.Length > chosen)
+                CameraManager.lookTo(wasLooking);
+                if (node.Childs.Length > chosen)
 	                nextNode = node.Childs[chosen];
 				chosen = -1;
 			}

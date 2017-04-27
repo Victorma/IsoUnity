@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace IsoUnity
 {
-    public abstract class EventManager : MonoBehaviour
+    public abstract class EventManager : MonoBehaviour, IEventManager
     {
 
         void OnEnable()
@@ -21,5 +21,11 @@ namespace IsoUnity
         public abstract void ReceiveEvent(IGameEvent ev);
         public abstract void Tick();
 
+    }
+
+    public interface IEventManager
+    {
+        void ReceiveEvent(IGameEvent ev);
+        void Tick();
     }
 }

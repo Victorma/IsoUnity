@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace IsoUnity {
 	public class IsoUnityEnumType : IsoUnityType
 	{
-	    private System.Enum enumerated;
+        [SerializeField]
+	    private int enumerated = 0;
+        [SerializeField]
+        private string type = "";
 
-	    public override bool canHandle(object o)
+        private void OnEnable()
+        {
+        }
+
+        public override bool canHandle(object o)
 	    {
 	        return o is System.Enum;
 	    }
@@ -20,11 +28,13 @@ namespace IsoUnity {
 	    {
 	        get
 	        {
-	            return enumerated;
+                var t = Type.GetType(type);
+                return t != null ? Enum.ToObject(t, enumerated): enumerated;
 	        }
 	        set
 	        {
-	            enumerated = value as System.Enum;
+	            enumerated = (int)value;
+                type = value.GetType().FullName;
 	        }
 	    }
 

@@ -61,11 +61,6 @@ public class CustomDialogManager : DialogEventManager {
         managingGroup = dialogGroup;
         managingGroup.gameObject.SetActive(true);
         interactionBlocker.SetActive(true);
-
-        if (frg.Character != "" && frg.Parameter != "")
-        {
-            GameObject.Find(frg.Character).SendMessage(frg.Parameter);
-        }
     }
 
     protected override void DoOptions(string question, List<Option> options)

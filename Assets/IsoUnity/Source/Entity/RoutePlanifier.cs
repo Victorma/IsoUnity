@@ -177,7 +177,6 @@ namespace IsoUnity.Entities
                 {
                     Stack<Cell> ruta = new Stack<Cell>();
                     reconstruyeCamino(ruta, celdaCandidata, anterior);
-                    Debug.Log("Tengo camino!");
                     return ruta;
                 }
 

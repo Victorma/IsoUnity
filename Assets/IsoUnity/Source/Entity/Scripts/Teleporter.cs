@@ -7,8 +7,6 @@ namespace IsoUnity.Entities
 {
     public class Teleporter : EntityScript
     {
-
-        public bool enabled = false;
         public Cell destination;
         public int mode = 0;
         public SerializableGameEvent sge;
@@ -36,9 +34,9 @@ namespace IsoUnity.Entities
                 if (e != this.Entity)
                 {
                     GameEvent ge = new GameEvent();
-                    ge.Name = "Teleport";
-                    ge.setParameter("Entity", e);
-                    ge.setParameter("Cell", destination);
+                    ge.Name = "teleport";
+                    ge.setParameter("mover", e.mover);
+                    ge.setParameter("cell", destination);
                     Game.main.enqueueEvent(ge);
                 }
             }

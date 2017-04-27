@@ -60,11 +60,16 @@ namespace IsoUnity
             return thing;
         }
 
+        [SerializeField]
         private float old_height;
+        [SerializeField]
         private CellTopType old_top;
+        [SerializeField]
         private int old_orientation;
+        [SerializeField]
         private float old_width;
 
+        [SerializeField]
         private bool first = true;
 
         public bool Changed
