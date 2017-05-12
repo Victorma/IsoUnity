@@ -9,8 +9,8 @@ namespace IsoUnity
     public class Decoration : MonoBehaviour
     {
         /*******************************
-         * BEGIN ATRIBS
-         *******************************/
+             * BEGIN ATRIBS
+             *******************************/
 
         // The cell face that is asigned to
         [SerializeField]
@@ -95,7 +95,7 @@ namespace IsoUnity
             if (tile != previousTile)
             {
                 tile = Mathf.Clamp(tile, 0, isoDec.nCols * isoDec.nRows);
-                updateTextures();
+                updateTextures(false);
                 previousTile = tile;
             }
 
@@ -124,61 +124,74 @@ namespace IsoUnity
 
         public void adaptate()
         {
-            this.updateTextures();
+            this.updateTextures(true);
             this.colocate();
             this.setRotation();
         }
 
-        public void updateTextures()
+        public void updateTextures(bool regenerateMesh)
         {
             float scale = Mathf.Sqrt(2f) / IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale.width;
 
-            this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols), (isoDec.getTexture().height * scale) / ((float)isoDec.nRows), 1);
-
-            if (!parallel)
-                this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y / Mathf.Sin(45f), 1);
-            else
+            
+            if (regenerateMesh)
             {
-                if (this.angle == 0)
-                    this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y * 2f, 1);
+                Mesh mesh = new Mesh();
+                mesh.vertices = new Vector3[] { new Vector3(-0.5f,-0.5f,0), new Vector3(0.5f, 0.5f, 0), new Vector3(0.5f, -0.5f, 0), new Vector3(-0.5f, 0.5f, 0) };
+                mesh.uv = new Vector2[] { Vector2.zero, Vector2.one, new Vector2(1, 0),  new Vector2(0, 1)};
+                mesh.triangles = new int[] { 0, 1, 2, 3, 1, 0 };
+                mesh.normals = new Vector3[] { new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f) };
+                mesh.RecalculateBounds();
+                mesh.RecalculateTangents();
+
+                this.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+                this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols), (isoDec.getTexture().height * scale) / ((float)isoDec.nRows), 1);
+
+                if (!parallel)
+                    this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y / Mathf.Sin(45f), 1);
                 else
                 {
-                    this.transform.localScale = new Vector3(Mathf.Sqrt(2f * (this.transform.localScale.x * this.transform.localScale.x)), this.transform.localScale.y / Mathf.Sin(45f), 1);
-
-                    Mesh mesh = this.GetComponent<MeshFilter>().mesh;
-
-
-                    if (quadVertices == null)
+                    if (this.angle == 0)
+                        this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y * 2f, 1);
+                    else
                     {
-                        quadVertices = new Vector3[mesh.vertices.Length];
-                        for (int i = 0; i < mesh.vertices.Length; i++)
-                            quadVertices[i] = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z);
+                        this.transform.localScale = new Vector3(Mathf.Sqrt(2f * (this.transform.localScale.x * this.transform.localScale.x)), this.transform.localScale.y / Mathf.Sin(45f), 1);
+
+
+
+                        if (quadVertices == null)
+                        {
+                            quadVertices = new Vector3[mesh.vertices.Length];
+                            for (int i = 0; i < mesh.vertices.Length; i++)
+                                quadVertices[i] = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z);
+                        }
+
+                        Vector3[] vertices = new Vector3[quadVertices.Length];
+                        for (int i = 0; i < quadVertices.Length; i++)
+                            vertices[i] = new Vector3(quadVertices[i].x, quadVertices[i].y, quadVertices[i].z);
+
+                        float xprima = this.transform.localScale.x;
+                        float omega = xprima * 0.57735026f;
+                        float gamma = omega / (this.transform.localScale.y * Mathf.Sqrt(2));
+
+                        Vector3 bajada = new Vector3(0, gamma, 0);
+
+                        if (this.angle == 2)
+                        {
+                            vertices[0] -= bajada;
+                            vertices[3] -= bajada;
+                        }
+                        else if (this.angle == 1)
+                        {
+                            vertices[1] -= bajada;
+                            vertices[2] -= bajada;
+                        }
+
+                        mesh.vertices = vertices;
+
+                        this.GetComponent<MeshFilter>().sharedMesh = mesh;
                     }
-
-                    Vector3[] vertices = new Vector3[quadVertices.Length];
-                    for (int i = 0; i < quadVertices.Length; i++)
-                        vertices[i] = new Vector3(quadVertices[i].x, quadVertices[i].y, quadVertices[i].z);
-
-                    float xprima = this.transform.localScale.x;
-                    float omega = xprima * 0.57735026f;
-                    float gamma = omega / (this.transform.localScale.y * Mathf.Sqrt(2));
-
-                    Vector3 bajada = new Vector3(0, gamma, 0);
-
-                    if (this.angle == 2)
-                    {
-                        vertices[0] -= bajada;
-                        vertices[3] -= bajada;
-                    }
-                    else if (this.angle == 1)
-                    {
-                        vertices[1] -= bajada;
-                        vertices[2] -= bajada;
-                    }
-
-                    mesh.vertices = vertices;
-
-                    this.GetComponent<MeshFilter>().sharedMesh = mesh;
                 }
             }
 
@@ -232,9 +245,9 @@ namespace IsoUnity
                                     position = new Vector3(-0.5f, (celdapadre.Height * celdapadre.Width + 0.01f), -0.5f);
                             else
                                 if (!this.parallel)
-                                position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, invfather.z);
-                            else
-                                position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + 0.01f, invfather.z);
+                                    position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, invfather.z);
+                                else
+                                    position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + 0.01f, invfather.z);
                             break;
                         }
                     case 1:
@@ -246,9 +259,9 @@ namespace IsoUnity
                                     position = new Vector3(-celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
                             else
                                 if (!this.parallel)
-                                position = new Vector3(invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
-                            else
-                                position = new Vector3(invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
+                                    position = new Vector3(invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
                             break;
                         }
                     case 2:
@@ -260,9 +273,9 @@ namespace IsoUnity
                                     position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -celdapadre.Width / 2);
                             else
                                 if (!this.parallel)
-                                position = new Vector3(invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
-                            else
-                                position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);
+                                    position = new Vector3(invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);
                             break;
                         }
                 }
@@ -275,11 +288,11 @@ namespace IsoUnity
             else if (this.father is Decoration)
             {
                 Decoration decorationpadre = this.father as Decoration;
-                this.transform.parent = decorationpadre.transform.parent;
+                this.transform.parent = decorationpadre.transform;
 
                 Vector3 position = new Vector3();
 
-                position = new Vector3(0f, (decorationpadre.transform.localScale.y/2f) + decorationpadre.transform.localPosition.y, 0f);
+                position = new Vector3(0f, this.transform.localScale.y, 0f);
 
                 this.transform.localPosition = position;
             }
@@ -296,7 +309,7 @@ namespace IsoUnity
             set
             {
                 tile = value;
-                this.updateTextures();
+                this.updateTextures(false);
             }
         }
 

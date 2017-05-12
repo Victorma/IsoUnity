@@ -152,7 +152,7 @@ namespace IsoUnity
          * Getter Zone
          * ********************/
 
-        Cell[] Cells
+        public Cell[] Cells
         {
             get { return this.GetComponentsInChildren<Cell>(); }
         }

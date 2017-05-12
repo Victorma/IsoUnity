@@ -62,6 +62,13 @@ namespace IsoUnity
                 if (this.properties == null)
                     this.properties = new CellProperties(height, topType, cellTopRotation, width, new FaceNoSC[0]);
 
+
+                if (firstOppened)
+                {
+                    Cell.extractFacesFromMesh(this.GetComponent<MeshFilter>().sharedMesh, properties);
+                    firstOppened = false;
+                }
+
                 return properties;
             }
         }
@@ -135,36 +142,36 @@ namespace IsoUnity
             int index = getFaceIndex(face);
             Cell[] neighbors = this.Map.getNeightbours(this);
 
-            if (index == this.properties.faces.Length - 1)
+            if (index == this.Properties.faces.Length - 1)
             {
                 // Es el top
                 foreach (var n in neighbors)
                     if (n != null)
                         if (n.Height == this.Height)
-                            adjacents.Add(new CellFace(n, n.properties.faces[n.properties.faces.Length - 1]));
+                            adjacents.Add(new CellFace(n, n.Properties.faces[n.Properties.faces.Length - 1]));
 
             }
             else if (index != -1)
             {
                 // The lower one
-                if (index - 4 >= 0 && !isCoveredByOthers(this.properties.faces[index - 4], index - 4, neighbors))
-                    adjacents.Add(new CellFace(this, this.properties.faces[index - 4]));
+                if (index - 4 >= 0 && !isCoveredByOthers(this.Properties.faces[index - 4], index - 4, neighbors))
+                    adjacents.Add(new CellFace(this, this.Properties.faces[index - 4]));
                 // The upper one
-                if (index + 4 < this.properties.faces.Length - 1 && !isCoveredByOthers(this.properties.faces[index + 4], index + 4, neighbors))
-                    adjacents.Add(new CellFace(this, this.properties.faces[index + 4]));
+                if (index + 4 < this.Properties.faces.Length - 1 && !isCoveredByOthers(this.Properties.faces[index + 4], index + 4, neighbors))
+                    adjacents.Add(new CellFace(this, this.Properties.faces[index + 4]));
 
 
                 int direction = index % 4;
                 Cell leftOne = neighbors[(direction + 1) % 4];
 
                 //The left one
-                if (leftOne != null && index < leftOne.properties.faces.Length - 1 && !isCoveredByOthers(leftOne.properties.faces[index], index, leftOne.Map.getNeightbours(leftOne)))
-                    adjacents.Add(new CellFace(leftOne, leftOne.properties.faces[index]));
+                if (leftOne != null && index < leftOne.Properties.faces.Length - 1 && !isCoveredByOthers(leftOne.Properties.faces[index], index, leftOne.Map.getNeightbours(leftOne)))
+                    adjacents.Add(new CellFace(leftOne, leftOne.Properties.faces[index]));
 
                 Cell rightOne = neighbors[(direction + 3) % 4];
                 //The rightOne
-                if (rightOne != null && index < rightOne.properties.faces.Length - 1 && !isCoveredByOthers(rightOne.properties.faces[index], index, rightOne.Map.getNeightbours(rightOne)))
-                    adjacents.Add(new CellFace(rightOne, rightOne.properties.faces[index]));
+                if (rightOne != null && index < rightOne.Properties.faces.Length - 1 && !isCoveredByOthers(rightOne.Properties.faces[index], index, rightOne.Map.getNeightbours(rightOne)))
+                    adjacents.Add(new CellFace(rightOne, rightOne.Properties.faces[index]));
 
             }
 
@@ -388,6 +395,7 @@ namespace IsoUnity
             myMat.SetTexture("_MainTex", MeshFactory.Instance.getTexture2D());
             this.GetComponent<Renderer>().sharedMaterial = myMat;
             this.GetComponent<MeshCollider>().sharedMesh = MeshFactory.Instance.getMesh();
+            //Debug.Log("Regenerada");
 
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
@@ -418,13 +426,8 @@ namespace IsoUnity
 
         public FaceNoSC getFaceByPoint(Vector3 point)
         {
-            if (firstOppened)
-            {
-                Cell.extractFacesFromMesh(this.GetComponent<MeshFilter>().sharedMesh, properties);
-                firstOppened = false;
-            }
             Vector3 inversePoint = transform.InverseTransformPoint(point);
-            foreach (FaceNoSC f in properties.faces)
+            foreach (FaceNoSC f in Properties.faces)
             {
 
                 if (f.contains(inversePoint))
