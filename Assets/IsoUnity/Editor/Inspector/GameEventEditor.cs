@@ -3,28 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace IsoUnity.Sequences {
 	[CustomEditor(typeof(SerializableGameEvent))]
 	public class GameEventEditor : NodeContentEditor {
 	    
 	    private EventEditor currentEditor;
+        private int was = -1;
 
 	    protected override void NodeContentInspectorGUI()
-	    { 
-	        SerializableGameEvent ge = (SerializableGameEvent)target;
-	        string[] editors = EventEditorFactory.Intance.CurrentEventEditors;
+        {
+            SerializableGameEvent ge = (SerializableGameEvent)target;
+            string[] editors = EventEditorFactory.Intance.CurrentEventEditors;
 	        int editorSelected = 0;
 
 	        for (int i = 1; i < editors.Length; i++)
 	            if (ge != null && editors[i].ToLower() == ge.Name.ToLower())
 	                editorSelected = i;
-
-	        int was = editorSelected;
-
+            
 	        editorSelected = EditorGUILayout.Popup(editorSelected, EventEditorFactory.Intance.CurrentEventEditors);
 	        if (currentEditor == null || was != editorSelected)
 	        {
+                was = editorSelected;
+                if (EventEditorFactory.Intance.CurrentEventEditors.ToList().Contains(ge.Name))
+                    ge.Name = "";
+
 	            if (currentEditor != null && ge != null)
 	                currentEditor.detachEvent(ge);
                 
@@ -44,6 +48,8 @@ namespace IsoUnity.Sequences {
 
 	        if ((bool)ge.getParameter("synchronous"))
 	            EditorGUILayout.HelpBox("Notice that if there is no EventFinished event, the game will stuck.", MessageType.Warning);
-	    }
+
+
+        }
 	}
 }
