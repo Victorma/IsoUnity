@@ -39,6 +39,7 @@ namespace IsoUnity.Sequences
         {
             foreach (var parameterConfig in config.ParameterConfig)
             {
+                if (parameterConfig.Value == typeof(bool)) ge.setParameter(parameterConfig.Key, EditorGUILayout.Toggle(parameterConfig.Key, (bool)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(float)) ge.setParameter(parameterConfig.Key, EditorGUILayout.FloatField(parameterConfig.Key, (float)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(int)) ge.setParameter(parameterConfig.Key, EditorGUILayout.IntField(parameterConfig.Key, (int)ge.getParameter(parameterConfig.Key)));
                 if (parameterConfig.Value == typeof(Vector2)) ge.setParameter(parameterConfig.Key, EditorGUILayout.Vector2Field(parameterConfig.Key, (Vector2)ge.getParameter(parameterConfig.Key)));
