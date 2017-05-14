@@ -24,23 +24,24 @@ namespace IsoUnity
         public bool send = false;
     }
 
-    public class ControllerManager
+    public class ControllerManager : EventedEventManager
     {
+        private static bool left = false;
 
-        private static bool enabled = false;
-        public static bool Enabled
+        [SerializeField]
+        private bool work = true;
+
+        [GameEvent(true, false)]
+        public void EnableController()
         {
-            get
-            {
-                return enabled;
-            }
-            set
-            {
-                enabled = value;
-            }
+            work = true;
         }
 
-        private static bool left = false;
+        [GameEvent(true, false)]
+        public void DisableController()
+        {
+            work = false;
+        }
 
         private static void insertMouseConditions(ControllerEventArgs args)
         {
@@ -76,9 +77,9 @@ namespace IsoUnity
         public delegate void ControllerDelegate(ControllerEventArgs args);
         public static ControllerDelegate onControllerEvent;
 
-        public static void tick()
+        public override void Tick()
         {
-
+            base.Tick();
             /**
              * -Evento de control
                 -> Controllador:
@@ -99,7 +100,7 @@ namespace IsoUnity
                         -> Se manda el nuevo evento.
             */
 
-            if (enabled)
+            if (work)
             {
 
                 //Tactil = raton
@@ -111,8 +112,7 @@ namespace IsoUnity
                 // Recopilamos estado
                 insertMouseConditions(args);
                 insertKeyboardConditions(args);
-
-
+                
                 //Preguntamos a la GUI.
                 IsoGUI gui = GUIManager.getGUICapturing(args);
 
