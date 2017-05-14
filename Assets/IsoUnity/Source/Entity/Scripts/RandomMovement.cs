@@ -24,7 +24,7 @@ namespace IsoUnity.Entities
             if (Random.Range(0f, 1f) < t)
             {
                 var talker = this.GetComponent<Talker>();
-                if(talker && Game.main.GetComponent<SequenceManager>().Executing != talker.Sequence)
+                if(talker && Game.main.GetComponent<SequenceManager>().Executing.Contains(talker.Sequence))
                 {
                     Cell c = Entity.Position.Map.getNeightbours(Entity.Position)[Random.Range(0, 4)];
                     if (c != null)
