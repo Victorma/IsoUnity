@@ -27,7 +27,13 @@ namespace IsoUnity.Sequences {
 		public EventEditorFactoryImp(){
 			this.eventEditors = new List<EventEditor> ();
 
-            var methods = AttributesUtil.GetMethodsWith<GameEventAttribute>(typeof(EventedEntityScript), true);
+            var methods = AttributesUtil.GetMethodsWith<GameEventAttribute>(typeof(EventedEventManager), true);
+            foreach (var m in methods)
+            {
+                this.eventEditors.Add(new AttributeEventEditor(new GameEventConfig(m.Key, m.Value)));
+            }
+
+            methods = AttributesUtil.GetMethodsWith<GameEventAttribute>(typeof(EventedEntityScript), true);
             foreach(var m in methods)
             {
                 this.eventEditors.Add(new AttributeEventEditor(new GameEventConfig(m.Key, m.Value)));
