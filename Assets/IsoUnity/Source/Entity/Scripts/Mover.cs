@@ -258,6 +258,7 @@ namespace IsoUnity.Entities
             return new Option[] { };
         }
 
+     
         public bool IsMoving
         {
             get
@@ -265,6 +266,8 @@ namespace IsoUnity.Entities
                 return (movement != null && !movement.Ended);
             }
         }
+       
+     
         private Cell next;
         private Movement movement;
 
@@ -285,9 +288,10 @@ namespace IsoUnity.Entities
             tick();
             this.Update();
         }
-
+      
         public override void Update()
         {
+           
             if (this.dec == null)
                 this.dec = GetComponent<Decoration>();
 
@@ -457,21 +461,12 @@ namespace IsoUnity.Entities
             }
 
             public virtual void UpdateTextures()
-            {
-                if (this.dec == null)
-                    return;
-
-                // Change the spritesheet
-                this.setSpritesheet(sheet);
-
                 if (mover.useAnimator)
                 {
                     // Update tile
                     Animator anim = mover.GetComponent<Animator>();
                     anim.SetInteger("direction", (int)mover.direction);
-                    anim.SetFloat("speed", Ended ? 0f : 1f);
                 }
-                else
                 {
                     // Step Addition
                     int stepAdition = 0;
@@ -488,7 +483,6 @@ namespace IsoUnity.Entities
                 if (this.dec.IsoDec != isoDec)
                 {
                     this.dec.IsoDec = isoDec;
-                    this.dec.updateTextures();
                 }
             }
 
@@ -566,7 +560,6 @@ namespace IsoUnity.Entities
                     if(progress > 0.5 && !sonido)
                     {
                         sonido = true;
-                        entity.gameObject.GetComponent<AudioSource>().Play();
                     }
                 }
             }
@@ -620,7 +613,6 @@ namespace IsoUnity.Entities
                     if (entity.Position.Map == destination.Map)
                     {
                         entity.Position = destination;
-                        entity.transform.localPosition = new Vector3(positionToCell.x, destination.Height + destination.WalkingHeight, positionToCell.z);
                     }
                     else
                     {
@@ -628,7 +620,6 @@ namespace IsoUnity.Entities
                         entity.Position.Map.unRegisterEntity(entity);
                         entity.Position = destination;
                         entity.Position.Map.registerEntity(entity);
-                        entity.transform.localPosition = new Vector3(positionToCell.x, destination.Height + destination.WalkingHeight, positionToCell.z);
 
                         entity.GetComponent<Renderer>().enabled = false;
                         foreach (Renderer r in entity.GetComponentsInChildren<Renderer>()) r.enabled = false;
