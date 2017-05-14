@@ -177,7 +177,8 @@ namespace IsoUnity.Sequences {
 			foreach (var kv in nodeDict)
 				clone.nodeDict.Add (kv.Key, clonedNodes [kv.Value]);
 
-			clone.Root = clonedNodes [Root];
+            if(Root)
+                clone.Root = clonedNodes [Root];
 
 			// Clone the objects
 			clone.objectPool = new Dictionary<string, object>();

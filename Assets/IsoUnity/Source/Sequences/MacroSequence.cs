@@ -1,13 +1,13 @@
-﻿using System.Collections;
+﻿using IsoUnity.Entities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace IsoUnity.Sequences {
     [RequireComponent(typeof(SequenceLauncher))]
-    public class MacroSequence : EventManager {
+    public class MacroSequence : EventedEventManager {
 
         private const string MACRO_EVENT = "start macro";
-        private const string MACRO_NAME_PARAM = "macro";
 
         public Sequence Sequence { get { return sequence; } }
 
@@ -16,6 +16,8 @@ namespace IsoUnity.Sequences {
         [SerializeField]
         private Sequence sequence;
 
+        private SequenceLauncher sl;
+
         public void Init(){
             Awake();
         }
@@ -23,62 +25,43 @@ namespace IsoUnity.Sequences {
         void Awake(){
             if(sequence == null)
                 sequence = ScriptableObject.CreateInstance<Sequence>();
-            
-            GetComponent<SequenceLauncher>().Sequence = this.Sequence;
+
+            sl = GetComponent<SequenceLauncher>();
+            sl.Sequence = this.Sequence;
         }
 
-        private bool launch = false;
-        private bool synchronous = false;
-        private bool finished = true;
         private IGameEvent toFinish = null;
 
         #region implemented abstract members of EventManager
 
-        public void Launch()
+        [GameEvent(false, false)]
+        public IEnumerator StartMacro(string macro)
         {
-            launch = true;
-        }
-
-        public override void ReceiveEvent(IGameEvent ev)
-        {
-            if (ev.Name == MACRO_EVENT)
+            var ge = Current;
+            // If the macro name matches with me i should finish the event
+            if(macroName == macro)
             {
-                if (macroName == (string)ev.getParameter(MACRO_NAME_PARAM))
-                {
-                    launch = true;
-                    synchronous = (bool)ev.getParameter("synchronous");
-                    toFinish = ev;
-                }
-            }
+                sl.Launch();
+                yield return new WaitWhile(() => sl.Running);
 
-            if (ev.Name == "sequence finished")
-            {
-                if (sequence == (Sequence)ev.getParameter("sequence"))
-                {
-                    finished = true;
-                }
+                Game.main.eventFinished(ge);
             }
         }
 
-
-        public override void Tick()
+        [GameEvent(false, false)]
+        public IEnumerator StopMacro(string macro, bool instant = false)
         {
-            if (launch)
+            var ge = Current;
+            // If the macro name matches with me i should finish the event
+            if (macroName == macro)
             {
-                GetComponent<SequenceLauncher>().Launch();
+                sl.Abort(instant);
+                yield return new WaitWhile(() => sl.Running);
 
-                launch = false;
-            }
-
-            if (finished)
-            {
-                if (toFinish != null)
-                {
-                    Game.main.eventFinished(toFinish);
-                }
-                finished = false;
+                Game.main.eventFinished(ge);
             }
         }
+        
         #endregion
 
 

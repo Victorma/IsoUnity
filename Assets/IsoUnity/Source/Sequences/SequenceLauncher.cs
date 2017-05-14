@@ -26,7 +26,9 @@ namespace IsoUnity.Sequences {
 		[HideInInspector]
 	    private Sequence localSequence;
 
-	    public Sequence Sequence {
+        private bool abort = false;
+
+        public Sequence Sequence {
 	        get
 	        {
 	            return localSequence;
@@ -37,6 +39,14 @@ namespace IsoUnity.Sequences {
 				localSequence = sharedSequence == null ? null : sharedSequence.Clone();
 	        }
 	    }
+
+        public bool Running
+        {
+            get
+            {
+                return interpreter != null || ge != null;
+            }
+        }
 
 		void OnTriggerEnter(){
 			if (launchOnTriggerEnter) {
@@ -65,7 +75,7 @@ namespace IsoUnity.Sequences {
 				interpreter.Tick ();
 				if (interpreter.SequenceFinished) {
 					interpreter = null;
-					if (loop) {
+					if (loop && !abort) {
 						Launch ();
 					}
 				}
@@ -78,6 +88,7 @@ namespace IsoUnity.Sequences {
 				return;
 
 			if (localExecution) {
+                abort = false;
 				if (interpreter == null)
 					interpreter = new SequenceInterpreter (localSequence);
 			} else {
@@ -89,6 +100,14 @@ namespace IsoUnity.Sequences {
 				Game.main.enqueueEvent (ge);
 			}
 		}
+        public void Abort(bool instant)
+        {
+            if (localExecution)
+            {
+                abort = true;
+                interpreter.Abort(instant);
+            }
+        }
 
 		IGameEvent ge;
 		public override void ReceiveEvent (IGameEvent ev)
