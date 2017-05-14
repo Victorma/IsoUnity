@@ -67,16 +67,16 @@ namespace IsoUnity {
 
 	                if (c == null)
 	                    c = content;
-					else if(Application.isEditor && !Application.isPlaying
+#if UNITY_EDITOR
+                    else if (Application.isEditor && !Application.isPlaying
                         && (UnityEditor.AssetDatabase.IsMainAsset(this) || UnityEditor.AssetDatabase.IsSubAsset(this)))
                     {
-						#if UNITY_EDITOR
 	                    (c as ScriptableObject).hideFlags = HideFlags.HideInHierarchy;
 	                    UnityEditor.AssetDatabase.AddObjectToAsset(c as Object, this);
-						#endif
-	                }
+                    }
+#endif
 
-	                if (args.ContainsKey(param)) args[param] = (Object)c;
+                    if (args.ContainsKey(param)) args[param] = (Object)c;
 	                else args.Add(param, (Object)c);
 	            }
 			}
@@ -125,17 +125,30 @@ namespace IsoUnity {
 			return base.GetHashCode ();
 		}
 
-		/*
+        /*
 	     * Belong methods
 	     */
 
-		private const string OWNER_PARAM = "entity";
+        private const string OWNER_PARAM = "entity";
 
+        public bool belongsTo(MonoBehaviour mb) { return belongsTo(mb, OWNER_PARAM); }
         public bool belongsTo(Entity e) { return belongsTo(e, OWNER_PARAM); }
         public bool belongsTo(EntityScript es) { return belongsTo(es, OWNER_PARAM); }
+        public bool belongsTo(EventManager em) { return belongsTo(em, OWNER_PARAM); }
         public bool belongsTo(GameObject g) { return belongsTo(g, OWNER_PARAM); }
-		public bool belongsTo(ScriptableObject so) { return belongsTo(so, OWNER_PARAM); }
-		public bool belongsTo(string tag) { return belongsTo(tag, OWNER_PARAM); }
+        public bool belongsTo(ScriptableObject so) { return belongsTo(so, OWNER_PARAM); }
+        public bool belongsTo(string tag) { return belongsTo(tag, OWNER_PARAM); }
+
+        public bool belongsTo(MonoBehaviour mb, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || mb == null)
+                return false;
+
+            return mb is Entity && belongsTo(mb as Entity, parameter) ||
+                mb is EntityScript && belongsTo(mb as EntityScript, parameter) ||
+                mb is EventManager && belongsTo(mb as EventManager, parameter);
+        }
 
         public bool belongsTo(Entity e, string parameter)
         {
@@ -144,7 +157,7 @@ namespace IsoUnity {
                 return false;
 
             // Compare If is entity, if is gameobject or if is tag
-            return entityParam == e || entityParam == e.gameObject || entityParam == e.tag;
+            return e.Equals(entityParam) || e.gameObject.Equals(entityParam) || e.tag.Equals(entityParam) || e.name.Equals(entityParam);
         }
 
         public bool belongsTo(EntityScript es, string parameter)
@@ -154,43 +167,55 @@ namespace IsoUnity {
                 return false;
 
             // Same as in entity but entity script comparition also.
-            return entityParam == es || entityParam == es.Entity || entityParam == es.gameObject || entityParam == es.tag;
+            return es.Equals(entityParam) || es.Entity.Equals(entityParam) || es.gameObject.Equals(entityParam) || es.tag.Equals(entityParam) || es.name.Equals(entityParam);
         }
+
+        public bool belongsTo(EventManager em, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || em == null)
+                return false;
+
+            // Same as in entity but entity script comparition also.
+            return em.Equals(entityParam) || em.gameObject.Equals(entityParam) || em.tag.Equals(entityParam) || em.name.Equals(entityParam);
+        }
+
         public bool belongsTo(GameObject g, string parameter)
-		{
-			object entityParam = getParameter(parameter);
-			if (entityParam == null || g == null)
-				return false;
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || g == null)
+                return false;
 
-			return entityParam == g || ((entityParam is string) && ((string)entityParam) == g.tag);
-		}
+            return g.Equals(entityParam) || g.tag.Equals(entityParam) || g.name.Equals(entityParam);
+        }
 
-		public bool belongsTo(ScriptableObject so, string parameter)
-		{
-			object entityParam = getParameter(parameter);
-			if (entityParam == null || so == null)
-				return false;
+        public bool belongsTo(ScriptableObject so, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || so == null)
+                return false;
 
-			// Compare normal and name
-			return entityParam == so || (entityParam is string && ((string)entityParam) == so.name);
-		}
+            // Compare normal and name
+            return so.Equals(entityParam) || so.name.Equals(entityParam);
 
-		public bool belongsTo(string tag, string parameter)
-		{
-			object entityParam = getParameter(parameter);
-			if (entityParam == null || tag == null)
-				return false;
+        }
 
-			return (entityParam is string && ((string)entityParam) == tag)
-				|| (entityParam is GameObject) ? (entityParam as GameObject).CompareTag(tag) : false
-				|| (entityParam is Component) ? (entityParam as Component).CompareTag(tag) : false;
-		}
+        public bool belongsTo(string tag, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || tag == null)
+                return false;
 
-		/*
+            return (entityParam is string && ((string)entityParam) == tag)
+                || (entityParam is GameObject) ? (entityParam as GameObject).CompareTag(tag) : false
+                || (entityParam is Component) ? (entityParam as Component).CompareTag(tag) : false;
+        }
+
+        /*
 	     * Operators 
 	     **/
 
-		public static bool operator ==(SerializableGameEvent ge1, IGameEvent ge2){
+        public static bool operator ==(SerializableGameEvent ge1, IGameEvent ge2){
 			//Debug.Log ("Comparing with operator of SerializableGameEvent");
 			return GameEvent.CompareEvents (ge1, ge2);
 		}

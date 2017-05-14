@@ -25,14 +25,18 @@ namespace IsoUnity
 		 * Belongs
 		 **/
 
+        bool belongsTo(MonoBehaviour mb);
         bool belongsTo(Entity e);
         bool belongsTo(EntityScript es);
+        bool belongsTo(EventManager em);
         bool belongsTo (GameObject g);
 		bool belongsTo (ScriptableObject so);
 		bool belongsTo (string tag);
 
+        bool belongsTo(MonoBehaviour mb, string parameter);
         bool belongsTo(Entity e, string parameter);
         bool belongsTo(EntityScript es, string parameter);
+        bool belongsTo(EventManager em, string parameter);
         bool belongsTo (GameObject g, string parameter);
 		bool belongsTo (ScriptableObject so, string parameter);
 		bool belongsTo (string tag, string parameter);

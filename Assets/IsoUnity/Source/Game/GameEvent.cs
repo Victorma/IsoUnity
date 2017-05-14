@@ -97,11 +97,24 @@ namespace IsoUnity {
 
 	    private const string OWNER_PARAM = "entity";
 
+        public bool belongsTo(MonoBehaviour mb) { return belongsTo(mb, OWNER_PARAM); }
         public bool belongsTo(Entity e) { return belongsTo(e, OWNER_PARAM); }
         public bool belongsTo(EntityScript es) { return belongsTo(es, OWNER_PARAM); }
+        public bool belongsTo(EventManager em) { return belongsTo(em, OWNER_PARAM); }
         public bool belongsTo(GameObject g) { return belongsTo(g, OWNER_PARAM); }
 	    public bool belongsTo(ScriptableObject so) { return belongsTo(so, OWNER_PARAM); }
 	    public bool belongsTo(string tag) { return belongsTo(tag, OWNER_PARAM); }
+
+        public bool belongsTo(MonoBehaviour mb, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || mb == null)
+                return false;
+            
+            return mb is Entity && belongsTo(mb as Entity, parameter) ||
+                mb is EntityScript && belongsTo(mb as EntityScript, parameter) ||
+                mb is EventManager && belongsTo(mb as EventManager, parameter);
+        }
 
         public bool belongsTo(Entity e, string parameter)
         {
@@ -121,6 +134,16 @@ namespace IsoUnity {
 
             // Same as in entity but entity script comparition also.
             return es.Equals(entityParam) || es.Entity.Equals(entityParam) || es.gameObject.Equals(entityParam) || es.tag.Equals(entityParam) || es.name.Equals(entityParam);
+        }
+
+        public bool belongsTo(EventManager em, string parameter)
+        {
+            object entityParam = getParameter(parameter);
+            if (entityParam == null || em == null)
+                return false;
+
+            // Same as in entity but entity script comparition also.
+            return em.Equals(entityParam) || em.gameObject.Equals(entityParam) || em.tag.Equals(entityParam) || em.name.Equals(entityParam);
         }
 
         public bool belongsTo(GameObject g, string parameter)
