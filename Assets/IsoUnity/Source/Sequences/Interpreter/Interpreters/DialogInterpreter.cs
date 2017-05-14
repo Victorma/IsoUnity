@@ -63,7 +63,7 @@ namespace IsoUnity.Sequences {
 	            Dialog dialog = node.Content as Dialog;
 	            if (!launched)
                 {
-                    wasLooking = CameraManager.Target;
+                    wasLooking = CameraManager.Instance.Target;
                     fragments = new Queue<Fragment>(dialog.Fragments);
 	                launched = true;
 	                next = true;
@@ -74,7 +74,9 @@ namespace IsoUnity.Sequences {
 	                if (fragments.Count > 0)
                     {
                         if (fragments.Peek().Entity != null)
-                            CameraManager.smoothLookTo(fragments.Peek().Entity.gameObject);
+                        {
+                            CameraManager.Instance.LookTo(fragments.Peek().Entity.gameObject);
+                        }
 
                         // Launch next fragment event
                         var nextFragment = fragments.Dequeue().Clone();
@@ -102,9 +104,10 @@ namespace IsoUnity.Sequences {
 	            {
 	                chosen = -1;
 	                Options options = (node.Content as Options).Clone() as Options;
+                    wasLooking = CameraManager.Instance.Target;
 
-	                // Launch options event
-	                var ge = new GameEvent();
+                    // Launch options event
+                    var ge = new GameEvent();
 	                ge.name = "show dialog options";
 	                optionsList = options.Values;
 	                launchedOptionsList = optionsList.FindAll(o => o.Fork == null || o.Fork.check());
@@ -126,7 +129,7 @@ namespace IsoUnity.Sequences {
 
 			if(chosen != -1){
 				finished = true;
-                CameraManager.lookTo(wasLooking);
+                CameraManager.Instance.LookTo(wasLooking);
                 if (node.Childs.Length > chosen)
 	                nextNode = node.Childs[chosen];
 				chosen = -1;

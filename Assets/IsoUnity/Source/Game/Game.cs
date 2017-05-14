@@ -4,6 +4,8 @@ using IsoUnity.Entities;
 
 namespace IsoUnity
 {
+    [RequireComponent(typeof(CameraManager))]
+    [RequireComponent(typeof(ControllerManager))]
     public class Game : MonoBehaviour
     {
 
@@ -15,27 +17,20 @@ namespace IsoUnity
         public bool shouldReplacePreviousGame = false;
 
         Queue<IGameEvent> events;
-
-        /*
-         *  Looking things (Recommended to use CameraManager.lookTo(<<Target>>) to manage camera).
-         */
-        public GameObject look; // Do not use this to know who's camera looking, WRITE ONLY (Use CameraManager instead)
-        private GameObject previousLook;
-
+        
         /*
          * Initial Map of the game (Recommended to use MapManager to manage maps).
          */
-        public Map map; // Do not use this to know what map is active, WRITE ONLY (Use MapManager instead)
-        private Map previousMap;
 
+        public Map map;
+        private Map previousMap;
         /*
          * Event Manager Things
          * Use this list to create the managers at the start of the game.
          * (By default Animation, Secuence and IsoSwitches Managers are created).
          */
         private List<IEventManager> eventManagers;
-
-
+        
         /*
          * Screen controls default controller.
          */
@@ -62,6 +57,11 @@ namespace IsoUnity
          * Game initialization
          */
         private bool awakened = false;
+        void Start ()
+        {
+            //miVar= GetComponent<CargarEscena>();
+        }
+
         void Awake()
         {
             if (awakened)
@@ -84,6 +84,7 @@ namespace IsoUnity
                 }
             }
 
+
             Game.m = this;
             if (Application.isPlaying)
                 GameObject.DontDestroyOnLoad(this.gameObject);
@@ -93,22 +94,8 @@ namespace IsoUnity
 
             // Main Managers initialization
             // TODO Make they event managers as the rest
-
-            if (this.look == null)
-            {
-                Player player = FindObjectOfType<Player>();
-                if (player != null)
-                {
-                    this.look = player.gameObject;
-                    this.map = player.Entity.Position.Map;
-                }
-            }
-
-            CameraManager.initialize();
-            CameraManager.lookTo(look);
             MapManager.getInstance().hideAllMaps();
             MapManager.getInstance().setActiveMap(map);
-            ControllerManager.Enabled = true;
             IsoSwitchesManager.getInstance().getIsoSwitches();
 
             // Event Managers Creation
@@ -120,9 +107,37 @@ namespace IsoUnity
                 GUIManager.addGUI(new OnScreenControlsGUI(), 99);
         }
 
+        public bool miVar; 
         void Update()
         {
             this.tick();
+
+            /*Intento de poder regenerar el Game para poder cambiar de escena
+             * Player player = FindObjectOfType<Player>();
+
+            miVar= CargarEscena.carga;
+                
+            if (miVar==true)
+            {
+                Debug.Log(miVar);
+                look = GameObject.Find("Jorge");
+                this.look = player.gameObject;
+                this.map = player.Entity.Position.Map;
+            
+                CameraManager.initialize();
+                CameraManager.lookTo(look);
+                MapManager.getInstance().hideAllMaps();
+                MapManager.getInstance().setActiveMap(map);
+                ControllerManager.Enabled = true;
+                IsoSwitchesManager.getInstance().getIsoSwitches();
+                        miVar=false;
+                events = new Queue<IGameEvent>();
+                if (this.onScreenControls)
+                    GUIManager.addGUI(new OnScreenControlsGUI(), 99);
+
+
+            }
+            */
         }
 
         void OnGUI()
@@ -168,28 +183,13 @@ namespace IsoUnity
         /*
          * As the player input isnt so frecuent, it's only checked each ms to improve performance
          */
-        private float timeToController = 100 / 1000;
-        private float currentTimeToController = 0;
+      //  private float timeToController = 100 / 1000;
+        //private float currentTimeToController = 0;
 
         public void tick()
         {
-            // Variable changes
-            if (previousLook != look)
-                CameraManager.lookTo(previousLook = look);
-
             if (previousMap != map)
                 MapManager.getInstance().setActiveMap(previousMap = map);
-
-            // Main Tick
-            CameraManager.Update();
-
-            // Controller management
-            /*currentTimeToController += Time.deltaTime;
-            if (currentTimeToController > timeToController)
-            {*/
-                ControllerManager.tick();
-              //  currentTimeToController -= timeToController;
-            //}
 
             // Events launch
             while (events.Count > 0)
