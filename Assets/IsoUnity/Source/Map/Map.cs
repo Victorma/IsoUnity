@@ -669,7 +669,7 @@ namespace IsoUnity
                         }
                         else
                         {
-                            Entity e = hit.collider.GetComponent<Entity>();
+                            Entity e = hit.collider.GetComponentInParent<Entity>();
                             if (e != null)
                                 fillEntity(e, args);
                             encontrado = true;
