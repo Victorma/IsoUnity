@@ -63,7 +63,7 @@ namespace IsoUnity.Sequences
             this.ge.Name = config.Name;
             foreach (var parameterConfig in config.ParameterConfig)
             {
-                if (ge.getParameter(parameterConfig.Key) == null || ge.getParameter(parameterConfig.Key).GetType() != parameterConfig.Value)
+                if (ge.getParameter(parameterConfig.Key) == null || !parameterConfig.Value.IsAssignableFrom(ge.getParameter(parameterConfig.Key).GetType()))
                 {
                     object value = config.ParameterHasDefault[parameterConfig.Key] ? config.DefaultValue[parameterConfig.Key] : GetDefault(parameterConfig.Value);
                     ge.setParameter(parameterConfig.Key, value);
