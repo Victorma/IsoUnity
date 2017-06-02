@@ -106,8 +106,6 @@ namespace IsoUnity
             if (this.onScreenControls)
                 GUIManager.addGUI(new OnScreenControlsGUI(), 99);
         }
-
-        public bool miVar; 
         void Update()
         {
             this.tick();
