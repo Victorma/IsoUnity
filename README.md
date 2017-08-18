@@ -10,4 +10,4 @@ An isometric retro-style editor for unity. (http://narratech.com/en/isounity/)
 An introduction to IsoUnity
 --------
 
-[![Slideshare](http://i214.photobucket.com/albums/cc172/victormafire/preview.png)](https://es.slideshare.net/VctorManuelPrezColad/isounity-a-retroisometric-toolkit-for-unity)
+[![Slideshare](https://raw.githubusercontent.com/Victorma/IsoUnity/ecb8d83a1475b45bfb345650e336bd6d48f13032/preview.png)](https://es.slideshare.net/VctorManuelPrezColad/isounity-a-retroisometric-toolkit-for-unity)
