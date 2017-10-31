@@ -3,7 +3,7 @@ IsoUnity
 
 An isometric retro-style editor for unity. (http://narratech.com/en/isounity/)
 
-[![Stories in Ready](https://badge.waffle.io/victormafire/isounity.png?label=ready&title=Ready)](https://waffle.io/victormafire/isounity)
+[![Stories in Ready](https://badge.waffle.io/victorma/isounity.png?label=ready&title=Ready)](https://waffle.io/victorma/isounity)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/IsoUnity/Lobby)
 [![Build Status](https://travis-ci.org/Victorma/IsoUnity.svg?branch=master)](https://travis-ci.org/Victorma/IsoUnity)
 
