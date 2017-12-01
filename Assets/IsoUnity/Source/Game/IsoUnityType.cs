@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class IsoUnityType : ScriptableObject, JSONAble
+namespace IsoUnity
 {
-    public abstract bool canHandle(object o);
-    public abstract IsoUnityType clone();
-    public abstract object Value
+    public abstract class IsoUnityType : ScriptableObject, JSONAble
     {
-        get;
-        set;
-    }
-    public abstract JSONObject toJSONObject();
+        public abstract bool canHandle(object o);
+        public abstract IsoUnityType clone();
+        public abstract object Value
+        {
+            get;
+            set;
+        }
+        public abstract JSONObject toJSONObject();
 
-    public abstract void fromJSONObject(JSONObject json);
+        public abstract void fromJSONObject(JSONObject json);
+    }
 }

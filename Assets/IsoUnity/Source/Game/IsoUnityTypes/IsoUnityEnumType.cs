@@ -1,39 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class IsoUnityEnumType : IsoUnityType
-{
-    private System.Enum enumerated;
+namespace IsoUnity {
+	public class IsoUnityEnumType : IsoUnityType
+	{
+        [SerializeField]
+	    private int enumerated = 0;
+        [SerializeField]
+        private string type = "";
 
-    public override bool canHandle(object o)
-    {
-        return o is System.Enum;
-    }
-
-    public override IsoUnityType clone()
-    {
-        return IsoUnityEnumType.CreateInstance<IsoUnityEnumType>();
-    }
-
-    public override object Value
-    {
-        get
+        private void OnEnable()
         {
-            return enumerated;
         }
-        set
-        {
-            enumerated = value as System.Enum;
-        }
-    }
 
-    public override JSONObject toJSONObject()
-    {
-        throw new System.NotImplementedException();
-    }
+        public override bool canHandle(object o)
+	    {
+	        return o is System.Enum;
+	    }
 
-    public override void fromJSONObject(JSONObject json)
-    {
-        throw new System.NotImplementedException();
-    }
+	    public override IsoUnityType clone()
+	    {
+	        return IsoUnityEnumType.CreateInstance<IsoUnityEnumType>();
+	    }
+
+	    public override object Value
+	    {
+	        get
+	        {
+                var t = Type.GetType(type);
+                return t != null ? Enum.ToObject(t, enumerated): enumerated;
+	        }
+	        set
+	        {
+	            enumerated = (int)value;
+                type = value.GetType().FullName;
+	        }
+	    }
+
+	    public override JSONObject toJSONObject()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public override void fromJSONObject(JSONObject json)
+	    {
+	        throw new System.NotImplementedException();
+	    }
+	}
 }

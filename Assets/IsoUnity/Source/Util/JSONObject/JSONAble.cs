@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface JSONAble 
+namespace IsoUnity
 {
-    JSONObject toJSONObject();
-    void fromJSONObject(JSONObject json);
+    public interface JSONAble
+    {
+        JSONObject toJSONObject();
+        void fromJSONObject(JSONObject json);
+    }
 }

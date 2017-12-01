@@ -2,293 +2,343 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-[ExecuteInEditMode]
-[DisallowMultipleComponent]
-public class Decoration : MonoBehaviour{
-	/*******************************
-	 * BEGIN ATRIBS
-	 *******************************/
+namespace IsoUnity
+{
+    [ExecuteInEditMode]
+    [DisallowMultipleComponent]
+    public class Decoration : MonoBehaviour
+    {
+        /*******************************
+             * BEGIN ATRIBS
+             *******************************/
 
-	// The cell face that is asigned to
-	[SerializeField]
-	private IsoDecoration isoDec;
+        // The cell face that is asigned to
+        [SerializeField]
+        private IsoDecoration isoDec;
 
-	public IsoDecoration IsoDec {
-		get { return isoDec;}
-		set { isoDec = value; }
-	}
-	[SerializeField]
-	private Object father;
+        public IsoDecoration IsoDec
+        {
+            get { return isoDec; }
+            set { isoDec = value; }
+        }
+        [SerializeField]
+        private Object father;
 
-	public Object Father {
-		get { return father;}
-		set { father = value; }
-	}
+        public Object Father
+        {
+            get { return father; }
+            set { father = value; }
+        }
 
-	[SerializeField]
-	private Vector3 center;
-	
-	public Vector3 Center {
-		get { return center;}
-		set { center = value; }
-	}
+        [SerializeField]
+        private Vector3 center;
 
-	[SerializeField]
-	private int angle;
+        public Vector3 Center
+        {
+            get { return center; }
+            set { center = value; }
+        }
 
-	public int Angle {
-		get { return angle;}
-		set { angle = value; }
-	}
+        [SerializeField]
+        private int angle;
 
-	[SerializeField]
-	private bool parallel;
+        public int Angle
+        {
+            get { return angle; }
+            set { angle = value; }
+        }
 
-	public bool Parallel {
-		get { return parallel;}
-		set { parallel = value; }
-	}
+        [SerializeField]
+        private bool parallel;
 
-	[SerializeField]
-	private bool centered;
-	
-	public bool Centered {
-		get { return centered;}
-		set { centered = value; }
-	}
+        public bool Parallel
+        {
+            get { return parallel; }
+            set { parallel = value; }
+        }
 
-	private Vector3[] quadVertices;
+        [SerializeField]
+        private bool centered;
 
-	/** ********************
-	 * END ATRIBS
-	 * *********************/
+        public bool Centered
+        {
+            get { return centered; }
+            set { centered = value; }
+        }
 
-	public Decoration (){
-	}
+        private Vector3[] quadVertices;
 
-	private int previousTile = -1;
-	private bool previousParallel = false;
-	private bool previousCentered = false;
+        /** ********************
+         * END ATRIBS
+         * *********************/
 
-	void Awake(){
-		previousTile = tile;
-		previousParallel = parallel;
-		previousCentered = centered;
-	}
+        public Decoration()
+        {
+        }
 
-	void Update(){
-		if (isoDec == null)
-			return;
+        private int previousTile = -1;
+        private bool previousParallel = false;
+        private bool previousCentered = false;
 
-		if (tile != previousTile) {
-			tile = Mathf.Clamp (tile, 0, isoDec.nCols * isoDec.nRows);
-			updateTextures ();
-			previousTile = tile;
-		}
+        void Awake()
+        {
+            previousTile = tile;
+            previousParallel = parallel;
+            previousCentered = centered;
+        }
 
-		if (parallel != previousParallel) {
-			adaptate ();
-			previousParallel = parallel;
-		}
+        void Update()
+        {
+            if (isoDec == null)
+                return;
 
-		if (centered != previousCentered) {
-			adaptate ();
-			previousCentered = centered;
-		}
-	}
+            if (tile != previousTile)
+            {
+                tile = Mathf.Clamp(tile, 0, isoDec.nCols * isoDec.nRows);
+                updateTextures(false);
+                previousTile = tile;
+            }
 
-	public void setParameters(Vector3 center, int angle, bool parallel, bool centered){
-		this.center = center;
-		this.angle = angle;
-		this.parallel = parallel;
-		this.centered = centered;
+            if (parallel != previousParallel)
+            {
+                adaptate();
+                previousParallel = parallel;
+            }
 
-		adaptate ();
-	}
+            if (centered != previousCentered)
+            {
+                adaptate();
+                previousCentered = centered;
+            }
+        }
 
-	public void adaptate(){
-		this.updateTextures ();
-		this.colocate ();
-		this.setRotation ();
-	}
+        public void setParameters(Vector3 center, int angle, bool parallel, bool centered)
+        {
+            this.center = center;
+            this.angle = angle;
+            this.parallel = parallel;
+            this.centered = centered;
 
-	public void updateTextures(){
-		float scale = Mathf.Sqrt (2f) / IsoSettingsManager.getInstance ().getIsoSettings ().defautTextureScale.width;
+            adaptate();
+        }
 
-		this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols),(isoDec.getTexture().height * scale) / ((float)isoDec.nRows),1);
+        public void adaptate()
+        {
+            this.updateTextures(true);
+            this.colocate();
+            this.setRotation();
+        }
 
-		if (!parallel)
-			this.transform.localScale = new Vector3 (this.transform.localScale.x,this.transform.localScale.y / Mathf.Sin (45f),1);
-		else {
-			if(this.angle==0)
-				this.transform.localScale = new Vector3 (this.transform.localScale.x,this.transform.localScale.y*2f,1);
-			else{
-				this.transform.localScale = new Vector3 (Mathf.Sqrt(2f*(this.transform.localScale.x*this.transform.localScale.x)),this.transform.localScale.y / Mathf.Sin(45f),1);
+        public void updateTextures(bool regenerateMesh)
+        {
+            float scale = Mathf.Sqrt(2f) / IsoSettingsManager.getInstance().getIsoSettings().defautTextureScale.width;
 
-				Mesh mesh = this.GetComponent<MeshFilter>().mesh;
+            
+            if (regenerateMesh)
+            {
+                Mesh mesh = new Mesh();
+                mesh.vertices = new Vector3[] { new Vector3(-0.5f,-0.5f,0), new Vector3(0.5f, 0.5f, 0), new Vector3(0.5f, -0.5f, 0), new Vector3(-0.5f, 0.5f, 0) };
+                mesh.uv = new Vector2[] { Vector2.zero, Vector2.one, new Vector2(1, 0),  new Vector2(0, 1)};
+                mesh.triangles = new int[] { 0, 1, 2, 3, 1, 0 };
+                mesh.normals = new Vector3[] { new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f), new Vector3(0, 0, -0.5f) };
+                mesh.RecalculateBounds();
+                mesh.RecalculateTangents();
+
+                this.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+                this.transform.localScale = new Vector3(isoDec.getTexture().width * scale / ((float)isoDec.nCols), (isoDec.getTexture().height * scale) / ((float)isoDec.nRows), 1);
+
+                if (!parallel)
+                    this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y / Mathf.Sin(45f), 1);
+                else
+                {
+                    if (this.angle == 0)
+                        this.transform.localScale = new Vector3(this.transform.localScale.x, this.transform.localScale.y * 2f, 1);
+                    else
+                    {
+                        this.transform.localScale = new Vector3(Mathf.Sqrt(2f * (this.transform.localScale.x * this.transform.localScale.x)), this.transform.localScale.y / Mathf.Sin(45f), 1);
 
 
-				if(quadVertices==null){
-					quadVertices = new Vector3[mesh.vertices.Length];
-					for(int i=0; i<mesh.vertices.Length; i++) 
-						quadVertices[i] = new Vector3(mesh.vertices[i].x,mesh.vertices[i].y,mesh.vertices[i].z); 
-				}
 
-				Vector3[] vertices = new Vector3[quadVertices.Length];
-				for(int i=0; i<quadVertices.Length; i++) 
-					vertices[i] = new Vector3(quadVertices[i].x,quadVertices[i].y,quadVertices[i].z); 
+                        if (quadVertices == null)
+                        {
+                            quadVertices = new Vector3[mesh.vertices.Length];
+                            for (int i = 0; i < mesh.vertices.Length; i++)
+                                quadVertices[i] = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z);
+                        }
 
-				float xprima = this.transform.localScale.x;
-				float omega = xprima*0.57735026f;
-				float gamma = omega/(this.transform.localScale.y*Mathf.Sqrt(2));
+                        Vector3[] vertices = new Vector3[quadVertices.Length];
+                        for (int i = 0; i < quadVertices.Length; i++)
+                            vertices[i] = new Vector3(quadVertices[i].x, quadVertices[i].y, quadVertices[i].z);
 
-				Vector3 bajada = new Vector3(0,gamma,0);
+                        float xprima = this.transform.localScale.x;
+                        float omega = xprima * 0.57735026f;
+                        float gamma = omega / (this.transform.localScale.y * Mathf.Sqrt(2));
 
-				if(this.angle==2){
-					vertices[0] -= bajada;
-					vertices[3] -= bajada;
-				}else if(this.angle==1){
-					vertices[1] -= bajada;
-					vertices[2] -= bajada;
-				}
+                        Vector3 bajada = new Vector3(0, gamma, 0);
 
-				mesh.vertices = vertices;
+                        if (this.angle == 2)
+                        {
+                            vertices[0] -= bajada;
+                            vertices[3] -= bajada;
+                        }
+                        else if (this.angle == 1)
+                        {
+                            vertices[1] -= bajada;
+                            vertices[2] -= bajada;
+                        }
 
-				this.GetComponent<MeshFilter>().sharedMesh = mesh;
-			}
-		}
+                        mesh.vertices = vertices;
 
-		Material myMat = this.GetComponent<Renderer>().sharedMaterial;
-		myMat.mainTextureScale = new Vector2 (1f/((float)isoDec.nCols), 1f/((float)isoDec.nRows));
-		myMat.mainTextureOffset = new Vector2 (0, 1- 1f/((float)isoDec.nRows));
-		myMat.SetTexture("_MainTex",isoDec.getTexture());
-		this.GetComponent<Renderer>().sharedMaterial = myMat;
+                        this.GetComponent<MeshFilter>().sharedMesh = mesh;
+                    }
+                }
+            }
 
-        int x = tile % (isoDec.nCols);
-        int y = Mathf.FloorToInt(tile / isoDec.nCols);
+            Material myMat = this.GetComponent<Renderer>().sharedMaterial;
+            myMat.mainTextureScale = new Vector2(1f / ((float)isoDec.nCols), 1f / ((float)isoDec.nRows));
+            myMat.mainTextureOffset = new Vector2(0, 1 - 1f / ((float)isoDec.nRows));
+            myMat.SetTexture("_MainTex", isoDec.getTexture());
+            this.GetComponent<Renderer>().sharedMaterial = myMat;
 
-		this.GetComponent<Renderer>().sharedMaterial.mainTextureOffset = new Vector2((x / ((float)isoDec.nCols)), (y / ((float)isoDec.nRows)));
-	}
+            int x = tile % (isoDec.nCols);
+            int y = Mathf.FloorToInt(tile / isoDec.nCols);
 
-	public void colocate(){
-		if (this.father is Cell) {
-			Cell celdapadre = this.father as Cell;
-			this.transform.parent = celdapadre.transform;
-			Vector3 invfather = celdapadre.transform.InverseTransformPoint (this.center);
+            this.GetComponent<Renderer>().sharedMaterial.mainTextureOffset = new Vector2((x / ((float)isoDec.nCols)), (y / ((float)isoDec.nRows)));
+        }
 
-			//###################
-			//        / \
-			//       /   \
-			//      /     \
-			//     /   0   \
-			//    |\       /|
-			//    | \     / |
-			//    |  \   /  |
-			//    | 2 \_/ 1 |
-			//     \   |   /
-			//      \  |  /
-			//       \ | /
-			//        \|/
-			//####################
+        public void colocate()
+        {
+            if (this.father is Cell)
+            {
+                Cell celdapadre = this.father as Cell;
+                this.transform.parent = celdapadre.transform;
+                Vector3 invfather = celdapadre.transform.InverseTransformPoint(this.center);
 
-			Vector3 position = new Vector3 ();
-			this.transform.localRotation = celdapadre.transform.rotation;
+                //###################
+                //        / \
+                //       /   \
+                //      /     \
+                //     /   0   \
+                //    |\       /|
+                //    | \     / |
+                //    |  \   /  |
+                //    | 2 \_/ 1 |
+                //     \   |   /
+                //      \  |  /
+                //       \ | /
+                //        \|/
+                //####################
 
-			// Segun la zona de actuacion, definiremos la posicion de una manera u otra.
-			switch (this.angle) {
-			case 0:
-				{
-					if (this.centered)
-						if (!this.parallel)
-							position = new Vector3 (-0.5f, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, -0.5f);
-						else
-                            position = new Vector3(-0.5f, (celdapadre.Height * celdapadre.Width + 0.01f), -0.5f);
-					else
-						if (!this.parallel)
-                            position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, invfather.z);
-						else
-                            position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + 0.01f, invfather.z);
-					break;
-				}
-			case 1:
-				{
-					if (this.centered)
-						if (!this.parallel)
-                            position = new Vector3(-celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
-						else
-                            position = new Vector3(-celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
-					else
-						if (!this.parallel)
-							position = new Vector3 (invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
-						else
-                            position = new Vector3(invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
-					break;
-				}
-			case 2:
-				{
-					if (this.centered)
-						if (!this.parallel)
-                            position = new Vector3(-celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
-						else
-                            position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -celdapadre.Width / 2);
-					else
-						if (!this.parallel)
-							position = new Vector3 (invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos (45 * Mathf.Deg2Rad)));
-						else
-                            position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);	
-					break;
-				}
-			}
+                Vector3 position = new Vector3();
+                this.transform.localRotation = celdapadre.transform.rotation;
 
-			if (!this.centered)
-					this.transform.localPosition = invfather;
+                // Segun la zona de actuacion, definiremos la posicion de una manera u otra.
+                switch (this.angle)
+                {
+                    case 0:
+                        {
+                            if (this.centered)
+                                if (!this.parallel)
+                                    position = new Vector3(-0.5f, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, -0.5f);
+                                else
+                                    position = new Vector3(-0.5f, (celdapadre.Height * celdapadre.Width + 0.01f), -0.5f);
+                            else
+                                if (!this.parallel)
+                                    position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + this.transform.localScale.y / 2, invfather.z);
+                                else
+                                    position = new Vector3(invfather.x, (celdapadre.Height * celdapadre.Width) + 0.01f, invfather.z);
+                            break;
+                        }
+                    case 1:
+                        {
+                            if (this.centered)
+                                if (!this.parallel)
+                                    position = new Vector3(-celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(-celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
+                            else
+                                if (!this.parallel)
+                                    position = new Vector3(invfather.x + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(invfather.x, invfather.y + (this.transform.localScale.y / 2), -0.01f - celdapadre.Width / 2);
+                            break;
+                        }
+                    case 2:
+                        {
+                            if (this.centered)
+                                if (!this.parallel)
+                                    position = new Vector3(-celdapadre.Width / 2 - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y - (invfather.y % celdapadre.Width) + 1, -celdapadre.Width / 2 + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y - (invfather.y % celdapadre.Width) + 1 + (this.transform.localScale.y / 2), -celdapadre.Width / 2);
+                            else
+                                if (!this.parallel)
+                                    position = new Vector3(invfather.x - ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)), invfather.y, invfather.z + ((this.transform.localScale.x / 2) * Mathf.Cos(45 * Mathf.Deg2Rad)));
+                                else
+                                    position = new Vector3(-0.01f - celdapadre.Width / 2, invfather.y + (this.transform.localScale.y / 2), invfather.z);
+                            break;
+                        }
+                }
 
-			this.transform.localPosition = position;
-		}else if(this.father is Decoration){
-			Decoration decorationpadre = this.father as Decoration;
-			this.transform.parent = decorationpadre.transform;
+                if (!this.centered)
+                    this.transform.localPosition = invfather;
 
-			Vector3 position = new Vector3 ();
+                this.transform.localPosition = position;
+            }
+            else if (this.father is Decoration)
+            {
+                Decoration decorationpadre = this.father as Decoration;
+                this.transform.parent = decorationpadre.transform;
 
-			position = new Vector3 (0f, this.transform.localScale.y, 0f);
+                Vector3 position = new Vector3();
 
-			this.transform.localPosition = position;
-		}
-	}
+                position = new Vector3(0f, this.transform.localScale.y, 0f);
 
-	[SerializeField]
-	private int tile =0;
-	public int Tile {
-		get{
-			return tile;
-		}
-		set{
-			tile = value;
-			this.updateTextures ();
-		}
-	}
+                this.transform.localPosition = position;
+            }
+        }
 
-	public void setRotation(){
-		float x = 0, y = 45, z = 0;
+        [SerializeField]
+        private int tile = 0;
+        public int Tile
+        {
+            get
+            {
+                return tile;
+            }
+            set
+            {
+                tile = value;
+                this.updateTextures(false);
+            }
+        }
 
-		if (this.father is Cell) {
-			this.transform.localRotation = (this.father as Cell).transform.rotation;
+        public void setRotation()
+        {
+            float x = 0, y = 45, z = 0;
 
-			if (this.parallel) {
-				switch (this.angle) {
-				case 0:{x=90; y=45; break;}
-				case 1:{y=0; break;}
-				case 2:{y=90;break;}
-				}
-			}
-		}
+            if (this.father is Cell)
+            {
+                this.transform.localRotation = (this.father as Cell).transform.rotation;
 
-		else if (this.father is Decoration){
-			this.transform.localRotation = (this.father as Decoration).transform.rotation;
-			y = -45;
-		}
+                if (this.parallel)
+                {
+                    switch (this.angle)
+                    {
+                        case 0: { x = 90; y = 45; break; }
+                        case 1: { y = 0; break; }
+                        case 2: { y = 90; break; }
+                    }
+                }
+            }
 
-		this.transform.Rotate (x, y, z);
-	}
+            else if (this.father is Decoration)
+            {
+                this.transform.localRotation = (this.father as Decoration).transform.rotation;
+                y = -45;
+            }
+
+            this.transform.Rotate(x, y, z);
+        }
+    }
 }
-

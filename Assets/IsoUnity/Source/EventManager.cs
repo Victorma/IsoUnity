@@ -1,17 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class EventManager : MonoBehaviour{
+namespace IsoUnity
+{
+    public abstract class EventManager : MonoBehaviour, IEventManager
+    {
 
-	void OnEnable(){
-		Game.main.RegisterEventManager (this);
-	}
+        void OnEnable()
+        {
+            if (Game.main != null)
+                Game.main.RegisterEventManager(this);
+        }
 
-	void OnDisable(){
-		Game.main.DeRegisterEventManager (this);
-	}
+        void OnDisable()
+        {
+            if(Game.main != null)
+                Game.main.DeRegisterEventManager(this);
+        }
 
-	public abstract void ReceiveEvent (IGameEvent ev);
-	public abstract void Tick ();
+        public abstract void ReceiveEvent(IGameEvent ev);
+        public abstract void Tick();
 
+    }
+
+    public interface IEventManager
+    {
+        void ReceiveEvent(IGameEvent ev);
+        void Tick();
+    }
 }
