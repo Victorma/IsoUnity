@@ -9,18 +9,14 @@ namespace IsoUnity.Entities
 {
     public abstract class EventedEventManager : EventManager
     {
-        private bool inited = false;
         private Dictionary<GameEventConfig, MethodInfo> calls;
         private Dictionary<MethodInfo, GameEventAttribute> attrInfo;
-
-        public override void Tick()
+        
+        protected virtual void Start()
         {
-            if (!inited)
-            {
-                EventedEntityScript.Init(this.GetType(), ref calls, ref attrInfo);
-                inited = true;
-            }
+            EventedEntityScript.Init(this.GetType(), ref calls, ref attrInfo);
         }
+        public override void Tick() {}
 
         public override void ReceiveEvent(IGameEvent ge)
         {
