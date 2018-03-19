@@ -9,7 +9,6 @@ namespace IsoUnity.Entities
 {
     public abstract class EventedEntityScript : EntityScript
     {
-        private bool inited = false;
         private Dictionary<GameEventConfig, MethodInfo> calls;
         private Dictionary<MethodInfo, GameEventAttribute> attrInfo;
 
@@ -39,14 +38,12 @@ namespace IsoUnity.Entities
 
         protected IGameEvent Current { get; private set; }
 
-        public override void tick()
+        protected virtual void Start()
         {
-            if (!inited)
-            {
-                Init(this.GetType(), ref calls, ref attrInfo);
-                inited = true;
-            }
+            Init(this.GetType(), ref calls, ref attrInfo);
         }
+
+        public override void tick() { }
 
         internal static void Init(Type type, ref Dictionary<GameEventConfig, MethodInfo> calls, ref Dictionary<MethodInfo, GameEventAttribute> attrInfo)
         {
