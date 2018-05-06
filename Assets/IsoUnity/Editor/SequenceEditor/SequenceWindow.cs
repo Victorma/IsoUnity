@@ -655,7 +655,7 @@ namespace IsoUnity.Sequences {
 			}
 
 			// Update the window size according to editor
-			if (Event.current.type != EventType.layout)
+			if (Event.current.type != EventType.Layout)
 			{
 				Rect lastRect = GUILayoutUtility.GetLastRect();
 				Rect myRect = myNode.Position;

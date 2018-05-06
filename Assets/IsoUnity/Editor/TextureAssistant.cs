@@ -156,7 +156,7 @@ namespace IsoUnity
 
                     EditorGUILayout.Space();
                     Rect rect = GUILayoutUtility.GetLastRect();
-                    if (Event.current.type == EventType.repaint)
+                    if (Event.current.type == EventType.Repaint)
                     {
                         float w = position.width;
                         float h = position.height - rect.y;

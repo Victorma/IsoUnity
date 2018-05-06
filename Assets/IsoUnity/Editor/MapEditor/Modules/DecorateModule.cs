@@ -175,7 +175,7 @@ namespace IsoUnity
 
                 if (e.isMouse && border.Contains(e.mousePosition))
                 {
-                    if (e.type == EventType.mouseDown)
+                    if (e.type == EventType.MouseDown)
                     {
                         paintingIsoDecoration = it;
                         this.Repaint = true;

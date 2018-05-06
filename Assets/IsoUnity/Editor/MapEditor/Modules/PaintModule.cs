@@ -153,7 +153,7 @@ namespace IsoUnity
 
                 if (e.isMouse && border.Contains(e.mousePosition))
                 {
-                    if (e.type == EventType.mouseDown)
+                    if (e.type == EventType.MouseDown)
                     {
                         paintingTexture = it.getTexture();
                         paintingIsoTexture = it;
@@ -260,7 +260,7 @@ namespace IsoUnity
                         if (Event.current.shift)
                         {
 
-                            if (Event.current.type == EventType.mouseDown) collectTexture = true;
+                            if (Event.current.type == EventType.MouseDown) collectTexture = true;
                             if (collectTexture && Event.current.type != EventType.MouseUp) backupTextures = true;
                             else collectTexture = false;
 

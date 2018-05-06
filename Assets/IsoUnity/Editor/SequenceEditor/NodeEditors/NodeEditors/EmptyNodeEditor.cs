@@ -11,7 +11,7 @@ namespace IsoUnity.Sequences {
 		public void draw(){
 			EditorGUILayout.HelpBox("Select a content for this node" +
 				"or leave it empty to finish the secuence here.",MessageType.Info);
-			if(Event.current.type != EventType.layout){
+			if(Event.current.type != EventType.Layout){
 				if(node.Childs.Length != 0)
 					node.clearChilds();
 			}

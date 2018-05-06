@@ -113,10 +113,19 @@ namespace IsoUnity.Entities
 
         // Move
         private IGameEvent movementEvent;
+       
+     
+        private Cell next;
+        private Movement movement;
+
+        private bool step = false;
+        private Decoration dec;
 
         /****************
          * End Attributes
          * ***************/
+
+         public bool Step { get { return step; } } 
 
         /******************
          * MOVEMENT CONTROL
@@ -158,7 +167,7 @@ namespace IsoUnity.Entities
         {
             RoutePlanifier.cancelRoute(this);
             this.movement = Movement.createMovement(MovementType.Instant,
-                this.Entity, this, dec, normalSprite, this.transform.position,
+                this.Entity, this, this.transform.position,
                 c.transform.position, this.Entity.Position, c, null);
         }
 
@@ -168,7 +177,7 @@ namespace IsoUnity.Entities
             mParams["direction"] = dir;
 
             return Movement.createMovement(MovementType.Turn,
-                this.Entity, this, dec, normalSprite, this.transform.position,
+                this.Entity, this, this.transform.position,
                 this.transform.position, this.Entity.Position, this.Entity.Position, mParams);
         }
          
@@ -241,7 +250,7 @@ namespace IsoUnity.Entities
         {
             base.tick();
 
-            if (this.dec == null)
+            if (this.dec == null && Entity)
                 this.dec = Entity.decoration;
 
             // Direction change responsive update
@@ -266,13 +275,13 @@ namespace IsoUnity.Entities
                 return (movement != null && !movement.Ended);
             }
         }
-       
-     
-        private Cell next;
-        private Movement movement;
 
-        private bool paso = false;
-        private Decoration dec;
+        private IsoAnimation.Frame frame(int column, float duration){
+            return new IsoAnimation.Frame(){
+                column = column,
+                duration = duration
+            };
+        }
 
         void Awake()
         {
@@ -283,10 +292,161 @@ namespace IsoUnity.Entities
             }
         }
 
-        void OnValidate()
+        private void SetUpSheets(bool replace = false)
         {
+            var decorationAnimator = Entity.decorationAnimator;
+            if (decorationAnimator == null)
+                return;
+
+            var normal = Entity.decorationAnimator.sheets.Find(s => s.name == "normal");
+            var jump = Entity.decorationAnimator.sheets.Find(s => s.name == "jump");
+
+            if (replace)
+            {
+                decorationAnimator.sheets.Remove(normal);
+                normal = null;
+                decorationAnimator.sheets.Remove(jump);
+                jump = null;
+            }
+            
+            // Normal sheet
+            if(normal == null)
+            {
+                decorationAnimator.sheets.Add(new DecorationAnimator.NameIsoDecoration()
+                {
+                    name = "normal",
+                    isoDecoration = normalSprite
+                });
+            } 
+            else
+            {
+                normal.isoDecoration = normalSprite;
+            }
+
+            // Jump sheet
+            if(jump == null)
+            {
+                decorationAnimator.sheets.Add(new DecorationAnimator.NameIsoDecoration()
+                {
+                    name = "jump",
+                    isoDecoration = jumpingSprite
+                });
+            } 
+            else
+            {
+                jump.isoDecoration = jumpingSprite;
+            }
+        }
+
+        private void SetUpAnimations(bool replace = false)
+        {
+            var decorationAnimator = Entity.decorationAnimator;
+            if (decorationAnimator == null)
+                return;
+
+            var idle = Entity.decorationAnimator.isoAnimations.Find(i => i.name == "idle");
+            var leftStep = Entity.decorationAnimator.isoAnimations.Find(i => i.name == "left step");
+            var rightStep = Entity.decorationAnimator.isoAnimations.Find(i => i.name == "right step");
+            var jump = Entity.decorationAnimator.isoAnimations.Find(i => i.name == "jump");
+
+            if (replace)
+            {
+                decorationAnimator.isoAnimations.Remove(idle);
+                idle = null;
+                decorationAnimator.isoAnimations.Remove(leftStep);
+                leftStep = null;
+                decorationAnimator.isoAnimations.Remove(rightStep);
+                rightStep = null;
+                decorationAnimator.isoAnimations.Remove(jump);
+                jump = null;
+            }
+            
+            // Left step animation
+            if(idle == null)
+            {
+                var idleAnimation = ScriptableObject.CreateInstance<IsoAnimation>();
+                idleAnimation.sheet = "normal";
+                idleAnimation.frames.Add(frame(0, 0)); // Instant
+                idleAnimation.loop = true;
+
+                decorationAnimator.isoAnimations.Add(new DecorationAnimator.NameIsoAnimation()
+                {
+                    name = "idle",
+                    isoAnimation = idleAnimation
+                });
+            } 
+
+            // Left step animation
+            if(leftStep == null)
+            {
+                var leftStepAnim = ScriptableObject.CreateInstance<IsoAnimation>();
+                leftStepAnim.sheet = "normal";
+                leftStepAnim.frames = new List<IsoAnimation.Frame>()
+                {
+                    frame(0, 0.075f), 
+                    frame(1, 0.15f), 
+                    frame(0, 0.075f)
+                };
+                Entity.decorationAnimator.isoAnimations.Add(new DecorationAnimator.NameIsoAnimation()
+                {
+                    name = "left step",
+                    isoAnimation = leftStepAnim
+                });
+            } 
+
+            // Right step animation
+            if(!Entity.decorationAnimator.isoAnimations.Exists(i => i.name == "right step"))
+            {
+                var rightStepAnim = ScriptableObject.CreateInstance<IsoAnimation>();
+                rightStepAnim.sheet = "normal";
+                rightStepAnim.frames = new List<IsoAnimation.Frame>()
+                {
+                    frame(0, 0.075f), 
+                    frame(2, 0.15f), 
+                    frame(0, 0.075f)
+                };
+                Entity.decorationAnimator.isoAnimations.Add(new DecorationAnimator.NameIsoAnimation()
+                {
+                    name = "right step",
+                    isoAnimation = rightStepAnim
+                });
+            }
+
+            // Jump animation
+            if(!Entity.decorationAnimator.isoAnimations.Exists(i => i.name == "jump"))
+            {
+                var jumpAnim = ScriptableObject.CreateInstance<IsoAnimation>();
+                jumpAnim.sheet = "jump";
+                jumpAnim.frames = new List<IsoAnimation.Frame>()
+                {
+                    frame(0, 0.3f)
+                };
+                Entity.decorationAnimator.isoAnimations.Add(new DecorationAnimator.NameIsoAnimation()
+                {
+                    name = "jump",
+                    isoAnimation = jumpAnim
+                });
+            }
+        }
+        private bool entityReady = false;
+        private void OnValidate()
+        {
+            if(entityReady)
+            {
+                tick();
+                this.Update();
+                SetUpSheets(false);
+                SetUpAnimations(false);
+            }
+        }
+
+        public override void OnEntityReady() 
+        {
+            entityReady = true;
             tick();
             this.Update();
+            SetUpSheets(false);
+            SetUpAnimations(false);
         }
       
         public override void Update()
@@ -324,8 +484,6 @@ namespace IsoUnity.Entities
                         this.movement = Movement.createMovement(type, // type
                             this.Entity,                              // Entity
                             this,                                     // Mover
-                            dec,                                      // Decoration 
-                            getSpritesheetForMovementType(type),      // Sheet
                             transform.position,                       // Origin
                             next.transform.position + new Vector3(0, next.WalkingHeight + transform.localScale.y / 2, 0) + offset, // Destination
                             Entity.Position,                          // Cell Origin
@@ -352,7 +510,7 @@ namespace IsoUnity.Entities
                 // If the movement has ended
                 if (this.movement.Ended)
                 {
-                    paso = !paso;
+                    step = !step;
                 }
             }
         }
@@ -384,28 +542,6 @@ namespace IsoUnity.Entities
         }
 
         /**
-         * Sprite Management
-         * */
-
-        private IsoDecoration getSpritesheetForMovementType(MovementType type)
-        {
-            switch (type)
-            {
-                case MovementType.Lineal:
-                case MovementType.Fade:
-                    return normalSprite;
-                case MovementType.Parabolic:
-                    return jumpingSprite;
-                case MovementType.Instant:
-                    return normalSprite;
-                case MovementType.Turn:
-                    return normalSprite;
-            }
-
-            return normalSprite;
-        }
-
-        /**
          * Movements
          * */
 
@@ -417,8 +553,6 @@ namespace IsoUnity.Entities
             //Attributes
             protected Entity entity;
             protected Mover mover;
-            protected Decoration dec;
-            protected IsoDecoration sheet;
             protected Vector3 from, to;
             protected Cell origin, destination;
             //protected MovementType type;
@@ -432,18 +566,25 @@ namespace IsoUnity.Entities
             public void addProgress(float time) { this.progress += time; }
             public bool Ended { get { return Progress >= Duration; } }
             public abstract float Duration { get; }
-
-            private static int start=3
-                ;
+            private bool started = false;
+            private static int start=3;
 
             //Extra param input
             protected virtual void setParams(Dictionary<string, object> mParams) { }
+            // Start
+            protected virtual void Start() { }
 
             /*************************
              * GENERIC UPDATES
              * ************************/
             public virtual void Update(float progress)
             {
+                if (!started)
+                {
+                    started = true;
+                    Start();
+                }
+
                 this.addProgress(progress);
                 if (!destination.Influences.Contains(entity))
                     destination.Influences.Add(entity);
@@ -480,34 +621,12 @@ namespace IsoUnity.Entities
                     }
 
                 }
-                else if(dec && dec.IsoDec)
-                {
-                    // Change the spritesheet
-                    this.setSpritesheet(sheet);
-
-                    // Step Addition
-                    int stepAdition = 0;
-                    if (dec.IsoDec.nCols > 1) // TODO: Wider spritesheets with more than 1 prite per step.
-                        if (Progress / Duration >= 0.15 && Progress / Duration <= 0.85)
-                            stepAdition = ((mover.paso) ? 1 : 2);
-
-                    dec.Tile = getDirectionIndex(mover.direction) * dec.IsoDec.nCols + stepAdition;
-                }
-            }
-
-            private void setSpritesheet(IsoDecoration isoDec)
-            {
-                if (this.dec.IsoDec != isoDec)
-                {
-                    this.dec.IsoDec = isoDec;
-                    this.dec.updateTextures(false);
-                }
             }
 
             /********************
              * Movement factory
              * ***************/
-            public static Movement createMovement(MovementType type, Entity entity, Mover mover, Decoration dec, IsoDecoration sheet,
+            public static Movement createMovement(MovementType type, Entity entity, Mover mover,
                 Vector3 from, Vector3 to, Cell origin, Cell destination, Dictionary<string, object> mParams)
             {
                 Movement movement = null;
@@ -530,8 +649,6 @@ namespace IsoUnity.Entities
                 movement.from = from;
                 movement.to = to;
                 movement.entity = entity;
-                movement.dec = dec;
-                movement.sheet = sheet;
                 movement.mover = mover;
 
                 return movement;
@@ -571,6 +688,12 @@ namespace IsoUnity.Entities
                     return from + (to - from) * moment;
                 }
                 bool sonido = false;
+
+                protected override void Start() {
+                    if (entity.mover.Step) entity.decorationAnimator.Play("left step", "idle");
+                    else entity.decorationAnimator.Play("right step", "idle");
+                }
+
                 public override void Update(float progress)
                 {
                    
@@ -591,6 +714,7 @@ namespace IsoUnity.Entities
                             anim.SetFloat("speed", 0f);
                     }
                 }
+
             }
             
 
@@ -619,6 +743,11 @@ namespace IsoUnity.Entities
 
                     return from + (to - from) * moment + vectorHeight * (1f - 4f * Mathf.Pow(moment - 0.5f, 2));
                 }
+
+                protected override void Start() {
+                    entity.decorationAnimator.Play("jump", "idle");
+                }
+
                 public override void Update(float progress)
                 {
                     base.Update(progress);
@@ -690,6 +819,10 @@ namespace IsoUnity.Entities
                     if (dir != null && dir is Direction) direction = (Direction)dir;
                 }
 
+                protected override void Start() {
+                    entity.decorationAnimator.Play("idle");
+                }
+
                 public override void Update(float progress)
                 {
                   
@@ -731,6 +864,11 @@ namespace IsoUnity.Entities
                     return position;
                 }
 
+                protected override void Start() {
+                    if (entity.mover.Step) entity.decorationAnimator.Play("left step", "right step", "idle");
+                    else entity.decorationAnimator.Play("right step", "left step", "idle");
+                }
+
                 public override void Update(float progress)
                 {
                     var prevPos = entity.Position;
@@ -742,6 +880,8 @@ namespace IsoUnity.Entities
                     renderer.material.color = new Color(Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f), Mathf.Abs((progress * 2f) - 1f));
 
                     if (Progress / Duration > .5f && prevPos.Map != destination.Map) {
+
+
                         //TODO Dont like the register calls made here...
                         prevPos.Map.unRegisterEntity(entity);
                         entity.Position.Map.registerEntity(entity);

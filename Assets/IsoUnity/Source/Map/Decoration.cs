@@ -94,7 +94,7 @@ namespace IsoUnity
 
             if (tile != previousTile)
             {
-                tile = Mathf.Clamp(tile, 0, isoDec.nCols * isoDec.nRows);
+                tile = tile % (isoDec.nCols * isoDec.nRows);
                 updateTextures(false);
                 previousTile = tile;
             }

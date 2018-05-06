@@ -21,20 +21,30 @@ namespace IsoUnity.Entities
         public override void ReceiveEvent(IGameEvent ge)
         {
             Current = ge;
-            EventedEntityScript.EventHappened(this, calls, attrInfo, ge);
+            EventedEntityScript.EventHappened(this, calls, attrInfo, ge, CoroutineController);
             Current = null;
         }
 
-        private IEnumerator CoroutineController(IGameEvent ge, IEnumerator toRun)
+        private static IEnumerator CoroutineController(IGameEvent ge, IEnumerator toRun, MonoBehaviour holder)
         {
+            var eventedEM = holder as EventedEventManager;
+
             // We wrap the coroutine
             while (toRun.MoveNext())
+            {
+                // Free the current value
+                eventedEM.Current = null;
                 yield return toRun.Current;
+                // Set the current event value
+                eventedEM.Current = ge;
+            }
+            // Free the current value
+            eventedEM.Current = null;
 
             // And when it finishes, we finish the event
             Game.main.eventFinished(ge);
         }
 
-        protected IGameEvent Current { get; private set; }
+        protected IGameEvent Current { get; set; }
     }
 }

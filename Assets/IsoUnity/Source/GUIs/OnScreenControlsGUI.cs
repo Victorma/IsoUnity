@@ -50,7 +50,7 @@ namespace IsoUnity
             Rect buttonRight = new Rect(200 * scale, Screen.height - 300 * scale + 100 * scale, 100 * scale, 100 * scale);
 
             rightPressed = buttonRight.Contains(point);
-            if (Event.current.type == EventType.repaint)
+            if (Event.current.type == EventType.Repaint)
             {
 
                 style.Draw(buttonUp, "U", true, upPressed | backupUp, true, true);
@@ -59,7 +59,7 @@ namespace IsoUnity
                 style.Draw(buttonRight, "R", true, rightPressed | backupRight, true, true);
             }
 
-            if ((upPressed || leftPressed || downPressed || rightPressed) && Event.current.type != EventType.repaint)
+            if ((upPressed || leftPressed || downPressed || rightPressed) && Event.current.type != EventType.Repaint)
                 Event.current.Use();
         }
 

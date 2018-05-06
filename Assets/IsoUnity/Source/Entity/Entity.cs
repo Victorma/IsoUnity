@@ -6,6 +6,7 @@ namespace IsoUnity.Entities
 {
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(DecorationAnimator))]
     [RequireComponent(typeof(Mover))]
     public class Entity : MonoBehaviour
     {
@@ -59,9 +60,10 @@ namespace IsoUnity.Entities
         }
 
         // Use this for initialization
-        void Start()
+        private void OnEnable() 
         {
-
+            foreach(var es in GetComponents<EntityScript>())
+                es.OnEntityReady();
         }
 
 
@@ -79,6 +81,13 @@ namespace IsoUnity.Entities
             get
             {
                 return this.GetComponent<Mover>();
+            }
+        }
+        public DecorationAnimator decorationAnimator
+        {
+            get
+            {
+                return this.GetComponent<DecorationAnimator>();
             }
         }
 

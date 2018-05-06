@@ -11,10 +11,7 @@ namespace IsoUnity.Entities
             get { return this.GetComponent<Entity>(); }
         }
         // Use this for initialization
-        /*public virtual void Start()
-        {
-
-        }*/
+        public virtual void OnEntityReady() {}
 
         //Abstract Methods
         public abstract void eventHappened(IGameEvent ge);
