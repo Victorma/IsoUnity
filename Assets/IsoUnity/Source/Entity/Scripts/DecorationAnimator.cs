@@ -112,6 +112,9 @@ namespace IsoUnity.Entities
 			var timeLeft = Time.deltaTime;
 			var desiredFrame = currentFrame;
 			var desiredAnimation = currentAnimation;
+			var lastValidAnimation = currentAnimation;
+			var lastValidFrame = currentFrame;
+
 			if (run.Count == 0 && (desiredAnimation != null || playQueue.Count > 0)) 
 			{
 				// While there's time left to reproduce
@@ -135,8 +138,8 @@ namespace IsoUnity.Entities
 						if (currentSheet == null)
 							continue;
 						
-						desiredAnimation = foundAnimation.isoAnimation;
-						currentFrame = 0;
+						lastValidAnimation = desiredAnimation = foundAnimation.isoAnimation;
+						lastValidFrame = desiredFrame = 0;
 						timeInCurrentFrame = 0f;
 					} 
 
@@ -152,7 +155,7 @@ namespace IsoUnity.Entities
 							if(timeInCurrentFrame > desiredAnimation.frames[desiredFrame].duration) 
 							{
 								timeLeft = timeInCurrentFrame - desiredAnimation.frames[desiredFrame].duration;
-								desiredFrame++;
+								lastValidFrame = desiredFrame++;
 								timeInCurrentFrame = 0f;
 							} else timeLeft = 0;
 
@@ -162,6 +165,7 @@ namespace IsoUnity.Entities
 								// In case of loop
 								if (desiredAnimation.loop)
 								{
+									lastValidFrame = 0;
 									// In case we already looped and time didn't decrease, this is an infinite loop
 									if(looped && previousLoopedTimeLeft == timeLeft)
 									{
@@ -183,11 +187,12 @@ namespace IsoUnity.Entities
 				}
 			}
 
-			if(currentAnimation != desiredAnimation || currentFrame != desiredFrame) 
+			if(currentAnimation != desiredAnimation || currentAnimation != lastValidAnimation || currentFrame != desiredFrame || currentFrame != lastValidFrame) 
 			{
 				currentAnimation = desiredAnimation;
 				currentFrame = desiredFrame;
-				SetFrame(currentSheet, currentAnimation.frames[currentFrame].column);
+				if(lastValidAnimation != null && lastValidFrame < lastValidAnimation.frames.Count)
+					SetFrame(currentSheet, lastValidAnimation.frames[lastValidFrame].column);
 			}
 		}
 
